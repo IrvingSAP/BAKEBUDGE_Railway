@@ -1,5 +1,7 @@
 # Plan Fase 1b — Página pública + Dashboard
 
+> **Nota Cursor — plan obsoleto:** Si en la app ves la ruta virtual `BakeBudge > Plans > Fase 1b Landing` (o *Plan Fase 1b — Página pública (prototype_home)*), **no es una carpeta del repo** ni trabajo pendiente. Es un plan antiguo de un chat cuando existía `prototype_home/`. **Fase 1b está CERRADA** — ciérralo o elimínalo en el panel **Plans** de Cursor. Fuente vigente: este documento y [`fase-1b-checklist-conforme.md`](fase-1b-checklist-conforme.md). Trabajo activo de despliegue: [`deploy-railway-plan.md`](deploy-railway-plan.md).
+
 > Documento de seguimiento del desarrollo.  
 > **Última actualización:** 2026-06-16  
 > **Cierre Fase 1b:** [`fase-1b-checklist-conforme.md`](fase-1b-checklist-conforme.md) — **CERRADO Conforme v1** (Ayuda General incluida).

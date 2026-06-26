@@ -1,5 +1,7 @@
 """Producción — Railway, Gunicorn, WhiteNoise, Resend (Anymail)."""
 
+import os
+
 from .base import *  # noqa: F403
 
 DEBUG = False
@@ -20,6 +22,14 @@ if not CSRF_TRUSTED_ORIGINS:
         for host in ALLOWED_HOSTS
         if host and host not in ("*", "localhost", "127.0.0.1")
     ]
+
+# Dominio público que Railway inyecta (evita DisallowedHost si ALLOWED_HOSTS no se actualizó)
+_railway_public = os.environ.get("RAILWAY_PUBLIC_DOMAIN", "").strip()
+if _railway_public and _railway_public not in ALLOWED_HOSTS:
+    ALLOWED_HOSTS = [*ALLOWED_HOSTS, _railway_public]
+    _origin = f"https://{_railway_public}"
+    if _origin not in CSRF_TRUSTED_ORIGINS:
+        CSRF_TRUSTED_ORIGINS = [*CSRF_TRUSTED_ORIGINS, _origin]
 
 MIDDLEWARE.insert(1, "whitenoise.middleware.WhiteNoiseMiddleware")
 
