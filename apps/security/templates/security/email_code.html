@@ -1,0 +1,41 @@
+{% extends "security/base_acceso.html" %}
+
+{% block title %}Verificar correo — BAKEBUDGE{% endblock %}
+{% block body_page %}email-code{% endblock %}
+
+{% block acceso_content %}
+<main class="acceso-card">
+  <div class="acceso-steps" aria-label="Progreso de seguridad">
+    <div class="acceso-step is-active">1 · Correo</div>
+    <div class="acceso-step">2 · 2FA</div>
+  </div>
+
+  <h1>Verifica tu correo</h1>
+  <p class="acceso-lead">
+    Enviamos un código de 6 dígitos a <strong>{{ masked_email }}</strong>.
+    El código vence en <strong>5 minutos</strong>.
+  </p>
+
+  <form class="acceso-form" method="post" novalidate>
+    {% csrf_token %}
+    <input type="hidden" name="action" value="verify">
+    <label for="code">Código de verificación</label>
+    <input type="tel" id="code" name="code" class="code-input" inputmode="numeric"
+           pattern="[0-9]{6}" maxlength="6" placeholder="000000" autocomplete="one-time-code" required>
+    <span class="field-hint">Revisa tu bandeja de entrada y spam. En desarrollo, revisa la consola del servidor.</span>
+
+    <div class="acceso-actions">
+      <button type="submit" class="btn btn-primary btn-block">Verificar</button>
+    </div>
+  </form>
+
+  <div class="acceso-actions-row">
+    <form method="post" style="flex:1;min-width:120px;margin:0;">
+      {% csrf_token %}
+      <input type="hidden" name="action" value="resend">
+      <button type="submit" class="btn btn-outline btn-block">Reenviar código</button>
+    </form>
+    <a href="{% url 'security:cancel' %}" class="btn btn-ghost">Cancelar</a>
+  </div>
+</main>
+{% endblock %}

@@ -1,0 +1,103 @@
+{% extends "app_base.html" %}
+
+{% block title %}Perfil - BAKEBUDGE{% endblock %}
+{% block body_page %}perfil{% endblock %}
+
+{% block app_content %}
+<div class="page-header">
+  <h1>Perfil</h1>
+  <p>Configura tu repostería, moneda, margen objetivo y preferencias de unidades.</p>
+</div>
+
+<form method="post" class="form-perfil" novalidate>
+  {% csrf_token %}
+  <div class="content-grid">
+    <section class="card">
+      <h2>Datos del negocio</h2>
+      <div class="form-grid">
+        <div class="form-field">
+          <label for="nombre_negocio">Nombre de la repostería</label>
+          <input type="text" id="nombre_negocio" name="nombre_negocio" maxlength="150"
+                 value="{{ form_data.nombre_negocio }}" required
+                 {% if errors.nombre_negocio %}aria-invalid="true"{% endif %}>
+        </div>
+        <div class="form-field">
+          <label for="moneda">Moneda</label>
+          <select id="moneda" name="moneda" required
+                  {% if errors.moneda %}aria-invalid="true"{% endif %}>
+            {% for moneda in monedas %}
+            <option value="{{ moneda.codigo }}" {% if form_data.moneda == moneda.codigo %}selected{% endif %}>
+              {{ moneda.codigo }} — {{ moneda.nombre }}
+            </option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="form-field">
+          <label for="margen_objetivo_pct">Margen objetivo (%)</label>
+          <input type="number" id="margen_objetivo_pct" name="margen_objetivo_pct"
+                 min="0" max="999.99" step="0.01"
+                 value="{{ form_data.margen_objetivo_pct }}" required
+                 {% if errors.margen_objetivo_pct %}aria-invalid="true"{% endif %}>
+          <small style="color:var(--color-muted);font-size:0.82rem;">
+            Usado para precio de venta sugerido en recetas
+          </small>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Unidades por defecto</h2>
+      <div class="form-grid">
+        <div class="form-field">
+          <label for="unidad_peso_default">Peso</label>
+          <select id="unidad_peso_default" name="unidad_peso_default"
+                  {% if errors.unidad_peso_default %}aria-invalid="true"{% endif %}>
+            {% for unidad in unidad_peso_choices %}
+            <option value="{{ unidad }}" {% if form_data.unidad_peso_default == unidad %}selected{% endif %}>{{ unidad }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="form-field">
+          <label for="unidad_volumen_default">Volumen</label>
+          <select id="unidad_volumen_default" name="unidad_volumen_default"
+                  {% if errors.unidad_volumen_default %}aria-invalid="true"{% endif %}>
+            {% for unidad in unidad_volumen_choices %}
+            <option value="{{ unidad }}" {% if form_data.unidad_volumen_default == unidad %}selected{% endif %}>{{ unidad }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="form-field">
+          <label for="unidad_conteo_default">Conteo</label>
+          <select id="unidad_conteo_default" name="unidad_conteo_default"
+                  {% if errors.unidad_conteo_default %}aria-invalid="true"{% endif %}>
+            {% for unidad in unidad_conteo_choices %}
+            <option value="{{ unidad }}" {% if form_data.unidad_conteo_default == unidad %}selected{% endif %}>{{ unidad }}</option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div class="form-field" style="margin-top:1.25rem;">
+    <button type="submit" class="btn btn-primary">Guardar cambios</button>
+  </div>
+</form>
+
+<section class="card" style="margin-top:1.25rem;">
+  <h2>Cuenta y seguridad</h2>
+  <p style="color:var(--color-muted);margin-top:0;font-size:0.92rem;">
+    Usuario: <strong>{{ user.username }}</strong>
+    · Correo: {{ user.email }}
+    {% if app_profile.is_security_complete %}
+    · 2FA activo
+    {% endif %}
+  </p>
+  <p style="font-size:0.9rem;">
+    Cambio de contraseña y autenticador en
+    <a href="{% url 'accounts:cuenta_seguridad' %}" style="color:var(--color-primary-dark);font-weight:700;">
+      Seguridad de la cuenta
+    </a>.
+  </p>
+</section>
+{% endblock %}

@@ -1,0 +1,257 @@
+{% extends "app_base.html" %}
+{% load static catalog_extras recipes_extras %}
+
+{% block title %}Formulación — {{ receta.nombre }} - BAKEBUDGE{% endblock %}
+{% block body_page %}recetas{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'recipes/css/recetas.css' %}">
+<link rel="stylesheet" href="{% static 'recipes/css/recetaversion.css' %}">
+{% endblock %}
+
+{% block app_content %}
+<div class="page-header page-header-row">
+  <div>
+    <div class="recetaversion-context">
+      <h1 style="margin:0;">{{ receta.nombre }}</h1>
+      <span class="badge-vigente">{{ version.etiqueta }} · vigente</span>
+    </div>
+    <p>Formulación de la versión vigente — ingredientes, pasos y costos.</p>
+    <nav class="recetaversion-nav-links" aria-label="Navegación versión">
+      <a href="{% url 'recipes:recetaversion_list' receta.pk %}">Historial</a>
+      <span class="sep">·</span>
+      <a href="{% url 'recipes:recetaversion_create' receta.pk %}">Nueva versión</a>
+      <span class="sep">·</span>
+      <a href="{% url 'recipes:receta_edit' receta.pk %}">Cabecera receta</a>
+    </nav>
+  </div>
+  <div class="page-header-actions">
+    <a href="{% url 'recipes:recetaversion_edit_help' receta.pk %}" class="recetas-help-btn" target="_blank" rel="noopener"
+       title="Ayuda formulación">
+      <img src="{% static 'catalog/images/icon-help.svg' %}" alt="" width="20" height="20">
+      <span>Ayuda</span>
+    </a>
+    <a href="{% url 'recipes:receta_list' %}" class="btn btn-outline">Listado recetas</a>
+  </div>
+</div>
+
+<form id="form-recetaversion-edit" method="post" class="recetas-form" novalidate>
+  {% csrf_token %}
+
+  <section class="card recetas-form-card">
+    <h2>Resumen de costos</h2>
+    <div class="recetaversion-cost-panel" aria-label="Costos cacheados de la versión">
+      <div class="recetas-version-stat">
+        <span class="label">Ingredientes</span>
+        <span class="value" id="stat-ingredientes">{{ version.costo_ingredientes|format_money:user }}</span>
+      </div>
+      <div class="recetas-version-stat">
+        <span class="label">Indirectos</span>
+        <span class="value" id="stat-indirectos">{{ version.costo_indirectos|format_money:user }}</span>
+      </div>
+      <div class="recetas-version-stat">
+        <span class="label">Costo total</span>
+        <span class="value" id="stat-total">{{ version.costo_total|format_money:user }}</span>
+      </div>
+      <div class="recetas-version-stat">
+        <span class="label">Costo / porción</span>
+        <span class="value" id="stat-porcion">{{ version.costo_por_porcion|format_money:user }}</span>
+      </div>
+    </div>
+    <div class="recetaversion-precio-block">
+      <div class="form-grid">
+        <div class="form-field">
+          <label for="precio_venta_sugerido">Precio sugerido <span aria-hidden="true">*</span></label>
+          <input type="number" id="precio_venta_sugerido" name="precio_venta_sugerido"
+                 step="0.0001" min="0" required
+                 value="{{ form_data.precio_venta_sugerido }}">
+        </div>
+        <div class="form-field">
+          <label for="margen_aplicado_display">Margen aplicado</label>
+          <input type="text" id="margen_aplicado_display" readonly
+                 value="{{ version.margen_aplicado_pct }} %">
+        </div>
+      </div>
+      <input type="hidden" name="precio_override_manual" id="precio_override_manual"
+             value="{% if form_data.precio_override_manual %}1{% else %}0{% endif %}">
+    </div>
+  </section>
+
+  <section class="card recetas-form-card">
+    <h2>Rendimiento</h2>
+    <div class="form-grid">
+      <div class="form-field">
+        <label for="rendimiento_cantidad">Cantidad <span aria-hidden="true">*</span></label>
+        <input type="number" id="rendimiento_cantidad" name="rendimiento_cantidad"
+               step="0.0001" min="0.0001" required value="{{ form_data.rendimiento_cantidad }}">
+      </div>
+      <div class="form-field">
+        <label for="rendimiento_unidad">Unidad <span aria-hidden="true">*</span></label>
+        <input type="text" id="rendimiento_unidad" name="rendimiento_unidad" maxlength="30"
+               required value="{{ form_data.rendimiento_unidad }}">
+      </div>
+    </div>
+  </section>
+
+  <section class="card recetas-form-card recetaversion-ingredientes">
+    <div class="recetaversion-section-header">
+      <h2>Ingredientes</h2>
+      <button type="button" class="btn btn-outline btn-sm" id="btn-add-ingrediente">+ Agregar ingrediente</button>
+    </div>
+    <p class="form-hint">Solo productos <strong>Activos</strong> del catálogo. <strong>Un producto por versión</strong> — no se permiten duplicados. Unidades según <a href="{% url 'catalog:conversion_list' %}">Conversiones de unidad</a>. Completa producto, cantidad y unidad en cada fila antes de agregar otra.</p>
+    <div class="table-wrap">
+      <table class="table-bakebudge" aria-label="Ingredientes de la versión">
+        <thead>
+          <tr>
+            <th>Producto</th>
+            <th>Cantidad</th>
+            <th>Unidad</th>
+            <th>Notas</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody id="tbody-ingredientes">
+          {% for fila in ingredientes_filas %}
+          <tr class="ingrediente-row">
+            <td>
+              <select name="ingrediente_producto" class="ingrediente-producto-select" required>
+                <option value="">Seleccionar…</option>
+                {% for producto in productos_activos %}
+                <option value="{{ producto.pk }}" {% if fila.producto_id == producto.pk|stringformat:"s" %}selected{% endif %}>{{ producto.nombre }}</option>
+                {% endfor %}
+              </select>
+            </td>
+            <td><input type="number" name="ingrediente_cantidad" step="0.0001" min="0.0001" required value="{{ fila.cantidad }}"></td>
+            <td>
+              {% with opts=unidades_por_producto|dict_get:fila.producto_id %}
+              {% include "recipes/partials/ingrediente_unidad_select.html" with unidad_options=opts|default:unidades_conversion selected_unidad=fila.unidad only %}
+              {% endwith %}
+            </td>
+            <td><input type="text" name="ingrediente_notas" maxlength="100" value="{{ fila.notas }}"></td>
+            <td><button type="button" class="btn btn-outline btn-sm btn-remove-row">Quitar</button></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <template id="tpl-ingrediente-row">
+      <tr class="ingrediente-row">
+        <td>
+          <select name="ingrediente_producto" class="ingrediente-producto-select" required aria-label="Producto del ingrediente">
+            <option value="">Seleccionar…</option>
+            {% for producto in productos_activos %}
+            <option value="{{ producto.pk }}">{{ producto.nombre }}</option>
+            {% endfor %}
+          </select>
+        </td>
+        <td><input type="number" name="ingrediente_cantidad" step="0.0001" min="0.0001" required aria-label="Cantidad del ingrediente"></td>
+        <td>
+          {% include "recipes/partials/ingrediente_unidad_select.html" with unidad_options=unidades_conversion selected_unidad="" only %}
+        </td>
+        <td><input type="text" name="ingrediente_notas" maxlength="100" aria-label="Notas del ingrediente"></td>
+        <td><button type="button" class="btn btn-outline btn-sm btn-remove-row">Quitar</button></td>
+      </tr>
+    </template>
+  </section>
+
+  <section class="card recetas-form-card recetaversion-indirectos">
+    <div class="recetaversion-section-header">
+      <h2>Costos indirectos</h2>
+      <button type="button" class="btn btn-outline btn-sm" id="btn-add-indirecto">+ Agregar costo indirecto</button>
+    </div>
+    <p class="form-hint">Solo gastos <strong>Activos</strong> del catálogo. <strong>Un gasto por versión</strong> — no se permiten duplicados. Completa gasto y cantidad en cada fila antes de agregar otra.</p>
+    <div class="table-wrap">
+      <table class="table-bakebudge" aria-label="Costos indirectos de la versión">
+        <thead>
+          <tr>
+            <th>Gasto indirecto</th>
+            <th>Cantidad</th>
+            <th>Notas</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody id="tbody-indirectos">
+          {% for fila in indirectos_filas %}
+          <tr class="indirecto-row">
+            <td>
+              <select name="indirecto_gasto" class="indirecto-gasto-select" required aria-label="Gasto indirecto">
+                <option value="">Seleccionar…</option>
+                {% for gasto in indirectos_activos %}
+                <option value="{{ gasto.pk }}" {% if fila.gasto_id == gasto.pk|stringformat:"s" %}selected{% endif %}>{{ gasto.nombre }}</option>
+                {% endfor %}
+              </select>
+            </td>
+            <td><input type="number" name="indirecto_cantidad" step="0.0001" min="0" required value="{{ fila.cantidad }}"></td>
+            <td><input type="text" name="indirecto_notas" maxlength="100" value="{{ fila.notas }}"></td>
+            <td><button type="button" class="btn btn-outline btn-sm btn-remove-row">Quitar</button></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <template id="tpl-indirecto-row">
+      <tr class="indirecto-row">
+        <td>
+          <select name="indirecto_gasto" class="indirecto-gasto-select" required aria-label="Gasto indirecto">
+            <option value="">Seleccionar…</option>
+            {% for gasto in indirectos_activos %}
+            <option value="{{ gasto.pk }}">{{ gasto.nombre }}</option>
+            {% endfor %}
+          </select>
+        </td>
+        <td><input type="number" name="indirecto_cantidad" step="0.0001" min="0" required aria-label="Cantidad del costo indirecto"></td>
+        <td><input type="text" name="indirecto_notas" maxlength="100" aria-label="Notas del costo indirecto"></td>
+        <td><button type="button" class="btn btn-outline btn-sm btn-remove-row">Quitar</button></td>
+      </tr>
+    </template>
+  </section>
+
+  <section class="card recetas-form-card">
+    <div class="recetaversion-section-header">
+      <h2>Pasos de elaboración</h2>
+      <button type="button" class="btn btn-outline btn-sm" id="btn-add-paso">+ Agregar paso</button>
+    </div>
+    <div class="table-wrap">
+      <table class="table-bakebudge" aria-label="Pasos de la versión">
+        <thead>
+          <tr>
+            <th>Instrucción</th>
+            <th>Tiempo (min)</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody id="tbody-pasos">
+          {% for paso in pasos %}
+          <tr class="paso-row">
+            <td><textarea name="paso_instruccion" rows="2" required>{{ paso.instruccion }}</textarea></td>
+            <td><input type="number" name="paso_tiempo" min="1" step="1" value="{% if paso.tiempo_minutos %}{{ paso.tiempo_minutos }}{% endif %}"></td>
+            <td><button type="button" class="btn btn-outline btn-sm btn-remove-row">Quitar</button></td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <template id="tpl-paso-row">
+      <tr class="paso-row">
+        <td><textarea name="paso_instruccion" rows="2"></textarea></td>
+        <td><input type="number" name="paso_tiempo" min="1" step="1"></td>
+        <td><button type="button" class="btn btn-outline btn-sm btn-remove-row">Quitar</button></td>
+      </tr>
+    </template>
+  </section>
+
+  <div class="form-actions recetas-form-actions">
+    <button type="submit" class="btn btn-primary">Guardar formulación</button>
+    <a href="{% url 'recipes:receta_edit' receta.pk %}" class="btn btn-outline">Cancelar</a>
+  </div>
+</form>
+
+{{ unidades_por_producto|json_script:"unidades-por-producto-data" }}
+{{ unidades_conversion|json_script:"unidades-global-data" }}
+{{ productos_nombres|json_script:"productos-nombres-data" }}
+{{ indirectos_nombres|json_script:"indirectos-nombres-data" }}
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'recipes/js/recetaversion_form.js' %}"></script>
+{% endblock %}

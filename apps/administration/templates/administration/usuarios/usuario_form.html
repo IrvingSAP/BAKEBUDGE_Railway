@@ -1,0 +1,264 @@
+{% extends "app_base.html" %}
+
+{% load static %}
+
+
+
+{% block title %}{% if managed_user %}Editar usuario{% else %}Nuevo usuario{% endif %} - BAKEBUDGE{% endblock %}
+
+{% block body_page %}usuarios{% endblock %}
+
+
+
+{% block extra_css %}
+
+<link rel="stylesheet" href="{% static 'administration/css/usuarios.css' %}">
+
+{% endblock %}
+
+
+
+{% block app_content %}
+
+<div class="page-header page-header-row">
+
+  <div>
+
+    <h1>{% if managed_user %}Editar usuario{% else %}Nuevo usuario{% endif %}</h1>
+
+    <p>{% if managed_user %}Modificación de <code>auth.User</code> + <code>UserProfile</code>{% else %}Alta de cuenta <code>auth.User</code> + <code>UserProfile</code>{% endif %} — solo Master.</p>
+
+  </div>
+
+  <div class="page-header-actions">
+
+    {% if managed_user %}
+    {% url 'administration:usuario_edit_help' managed_user.pk as help_url %}
+    {% include "catalog/partials/form_help_link.html" with help_url=help_url help_btn_class="usuarios-help-btn" help_title="Ayuda para editar usuario" only %}
+    {% else %}
+    {% url 'administration:usuario_create_help' as help_url %}
+    {% include "catalog/partials/form_help_link.html" with help_url=help_url help_btn_class="usuarios-help-btn" help_title="Ayuda para crear usuario" only %}
+    {% endif %}
+
+    <a href="{% url 'administration:usuario_list' %}" class="btn btn-outline">← Volver al listado</a>
+
+  </div>
+
+</div>
+
+
+
+<form method="post" novalidate data-bb-validate-form class="usuarios-form">
+
+  {% csrf_token %}
+
+
+
+  {% if managed_user %}
+
+  <section class="card usuarios-form-card">
+
+    <h2>Identificación</h2>
+
+    <div class="form-grid">
+
+      <div class="form-field">
+
+        <label for="pk_display">ID</label>
+
+        <input type="text" id="pk_display" value="{{ managed_user.pk }}" readonly>
+
+      </div>
+
+      <div class="form-field">
+
+        <label for="date_joined_display">Fecha de registro</label>
+
+        <input type="text" id="date_joined_display" value="{{ managed_user.date_joined|date:'d/m/Y H:i' }}" readonly>
+
+      </div>
+
+    </div>
+
+  </section>
+
+  {% endif %}
+
+
+
+  <section class="card usuarios-form-card">
+
+    <h2>Cuenta Django (<code>auth.User</code>)</h2>
+
+    <div class="form-grid">
+
+      <div class="form-field">
+
+        <label for="username">Usuario *</label>
+
+        <input type="text" id="username" name="username" maxlength="150" value="{{ form_data.username }}"
+
+               placeholder="Ej. repostera.ana" required autocomplete="off">
+
+        <span class="form-hint">Login único en la plataforma — sin espacios</span>
+
+      </div>
+
+      <div class="form-field">
+
+        <label for="email">Correo *</label>
+
+        <input type="email" id="email" name="email" maxlength="254" value="{{ form_data.email }}"
+
+               placeholder="correo@ejemplo.com" required autocomplete="off">
+
+      </div>
+
+      {% if not managed_user %}
+
+      <div class="form-field">
+
+        <label for="password">Contraseña *</label>
+
+        <input type="password" id="password" name="password" minlength="8" required autocomplete="new-password">
+
+        <span class="form-hint">Mínimo 8 caracteres (política Django)</span>
+
+      </div>
+
+      <div class="form-field">
+
+        <label for="password_confirm">Confirmar contraseña *</label>
+
+        <input type="password" id="password_confirm" name="password_confirm" minlength="8" required autocomplete="new-password">
+
+      </div>
+
+      {% endif %}
+
+      <div class="form-field">
+
+        <label for="first_name">Nombre</label>
+
+        <input type="text" id="first_name" name="first_name" maxlength="150" value="{{ form_data.first_name }}" autocomplete="off">
+
+      </div>
+
+      <div class="form-field">
+
+        <label for="last_name">Apellido</label>
+
+        <input type="text" id="last_name" name="last_name" maxlength="150" value="{{ form_data.last_name }}" autocomplete="off">
+
+      </div>
+
+      <div class="form-field">
+
+        <label class="checkbox-label">
+
+          <input type="checkbox" name="is_active" value="1" {% if form_data.is_active %}checked{% endif %}>
+
+          Cuenta activa (<code>User.is_active</code>)
+
+        </label>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+
+  <section class="card usuarios-form-card">
+
+    <h2>Perfil (<code>UserProfile</code>)</h2>
+
+    <div class="form-grid">
+
+      <div class="form-field" style="grid-column: 1 / -1;">
+
+        <label for="nombre_negocio">Nombre del negocio</label>
+
+        <input type="text" id="nombre_negocio" name="nombre_negocio" maxlength="150"
+
+               value="{{ form_data.nombre_negocio }}" placeholder="Ej. Repostería Ana" autocomplete="off">
+
+      </div>
+
+      <div class="form-field">
+
+        <label for="user_type">Tipo de usuario *</label>
+
+        <select id="user_type" name="user_type" required>
+
+          <option value="U" {% if form_data.user_type == 'U' %}selected{% endif %}>U — User (estándar)</option>
+
+          <option value="M" {% if form_data.user_type == 'M' %}selected{% endif %}>M — Master (administrador)</option>
+
+        </select>
+
+        <span class="form-hint"><strong>U</strong> requiere suscripción activa en Facturación.</span>
+
+      </div>
+
+      <div class="form-field">
+
+        <label for="moneda">Moneda *</label>
+
+        <select id="moneda" name="moneda" required>
+
+          {% for moneda in monedas %}
+
+          <option value="{{ moneda.codigo }}" {% if form_data.moneda == moneda.codigo %}selected{% endif %}>
+
+            {{ moneda.codigo }} — {{ moneda.nombre }}
+
+          </option>
+
+          {% endfor %}
+
+        </select>
+
+      </div>
+
+      <div class="form-field">
+
+        <label for="status">Estado cuenta *</label>
+
+        <select id="status" name="status" required>
+
+          <option value="A" {% if form_data.status == 'A' %}selected{% endif %}>A — Activo</option>
+
+          <option value="I" {% if form_data.status == 'I' %}selected{% endif %}>I — Inactivo</option>
+
+        </select>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+
+  <section class="card usuarios-form-card">
+
+    <div class="usuarios-form-actions">
+
+      <button type="submit" class="btn btn-primary">{% if managed_user %}Guardar cambios{% else %}Guardar usuario{% endif %}</button>
+
+      <button type="submit" name="guardar_activar" value="1" class="btn btn-outline">Guardar y activo</button>
+
+      <a href="{% url 'administration:usuario_list' %}" class="btn btn-outline">Cancelar</a>
+
+    </div>
+
+  </section>
+
+</form>
+
+{% include "catalog/partials/form_validation.html" %}
+
+{% endblock %}
+

@@ -1,0 +1,37 @@
+{% extends "security/base_acceso.html" %}
+
+{% block title %}Código 2FA — BAKEBUDGE{% endblock %}
+{% block body_page %}totp{% endblock %}
+
+{% block acceso_content %}
+<main class="acceso-card">
+  <h1>{% if setup_mode %}Confirma tu autenticador{% else %}Código de autenticación{% endif %}</h1>
+  <p class="acceso-lead">
+    Ingresa el código de 6 dígitos de tu app Autenticador.
+  </p>
+
+  <form class="acceso-form" method="post" novalidate>
+    {% csrf_token %}
+    <input type="hidden" name="action" value="verify">
+    <label for="totp">Código 2FA</label>
+    <input type="tel" id="totp" name="totp" class="code-input" inputmode="numeric"
+           pattern="[0-9]{6}" maxlength="6" placeholder="000000" autocomplete="one-time-code" required>
+
+    <div class="acceso-actions">
+      <button type="submit" class="btn btn-primary btn-block">Verificar</button>
+    </div>
+
+    <div class="acceso-actions-row">
+      <button type="reset" class="btn btn-outline">Reintentar</button>
+      <a href="{% url 'security:cancel' %}" class="btn btn-ghost">Cancelar</a>
+    </div>
+  </form>
+
+  {% if not setup_mode %}
+  <div class="acceso-links">
+    <a href="{% url 'security:actualizar_2fa' %}">Cambio / Actualización 2FA</a>
+    <p>Si perdiste acceso a tu autenticador, puedes reiniciar el factor desde aquí.</p>
+  </div>
+  {% endif %}
+</main>
+{% endblock %}

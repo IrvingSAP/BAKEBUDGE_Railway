@@ -1,0 +1,32 @@
+{% extends "security/base_acceso.html" %}
+
+{% block title %}Configurar 2FA — BAKEBUDGE{% endblock %}
+{% block body_page %}totp-setup{% endblock %}
+
+{% block acceso_content %}
+<main class="acceso-card acceso-card--wide">
+  <div class="acceso-steps" aria-label="Progreso de seguridad">
+    <div class="acceso-step">1 · Correo</div>
+    <div class="acceso-step is-active">2 · 2FA</div>
+  </div>
+
+  <h1>Configura tu autenticador</h1>
+  <p class="acceso-lead">
+    Escanea el código QR con una app Autenticador (Google Authenticator, Microsoft Authenticator, etc.)
+    o ingresa el secreto manualmente. Issuer: <strong>BAKEBUDGE</strong>.
+  </p>
+
+  <div class="acceso-qr-wrap">
+    <div class="acceso-qr" role="img" aria-label="Código QR para TOTP">
+      <img src="{{ qr_data_url }}" alt="Código QR TOTP BAKEBUDGE" width="180" height="180">
+    </div>
+    <code class="acceso-secret">{{ totp_secret }}</code>
+    <span class="field-hint" style="margin:0;text-align:center;">Copia el secreto si no puedes escanear el QR.</span>
+  </div>
+
+  <div class="acceso-actions">
+    <a href="{% url 'security:totp' %}?mode=setup" class="btn btn-primary btn-block">Ya registré el código en mi app</a>
+    <a href="{% url 'security:cancel' %}" class="btn btn-ghost btn-block">Cancelar</a>
+  </div>
+</main>
+{% endblock %}

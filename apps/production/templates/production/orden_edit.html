@@ -1,0 +1,57 @@
+{% extends "app_base.html" %}
+{% load static catalog_extras %}
+
+{% block title %}Editar {{ orden.codigo }} - BAKEBUDGE{% endblock %}
+{% block body_page %}produccion{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'production/css/produccion.css' %}">
+{% endblock %}
+
+{% block app_content %}
+<div class="page-header page-header-row">
+  <div>
+    <h1>Editar {{ orden.codigo }}</h1>
+    <p>{{ orden.receta.nombre }} {{ orden.receta_version.etiqueta }} · borrador</p>
+  </div>
+  <div class="page-header-actions">
+    {% url 'production:orden_edit_help' orden.pk as help_edit_url %}
+    {% include "catalog/partials/form_help_link.html" with help_url=help_edit_url help_btn_class="produccion-help-btn" only %}
+    <a href="{% url 'production:orden_detail' orden.pk %}" class="btn btn-outline">← Volver al detalle</a>
+  </div>
+</div>
+
+<form method="post" class="produccion-form" novalidate>
+  {% csrf_token %}
+
+  <section class="card produccion-form-card">
+    <h2>Planificación</h2>
+    <p class="form-hint">Receta y versión no se modifican en v1 — crea otra orden si necesitas otra formulación.</p>
+    <div class="form-grid">
+      <div class="form-field">
+        <label>Receta</label>
+        <input type="text" readonly value="{{ orden.receta.nombre }} {{ orden.receta_version.etiqueta }}">
+      </div>
+      <div class="form-field">
+        <label for="cantidad_lotes">Cantidad de lotes <span aria-hidden="true">*</span></label>
+        <input type="number" id="cantidad_lotes" name="cantidad_lotes" step="0.0001" min="0.0001"
+               required value="{{ form_data.cantidad_lotes }}">
+      </div>
+      <div class="form-field">
+        <label for="fecha_programada">Fecha programada</label>
+        <input type="date" id="fecha_programada" name="fecha_programada" value="{{ form_data.fecha_programada }}">
+      </div>
+      <div class="form-field" style="grid-column: 1 / -1;">
+        <label for="notas">Notas</label>
+        <textarea id="notas" name="notas" rows="3">{{ form_data.notas }}</textarea>
+      </div>
+    </div>
+    <p class="form-hint">Costo estimado actual: <strong>{{ orden.costo_estimado|format_money:user }}</strong> (se recalcula al guardar).</p>
+  </section>
+
+  <div class="produccion-form-actions">
+    <button type="submit" class="btn btn-primary">Guardar cambios</button>
+    <a href="{% url 'production:orden_detail' orden.pk %}" class="btn btn-outline">Cancelar</a>
+  </div>
+</form>
+{% endblock %}

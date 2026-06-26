@@ -1,0 +1,126 @@
+{% extends "app_base.html" %}
+{% load static catalog_extras %}
+
+{% block title %}Ayuda — Crear categoría — BAKEBUDGE{% endblock %}
+{% block body_page %}categorias{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'catalog/css/categorias.css' %}">
+{% endblock %}
+
+{% block app_content %}
+<div class="page-header page-header-row">
+  <div>
+    <h1>Ayuda: crear categoría</h1>
+    <p>Guía de los campos del formulario de alta. Solo consulta — no guarda datos.</p>
+  </div>
+  <a href="{% url 'catalog:categoria_create' %}" class="btn btn-primary">← Volver al formulario</a>
+</div>
+
+<div class="categorias-help-intro card">
+  <p>
+    Una <strong>categoría</strong> clasifica tus productos (insumos, empaques, decoración, etc.).
+    Completa los campos marcados con <span aria-hidden="true">*</span> para registrarla.
+    Las categorías predeterminadas del sistema se crean al registrarte; aquí añades las tuyas propias.
+  </p>
+</div>
+
+<div class="categorias-form categorias-form--help" aria-readonly="true">
+  <section class="card categorias-form-card categorias-form-card--help">
+    <h2>Identificación</h2>
+    <div class="form-grid">
+      <div class="form-field" style="grid-column: 1 / -1;">
+        <label for="help-nombre">Nombre <span aria-hidden="true">*</span></label>
+        <input type="text" id="help-nombre" value="Lácteos" readonly tabindex="-1">
+        <p class="categorias-help-desc">
+          Nombre visible en listados, filtros de productos y selectores.
+          Debe ser único en tu catálogo (máximo 50 caracteres). Ejemplo: «Lácteos», «Utensilios».
+        </p>
+      </div>
+      <div class="form-field">
+        <label for="help-codigo">Código</label>
+        <input type="text" id="help-codigo" value="lacteos" readonly tabindex="-1">
+        <p class="categorias-help-desc">
+          Opcional. Identificador corto en minúsculas para integraciones o filtros internos.
+          Solo letras minúsculas, números, guion y guion bajo (máximo 30 caracteres).
+        </p>
+      </div>
+      <div class="form-field" style="grid-column: 1 / -1;">
+        <label for="help-descripcion">Descripción</label>
+        <textarea id="help-descripcion" rows="3" readonly tabindex="-1">Leche, crema, quesos y derivados.</textarea>
+        <p class="categorias-help-desc">
+          Opcional. Texto libre para recordar qué tipo de productos agrupa esta categoría.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="card categorias-form-card categorias-form-card--help">
+    <h2>Presentación</h2>
+    <div class="form-grid">
+      <div class="form-field">
+        <label for="help-orden">Orden <span aria-hidden="true">*</span></label>
+        <input type="text" id="help-orden" value="50" readonly tabindex="-1">
+        <p class="categorias-help-desc">
+          Número entero ≥ 0 que define la posición en listados y selectores.
+          Valores menores aparecen primero. El valor por defecto en el alta es 50.
+        </p>
+      </div>
+      <div class="form-field">
+        <label for="help-color">Color</label>
+        <input type="text" id="help-color" value="#FFFDE7" readonly tabindex="-1">
+        <p class="categorias-help-desc">
+          Opcional. Color en formato hexadecimal <code>#RRGGBB</code> para el badge visual en el listado.
+          Puedes escribirlo o elegirlo con el selector de color del formulario real.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="card categorias-form-card categorias-form-card--help">
+    <h2>Estado</h2>
+    <div class="form-grid">
+      <div class="form-field">
+        <label for="help-status">Estado <span aria-hidden="true">*</span></label>
+        <select id="help-status" disabled tabindex="-1">
+          <option selected>A — Activo</option>
+        </select>
+        <p class="categorias-help-desc">
+          <strong>P — En proceso:</strong> aún en definición; no aparece en selectores de productos nuevos.<br>
+          <strong>A — Activo:</strong> disponible al clasificar productos.<br>
+          <strong>I — Inactivo:</strong> archivada; no se ofrece en selectores nuevos pero conserva historial.
+          En el alta, el valor por defecto es «Activo».
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="card categorias-form-card categorias-form-card--help">
+    <h2>Acciones del formulario real</h2>
+    <div class="categorias-form-actions" style="border-top:none;padding-top:0;margin-top:0;">
+      <span class="btn btn-primary btn--demo">Guardar categoría</span>
+      <span class="btn btn-outline btn--demo">Guardar y marcar activo</span>
+      <span class="btn btn-outline btn--demo">Cancelar</span>
+    </div>
+    <ul class="categorias-help-desc" style="margin-top:1rem;padding-left:1.25rem;">
+      <li><strong>Guardar categoría</strong> — valida nombre y orden; guarda con el estado seleccionado.</li>
+      <li><strong>Guardar y marcar activo</strong> — igual que guardar, pero deja la categoría en estado Activo de inmediato.</li>
+      <li><strong>Cancelar</strong> — regresa al listado sin guardar cambios.</li>
+    </ul>
+  </section>
+
+  <section class="card categorias-form-card categorias-form-card--required-note">
+    <p class="form-hint" style="margin:0;">
+      Campos obligatorios al crear: nombre y orden.
+      Si falta alguno o el color no tiene formato válido, verás un mensaje de error en pantalla.
+    </p>
+  </section>
+
+  <section class="card categorias-form-card">
+    <div class="categorias-form-actions" style="border-top:none;padding-top:0;margin-top:0;">
+      <a href="{% url 'catalog:categoria_create' %}" class="btn btn-primary">Volver al formulario de alta</a>
+      <a href="{% url 'catalog:categoria_list' %}" class="btn btn-outline">Ir al listado</a>
+    </div>
+  </section>
+</div>
+{% endblock %}

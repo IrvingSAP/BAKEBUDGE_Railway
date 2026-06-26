@@ -1,0 +1,18 @@
+.form-field--invalid label {
+  color: #9f1239;
+}
+
+.form-field--invalid input,
+.form-field--invalid select,
+.form-field--invalid textarea {
+  border-color: #e11d48;
+  box-shadow: 0 0 0 2px rgba(225, 29, 72, 0.12);
+}
+
+.form-field__error {
+  margin: 0.35rem 0 0;
+  font-size: 0.85rem;
+  color: #be123c;
+  font-weight: 600;
+  line-height: 1.35;
+}

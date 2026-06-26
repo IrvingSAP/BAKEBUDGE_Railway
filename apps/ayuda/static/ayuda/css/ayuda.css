@@ -1,0 +1,235 @@
+.ayuda-intro {
+  margin-bottom: 1.5rem;
+}
+
+.ayuda-flow {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin: 1.25rem 0;
+}
+
+.ayuda-flow__phase {
+  border: 1px solid var(--color-border, #e8dfd8);
+  border-radius: var(--radius-md, 10px);
+  padding: 1rem 1.25rem;
+  background: var(--color-surface-alt, #faf8f6);
+  position: relative;
+}
+
+.ayuda-flow__phase::after {
+  content: "▼";
+  display: block;
+  text-align: center;
+  color: var(--color-muted);
+  font-size: 0.75rem;
+  margin-top: 0.5rem;
+  line-height: 1;
+}
+
+.ayuda-flow__phase:last-child::after {
+  display: none;
+}
+
+.ayuda-flow__label {
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-primary-dark, #9a4518);
+  margin-bottom: 0.35rem;
+}
+
+.ayuda-flow__text {
+  margin: 0;
+  font-size: 0.95rem;
+  color: var(--color-text, #2c241f);
+}
+
+.ayuda-section {
+  margin-bottom: 1.25rem;
+}
+
+.ayuda-section--highlight {
+  outline: 2px solid var(--color-primary, #c45c26);
+  outline-offset: 4px;
+  border-radius: var(--radius-lg, 12px);
+}
+
+.ayuda-section__header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem 1rem;
+  margin-bottom: 1rem;
+}
+
+.ayuda-section__apps {
+  font-size: 0.82rem;
+  color: var(--color-muted);
+}
+
+.ayuda-section__apps code {
+  font-size: 0.78rem;
+}
+
+.ayuda-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.ayuda-step {
+  border-left: 3px solid var(--color-primary, #c45c26);
+  padding: 0 0 0 1rem;
+}
+
+.ayuda-step__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.ayuda-step__num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.75rem;
+  height: 1.75rem;
+  padding: 0 0.4rem;
+  border-radius: 999px;
+  background: var(--color-primary, #c45c26);
+  color: #fff;
+  font-size: 0.78rem;
+  font-weight: 800;
+}
+
+.ayuda-step__title {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 800;
+}
+
+.ayuda-step__meta {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 0.5rem 1rem;
+  margin: 0.75rem 0;
+  font-size: 0.88rem;
+}
+
+.ayuda-step__meta dt {
+  font-weight: 700;
+  color: var(--color-muted);
+  margin: 0;
+}
+
+.ayuda-step__meta dd {
+  margin: 0.15rem 0 0;
+}
+
+.ayuda-step__meta > div.ayuda-step__meta-row--wide {
+  grid-column: 1 / -1;
+}
+
+.ayuda-step__meta dd.ayuda-step__ejemplo {
+  color: var(--color-text);
+}
+
+.ayuda-step__hint {
+  margin: 0.75rem 0 0;
+  padding: 0.65rem 0.85rem;
+  background: var(--color-surface-alt, #faf8f6);
+  border-radius: var(--radius-sm, 8px);
+  font-size: 0.88rem;
+  color: var(--color-text);
+}
+
+.ayuda-step__hint strong {
+  color: var(--color-primary-dark, #9a4518);
+}
+
+.ayuda-sublist {
+  margin: 0.75rem 0 0;
+  padding-left: 1.25rem;
+  font-size: 0.9rem;
+}
+
+.ayuda-sublist li {
+  margin-bottom: 0.35rem;
+}
+
+.ayuda-state-flow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem 0.5rem;
+  margin: 0.75rem 0;
+  font-size: 0.88rem;
+}
+
+.ayuda-state-flow .badge {
+  font-size: 0.78rem;
+}
+
+.ayuda-state-table {
+  width: 100%;
+  margin-top: 0.75rem;
+  font-size: 0.88rem;
+  border-collapse: collapse;
+}
+
+.ayuda-state-table th,
+.ayuda-state-table td {
+  padding: 0.45rem 0.65rem;
+  border-bottom: 1px solid var(--color-border, #eee8e3);
+  text-align: left;
+  vertical-align: top;
+}
+
+.ayuda-state-table th {
+  font-weight: 700;
+  color: var(--color-muted);
+  width: 28%;
+}
+
+.ayuda-blocks-list {
+  margin: 0.75rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ayuda-blocks-list li {
+  padding: 0.4rem 0;
+  border-bottom: 1px solid var(--color-border, #eee8e3);
+  font-size: 0.9rem;
+}
+
+.ayuda-blocks-list li:last-child {
+  border-bottom: none;
+}
+
+.ayuda-blocks-list strong {
+  display: inline-block;
+  min-width: 11rem;
+}
+
+.ayuda-closure {
+  margin-top: 1rem;
+  padding: 0.75rem 1rem;
+  background: var(--color-surface-alt, #faf8f6);
+  border-radius: var(--radius-sm, 8px);
+  font-size: 0.88rem;
+  font-family: ui-monospace, monospace;
+  line-height: 1.5;
+  overflow-x: auto;
+}
+
+@media (max-width: 768px) {
+  .ayuda-step__meta {
+    grid-template-columns: 1fr;
+  }
+}

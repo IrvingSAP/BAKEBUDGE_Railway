@@ -1,0 +1,171 @@
+{% extends "public_site/base_public.html" %}
+{% load static %}
+
+{% block content %}
+  <section id="inicio" class="hero">
+    <div class="container-narrow hero-inner">
+      <div class="hero-kicker">Repostería con números claros</div>
+      <h1>Conoce el costo real de cada postre</h1>
+      <p class="hero-lead">
+        Tus recetas, tus números. Gestiona insumos, calcula costos por porción,
+        planifica producción y analiza márgenes — de la masa al margen, en un solo lugar.
+      </p>
+      <div class="hero-actions">
+        <a href="{% url 'public_site:contacto' %}" class="btn btn-primary">Solicitar acceso</a>
+      </div>
+      <div class="hero-stats">
+        <div class="hero-stat">
+          <strong>Recetas</strong>
+          <span>Versionado y costos</span>
+        </div>
+        <div class="hero-stat">
+          <strong>Producción</strong>
+          <span>Órdenes y lotes</span>
+        </div>
+        <div class="hero-stat">
+          <strong>Analytics</strong>
+          <span>Márgenes y tendencias</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-narrow text-center">
+      <div class="section-kicker">La base del éxito</div>
+      <h2 class="section-title">Las recetas y los ingredientes hacen la diferencia</h2>
+      <p class="section-intro">
+        Cada creación dulce comienza con decisiones precisas. Ingredientes bien costeados
+        y recetas versionadas transforman tu pasión en un negocio rentable.
+      </p>
+    </div>
+  </section>
+
+  <section id="servicios" class="section section-alt">
+    <div class="container-narrow">
+      <div class="text-center">
+        <div class="section-kicker">Nuestros servicios</div>
+        <h2 class="section-title">Todo lo que necesitas para tu repostería</h2>
+        <p class="section-intro">
+          Herramientas pensadas para emprendedoras y equipos que quieren vender con margen
+          y producir con orden.
+        </p>
+      </div>
+
+      <div class="features-grid">
+        <article class="feature-card">
+          <img class="feature-card__img" src="{% static 'public_site/image/recetas.jpg' %}" alt="Recetas versionadas" loading="lazy">
+          <div class="feature-body">
+            <h3>Recetas versionadas</h3>
+            <p>Fórmulas con ingredientes, pasos e historial de costos cuando cambian los precios.</p>
+          </div>
+        </article>
+
+        <article class="feature-card">
+          <img class="feature-card__img" src="{% static 'public_site/image/insumos.jpg' %}" alt="Catálogo de insumos" loading="lazy">
+          <div class="feature-body">
+            <h3>Catálogo de insumos</h3>
+            <p>Productos, unidades y conversiones para calcular cada gramo con precisión.</p>
+          </div>
+        </article>
+
+        <article class="feature-card">
+          <img class="feature-card__img" src="{% static 'public_site/image/costos.jpg' %}" alt="Cálculo de costos" loading="lazy">
+          <div class="feature-body">
+            <h3>Cálculo de costos</h3>
+            <p>Costo por porción, indirectos y precio sugerido según tu margen objetivo.</p>
+          </div>
+        </article>
+
+        <article class="feature-card">
+          <img class="feature-card__img feature-card__img--contain" src="{% static 'public_site/image/PRODUCCION.png' %}" alt="Órdenes de producción" loading="lazy">
+          <div class="feature-body">
+            <h3>Órdenes de producción</h3>
+            <p>Planifica lotes, congela costos al iniciar y registra cada elaboración.</p>
+          </div>
+        </article>
+
+        <article class="feature-card">
+          <img class="feature-card__img feature-card__img--contain" src="{% static 'public_site/image/analitica.png' %}" alt="Estadísticas y analytics" loading="lazy">
+          <div class="feature-body">
+            <h3>Estadísticas</h3>
+            <p>Recetas más producidas, insumos más usados y márgenes reales vs objetivo.</p>
+          </div>
+        </article>
+
+        <article class="feature-card">
+          <img class="feature-card__img" src="{% static 'public_site/image/acceso-seguro.jpg' %}" alt="Acceso seguro con verificación y 2FA" loading="lazy">
+          <div class="feature-body">
+            <h3>Acceso seguro</h3>
+            <p>Tus datos aislados por cuenta, con verificación de correo y autenticación 2FA.</p>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-narrow">
+      <div class="text-center">
+        <div class="section-kicker">Cómo funciona</div>
+        <h2 class="section-title">De la idea al margen en cuatro pasos</h2>
+      </div>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <h3>Carga tus insumos</h3>
+          <p>Registra productos con costo y unidad base. Añade conversiones si lo necesitas.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <h3>Crea tus recetas</h3>
+          <p>Ingredientes, pasos, rendimiento y costos calculados automáticamente.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <h3>Produce con orden</h3>
+          <p>Genera órdenes por lotes y conoce el costo estimado antes de hornear.</p>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <h3>Analiza resultados</h3>
+          <p>Compara precio sugerido vs venta real y detecta oportunidades de mejora.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="recetas" class="section section-alt">
+    <div class="container-narrow">
+      <div class="text-center">
+        <div class="section-kicker">Inspiración visual</div>
+        <h2 class="section-title">Descubre el arte de la repostería</h2>
+        <p class="section-intro">
+          Cada creación cuenta una historia. Explora ideas que despiertan los sentidos
+          mientras tus números permanecen bajo control.
+        </p>
+      </div>
+      <div class="gallery-grid">
+        <img src="{% static 'public_site/image/inspira.png' %}" alt="Torta artesanal" loading="lazy">
+        <img src="{% static 'public_site/image/recetas02.png' %}" alt="Cupcakes decorados" loading="lazy">
+        <img src="{% static 'public_site/image/inspira.png' %}" alt="Galletas y repostería" loading="lazy">
+      </div>
+    </div>
+  </section>
+
+  <section id="contacto" class="section">
+    <div class="container-narrow">
+      <div class="cta-box">
+        <h2>Empieza a costear con claridad hoy</h2>
+        <p>
+          Únete a BAKEBUDGE y lleva el control de recetas, costos y producción
+          sin hojas de cálculo dispersas.
+        </p>
+        <div class="cta-actions">
+          <a href="{% url 'public_site:contacto' %}" class="btn btn-primary">Solicitar acceso</a>
+          <a href="{% url 'public_site:servicios' %}" class="btn btn-outline">Conocer servicios</a>
+        </div>
+      </div>
+    </div>
+  </section>
+{% endblock %}

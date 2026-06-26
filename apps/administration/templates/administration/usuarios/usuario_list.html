@@ -1,0 +1,206 @@
+{% extends "app_base.html" %}
+
+{% load static admin_extras catalog_extras %}
+
+
+
+{% block title %}Usuarios - BAKEBUDGE{% endblock %}
+
+{% block body_page %}usuarios{% endblock %}
+
+
+
+{% block extra_css %}
+
+<link rel="stylesheet" href="{% static 'catalog/vendor/dataTables.dataTables.min.css' %}">
+
+<link rel="stylesheet" href="{% static 'administration/css/usuarios.css' %}">
+
+{% endblock %}
+
+
+
+{% block app_content %}
+
+<div class="page-header page-header-row">
+
+  <div>
+
+    <h1>Usuarios</h1>
+
+    <p>Gestión global de cuentas <code>auth.User</code> + <code>UserProfile</code>. Solo Master.</p>
+
+  </div>
+
+  <a href="{% url 'administration:usuario_create' %}" class="btn btn-primary">+ Nuevo usuario</a>
+
+</div>
+
+
+
+<section class="card usuarios-table-card">
+
+  <div class="usuarios-filters" role="search" aria-label="Filtrar usuarios">
+
+    <div class="form-field">
+
+      <label for="filter-usuario">Usuario</label>
+
+      <input type="search" id="filter-usuario" placeholder="Buscar por username…" autocomplete="off">
+
+    </div>
+
+    <div class="form-field">
+
+      <label for="filter-tipo">Tipo</label>
+
+      <select id="filter-tipo">
+
+        <option value="">Todos</option>
+
+        <option value="Master">Master</option>
+
+        <option value="User">User</option>
+
+      </select>
+
+    </div>
+
+    <div class="form-field">
+
+      <label for="filter-estado">Estado cuenta</label>
+
+      <select id="filter-estado">
+
+        <option value="">Todos</option>
+
+        <option value="Activo">Activo</option>
+
+        <option value="Inactivo">Inactivo</option>
+
+      </select>
+
+    </div>
+
+    <div class="form-field">
+
+      <label for="filter-email-verificado">Correo verificado</label>
+
+      <select id="filter-email-verificado">
+
+        <option value="">Todos</option>
+
+        <option value="Sí">Sí</option>
+
+        <option value="No">No</option>
+
+      </select>
+
+    </div>
+
+    <div class="usuarios-filters__actions">
+
+      <button type="button" class="btn btn-outline" id="filter-limpiar">Limpiar filtros</button>
+
+    </div>
+
+  </div>
+
+
+
+  <div class="table-wrap">
+
+    <table id="tabla-usuarios" class="table-bakebudge">
+
+      <thead>
+
+        <tr>
+
+          <th>Usuario</th>
+
+          <th>Correo</th>
+
+          <th>Negocio</th>
+
+          <th>Tipo</th>
+
+          <th>Estado cuenta</th>
+
+          <th>Moneda</th>
+
+          <th>Correo verificado</th>
+
+          <th>Registro</th>
+
+          <th>Acciones</th>
+
+        </tr>
+
+      </thead>
+
+      <tbody>
+
+        {% for usuario in usuarios %}
+
+        <tr>
+
+          <td>{{ usuario.username }}</td>
+
+          <td>{{ usuario.email }}</td>
+
+          <td>{{ usuario.profile.nombre_negocio|default:"—" }}</td>
+
+          <td><span class="badge {{ usuario.profile.user_type|user_type_badge }}">{{ usuario.profile.user_type|user_type_label }}</span></td>
+
+          <td><span class="badge {{ usuario.profile.status|status_badge }}">{{ usuario.profile.status|status_label }}</span></td>
+
+          <td>{{ usuario.profile.moneda_id }}</td>
+
+          <td>{% if usuario.profile.email_confirmed %}Sí{% else %}No{% endif %}</td>
+
+          <td data-order="{{ usuario.date_joined|date:'Ymd' }}">{{ usuario.date_joined|date:"d/m/Y" }}</td>
+
+          <td class="table-actions usuarios-table-actions">
+
+            <a href="{% url 'administration:usuario_edit' usuario.pk %}">Editar</a> ·
+
+            <a href="{% url 'administration:usuario_password' usuario.pk %}">Contraseña</a> ·
+
+            <a href="{% url 'administration:usuario_seguridad' usuario.pk %}">2FA</a>
+
+            {% if usuario.profile.status == 'A' and usuario.is_active %}
+
+             · <a href="{% url 'administration:usuario_deactivate' usuario.pk %}">Desactivar</a>
+
+            {% endif %}
+
+          </td>
+
+        </tr>
+
+        {% endfor %}
+
+      </tbody>
+
+    </table>
+
+  </div>
+
+</section>
+
+{% endblock %}
+
+
+
+{% block extra_js %}
+
+<script src="{% static 'catalog/vendor/jquery.min.js' %}"></script>
+
+<script src="{% static 'catalog/vendor/dataTables.min.js' %}"></script>
+
+<script src="{% static 'catalog/vendor/datatables-init.js' %}"></script>
+
+<script src="{% static 'administration/js/usuario_list.js' %}"></script>
+
+{% endblock %}
+

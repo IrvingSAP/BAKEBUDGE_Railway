@@ -1,0 +1,77 @@
+{% extends "app_base.html" %}
+{% load static catalog_extras %}
+
+{% block title %}{% if categoria %}Editar categoria{% else %}Nueva categoria{% endif %} - BAKEBUDGE{% endblock %}
+{% block body_page %}categorias{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'catalog/css/categorias.css' %}">
+{% endblock %}
+
+{% block app_content %}
+<div class="page-header page-header-row">
+  <div>
+    <h1>{% if categoria %}Editar categoria{% else %}Nueva categoria{% endif %}</h1>
+    <p>Administra las categorias de tus productos.</p>
+  </div>
+  <div class="page-header-actions">
+    {% if categoria %}
+    {% url 'catalog:categoria_edit_help' categoria.pk as help_url %}
+    {% include "catalog/partials/form_help_link.html" with help_btn_class="categorias-help-btn" help_title="Ayuda para editar categoría" %}
+    {% else %}
+    {% url 'catalog:categoria_create_help' as help_url %}
+    {% include "catalog/partials/form_help_link.html" with help_btn_class="categorias-help-btn" help_title="Ayuda para crear categoría" %}
+    {% endif %}
+    <a href="{% url 'catalog:categoria_list' %}" class="btn btn-outline">Volver al listado</a>
+  </div>
+</div>
+
+<form method="post" novalidate data-bb-validate-form>
+  {% csrf_token %}
+  <section class="card categorias-form-card">
+    <h2>Datos de categoria</h2>
+    <div class="form-grid">
+      <div class="form-field">
+        <label for="nombre">Nombre *</label>
+        <input type="text" id="nombre" name="nombre" maxlength="50" value="{{ form_data.nombre }}" required>
+      </div>
+      <div class="form-field">
+        <label for="codigo">Codigo</label>
+        <input type="text" id="codigo" name="codigo" maxlength="30" value="{{ form_data.codigo }}">
+      </div>
+      <div class="form-field">
+        <label for="orden">Orden</label>
+        <input type="number" id="orden" name="orden" min="0" value="{{ form_data.orden }}">
+      </div>
+      <div class="form-field">
+        <label for="color">Color</label>
+        <input type="text" id="color" name="color" maxlength="7" value="{{ form_data.color }}" placeholder="#FFFFFF">
+      </div>
+      <div class="form-field">
+        <label for="status">Estado *</label>
+        <select id="status" name="status">
+          {% for value, label in status_choices %}
+          <option value="{{ value }}" {% if form_data.status == value %}selected{% endif %}>{{ label }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="form-field" style="grid-column: 1 / -1;">
+        <label for="descripcion">Descripcion</label>
+        <textarea id="descripcion" name="descripcion" rows="3">{{ form_data.descripcion }}</textarea>
+      </div>
+      <div class="form-field">
+        <label>
+          <input type="checkbox" name="es_predeterminada" value="1" {% if form_data.es_predeterminada %}checked{% endif %}>
+          Marcar como predeterminada
+        </label>
+      </div>
+    </div>
+
+    <div class="categorias-form-actions">
+      <button type="submit" class="btn btn-primary">{% if categoria %}Guardar cambios{% else %}Guardar categoria{% endif %}</button>
+      <a href="{% url 'catalog:categoria_list' %}" class="btn btn-outline">Cancelar</a>
+    </div>
+  </section>
+</form>
+{% include "catalog/partials/form_validation.html" %}
+{% endblock %}

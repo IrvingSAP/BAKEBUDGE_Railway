@@ -1,0 +1,188 @@
+{% extends "app_base.html" %}
+{% load static %}
+
+{% block title %}{% if payment %}Editar período{% else %}Nuevo período{% endif %} - Facturación - BAKEBUDGE{% endblock %}
+{% block body_page %}facturacion{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'administration/css/facturacion.css' %}">
+{% endblock %}
+
+{% block app_content %}
+<div class="page-header page-header-row">
+  <div>
+    <h1>{% if payment %}Editar período de pago{% else %}Nuevo período de pago{% endif %}</h1>
+    <p>{% if payment %}Modificación de <code>PaymentControl</code>{% else %}Alta en <code>billing_paymentcontrol</code> — usuario User (<code>owner</code>).{% endif %}</p>
+  </div>
+  <div class="page-header-actions">
+    {% if payment %}
+    {% url 'administration:facturacion_edit_help' payment.pk as help_url %}
+    {% include "catalog/partials/form_help_link.html" with help_url=help_url help_btn_class="facturacion-help-btn" help_title="Ayuda para editar período" only %}
+    {% else %}
+    {% url 'administration:facturacion_create_help' as help_url %}
+    {% include "catalog/partials/form_help_link.html" with help_url=help_url help_btn_class="facturacion-help-btn" help_title="Ayuda para crear período" only %}
+    {% endif %}
+    <a href="{% url 'administration:facturacion_list' %}" class="btn btn-outline">← Volver al listado</a>
+  </div>
+</div>
+
+{% if provision_user and not payment %}
+<div class="facturacion-provision-banner">
+  Usuario <strong>{{ provision_user.username }}</strong> recién creado — completa el período y actívalo antes de entregar credenciales.
+</div>
+{% endif %}
+
+{% if payment and payment.estado == 'consumido' %}
+<p class="card" style="margin-bottom:1rem;padding:0.85rem 1rem;background:#f5f8fc;border:1px solid #dde4ee;">
+  Período <strong>consumido</strong> — histórico. El Master puede ajustar el estado y los datos si es necesario.
+</p>
+{% endif %}
+
+<form method="post" novalidate data-bb-validate-form data-bb-facturacion-form class="facturacion-form">
+  {% csrf_token %}
+
+  {% if payment %}
+  <section class="card facturacion-form-card">
+    <h2>Identificación</h2>
+    <div class="form-grid">
+      <div class="form-field">
+        <label for="pk_display">ID</label>
+        <input type="text" id="pk_display" value="{{ payment.pk }}" readonly>
+      </div>
+      <div class="form-field">
+        <label for="owner_display">Usuario (owner)</label>
+        <input type="text" id="owner_display" value="{{ payment.owner.username }}" readonly>
+      </div>
+      <div class="form-field">
+        <label for="audit_created">Creado</label>
+        <input type="text" id="audit_created"
+               value="{{ payment.created_at|date:'d/m/Y H:i' }}{% if payment.created_by %} — {{ payment.created_by.username }}{% endif %}"
+               readonly>
+      </div>
+      <div class="form-field">
+        <label for="audit_updated">Actualizado</label>
+        <input type="text" id="audit_updated"
+               value="{{ payment.updated_at|date:'d/m/Y H:i' }}{% if payment.updated_by %} — {{ payment.updated_by.username }}{% endif %}"
+               readonly>
+      </div>
+    </div>
+  </section>
+  {% endif %}
+
+  <section class="card facturacion-form-card">
+    <h2>{% if payment %}Período y estado{% else %}Usuario y modalidad{% endif %}</h2>
+    <div class="form-grid">
+      {% if not payment %}
+      <div class="form-field">
+        <label for="owner">Usuario (owner) *</label>
+        <select id="owner" name="owner" required>
+          <option value="">— Seleccionar —</option>
+          {% for user in standard_users %}
+          <option value="{{ user.pk }}" {% if form_data.owner == user.pk|stringformat:"s" %}selected{% endif %}>
+            {{ user.username }}{% if user.profile.nombre_negocio %} — {{ user.profile.nombre_negocio }}{% endif %}
+          </option>
+          {% endfor %}
+        </select>
+      </div>
+      {% endif %}
+      <div class="form-field">
+        <label for="modalidad">Modalidad *</label>
+        <select id="modalidad" name="modalidad" required>
+          <option value="M" {% if form_data.modalidad == 'M' %}selected{% endif %}>M — Mensual</option>
+          <option value="A" {% if form_data.modalidad == 'A' %}selected{% endif %}>A — Anual</option>
+        </select>
+      </div>
+      <div class="form-field">
+        <label for="estado">Estado *</label>
+        <select id="estado" name="estado" required>
+          <option value="pendiente" {% if form_data.estado == 'pendiente' %}selected{% endif %}>pendiente — Pendiente</option>
+          <option value="activo" {% if form_data.estado == 'activo' %}selected{% endif %}>activo — Activo</option>
+          <option value="suspendido" {% if form_data.estado == 'suspendido' %}selected{% endif %}>suspendido — Suspendido</option>
+          {% if payment %}
+          <option value="consumido" {% if form_data.estado == 'consumido' %}selected{% endif %}>consumido — Consumido</option>
+          {% endif %}
+        </select>
+      </div>
+    </div>
+  </section>
+
+  <section class="card facturacion-form-card">
+    <h2>Período</h2>
+    <div class="form-grid">
+      <div class="form-field">
+        <label for="start_date">Fecha inicio</label>
+        <input type="date" id="start_date" name="start_date" value="{{ form_data.start_date }}">
+      </div>
+      <div class="form-field">
+        <label for="end_date">Fecha fin</label>
+        <input type="date" id="end_date" name="end_date" value="{{ form_data.end_date }}">
+        <span class="form-hint">Sugerido: +1 mes (M) o +1 año (A) desde inicio</span>
+      </div>
+      <div class="form-field">
+        <label for="plazoDeGracia">Plazo de gracia (días)</label>
+        <input type="number" id="plazoDeGracia" name="plazo_de_gracia" min="0" max="30" step="1"
+               value="{{ form_data.plazo_de_gracia|default:'0' }}">
+        <span class="form-hint"><code>plazoDeGracia</code> — días extra tras <code>end_date</code> (0–30, default 0)</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="card facturacion-form-card">
+    <h2>Pago</h2>
+    <div class="form-grid">
+      <div class="form-field">
+        <label for="payment_date">Fecha de pago</label>
+        <input type="date" id="payment_date" name="payment_date" value="{{ form_data.payment_date }}">
+      </div>
+      <div class="form-field">
+        <label for="payment_method">Método de pago</label>
+        <select id="payment_method" name="payment_method">
+          <option value="">— Sin definir —</option>
+          <option value="banco" {% if form_data.payment_method == 'banco' %}selected{% endif %}>Banco</option>
+          <option value="transferencia" {% if form_data.payment_method == 'transferencia' %}selected{% endif %}>Transferencia</option>
+          <option value="pagomovil" {% if form_data.payment_method == 'pagomovil' %}selected{% endif %}>Pago móvil</option>
+          <option value="efectivo" {% if form_data.payment_method == 'efectivo' %}selected{% endif %}>Efectivo</option>
+          <option value="otros" {% if form_data.payment_method == 'otros' %}selected{% endif %}>Otros</option>
+        </select>
+      </div>
+      <div class="form-field">
+        <label for="monto">Monto</label>
+        <input type="number" id="monto" name="monto" min="0" step="0.01" value="{{ form_data.monto }}">
+      </div>
+      <div class="form-field">
+        <label for="moneda">Moneda</label>
+        <select id="moneda" name="moneda">
+          {% for moneda in monedas %}
+          <option value="{{ moneda.codigo }}" {% if form_data.moneda == moneda.codigo %}selected{% endif %}>
+            {{ moneda.codigo }} — {{ moneda.nombre }}
+          </option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="form-field" style="grid-column: 1 / -1;">
+        <label for="payment_voucher">Comprobante / referencia</label>
+        <input type="text" id="payment_voucher" name="payment_voucher" maxlength="50"
+               value="{{ form_data.payment_voucher }}">
+      </div>
+      <div class="form-field" style="grid-column: 1 / -1;">
+        <label for="other_data">Otros datos</label>
+        <input type="text" id="other_data" name="other_data" maxlength="100"
+               value="{{ form_data.other_data }}">
+      </div>
+    </div>
+  </section>
+
+  <section class="card facturacion-form-card">
+    <div class="facturacion-form-actions">
+      <button type="submit" class="btn btn-primary">{% if payment %}Guardar cambios{% else %}Guardar período{% endif %}</button>
+      <button type="submit" name="guardar_activar" value="1" class="btn btn-outline">Guardar y activar</button>
+      <a href="{% url 'administration:facturacion_list' %}" class="btn btn-outline">Cancelar</a>
+    </div>
+  </section>
+</form>
+{% include "catalog/partials/form_validation.html" %}
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'administration/js/facturacion_form.js' %}"></script>
+{% endblock %}

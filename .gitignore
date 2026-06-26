@@ -1,0 +1,39 @@
+# Entorno
+.env
+.env.*
+!.env.example
+.venv/
+venv/
+env/
+
+# Secretos / notas locales (nunca subir)
+clves.txt
+claves.txt
+*.pem
+credentials.json
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+.eggs/
+dist/
+build/
+
+# Django
+*.log
+db.sqlite3
+media/
+staticfiles/
+local_settings.py
+
+# IDE / OS
+.idea/
+.vscode/
+.cursor/
+*.swp
+.DS_Store
+Thumbs.db

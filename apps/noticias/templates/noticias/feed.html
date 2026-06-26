@@ -1,0 +1,31 @@
+{% extends "app_base.html" %}
+{% load noticias_extras %}
+
+{% block title %}Noticias - BAKEBUDGE{% endblock %}
+{% block body_page %}noticias{% endblock %}
+
+{% block app_content %}
+<div class="page-header">
+  <h1>Noticias</h1>
+  <p>Novedades del sistema, mejoras y avisos importantes para tu repostería.</p>
+</div>
+
+<div class="news-list" aria-live="polite">
+  {% for noticia in noticias %}
+  <article class="news-card{% if noticia|noticia_card_muted %} news-card--muted{% endif %}">
+    <div class="news-meta">
+      <span class="badge {{ noticia.tipo|noticia_tipo_badge }}">{{ noticia.tipo }}</span>
+      {% if noticia.alcance == 'P' %}
+      <span class="badge badge-process">Personal</span>
+      {% endif %}
+      <time datetime="{{ noticia.fecha_noticia|date:'Y-m-d' }}">{{ noticia.fecha_noticia|date:'d M Y' }}</time>
+    </div>
+    <h2>{{ noticia.titulo }}</h2>
+    <p>{{ noticia.resumen_display }}</p>
+    {% include "noticias/partials/noticia_feed_links.html" %}
+  </article>
+  {% empty %}
+  <p class="news-empty">No hay noticias visibles para tu cuenta en este momento.</p>
+  {% endfor %}
+</div>
+{% endblock %}

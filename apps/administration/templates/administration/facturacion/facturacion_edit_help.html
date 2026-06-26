@@ -1,0 +1,73 @@
+{% extends "app_base.html" %}
+
+{% load static admin_extras %}
+
+
+
+{% block title %}Ayuda: editar período - Facturación - BAKEBUDGE{% endblock %}
+
+{% block body_page %}facturacion{% endblock %}
+
+
+
+{% block extra_css %}
+
+<link rel="stylesheet" href="{% static 'administration/css/facturacion.css' %}">
+
+{% endblock %}
+
+
+
+{% block app_content %}
+
+<div class="page-header page-header-row">
+
+  <div>
+
+    <h1>Ayuda: editar período de pago</h1>
+
+    <p>Guía de campos de <code>PaymentControl</code> #{{ payment.pk }}.</p>
+
+  </div>
+
+  <a href="{% url 'administration:facturacion_edit' payment.pk %}" class="btn btn-primary">← Volver al formulario</a>
+
+</div>
+
+
+
+<div class="facturacion-help-intro card">
+
+  <p>
+
+    Período de <strong>{{ payment.owner.username }}</strong> — estado
+
+    <strong>{{ payment.estado|payment_estado_label }}</strong>.
+
+    Los períodos <strong>consumidos</strong> son histórico; el Master puede ajustar estado y datos si hace falta.
+    Vigencia efectiva: <code>end_date + plazo_de_gracia</code> (actual: {{ payment.plazo_de_gracia }} día(s)).
+
+  </p>
+
+</div>
+
+
+
+<div class="facturacion-form facturacion-form--help" aria-readonly="true">
+
+  <section class="card facturacion-form-card">
+
+    <div class="facturacion-form-actions" style="border-top:none;padding-top:0;margin-top:0;">
+
+      <a href="{% url 'administration:facturacion_edit' payment.pk %}" class="btn btn-primary">Volver al formulario</a>
+
+      <a href="{% url 'administration:facturacion_list' %}" class="btn btn-outline">Ir al listado</a>
+
+    </div>
+
+  </section>
+
+</div>
+
+{% endblock %}
+

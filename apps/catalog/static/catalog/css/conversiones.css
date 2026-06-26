@@ -1,0 +1,155 @@
+/* Módulo conversiones — filtros y formulario */
+
+.conversiones-filters {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) auto;
+  gap: 1rem;
+  align-items: end;
+  margin-bottom: 1.25rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid var(--color-border, #eee8e3);
+}
+
+.conversiones-filters .form-field {
+  margin: 0;
+}
+
+.conversiones-filters label {
+  display: block;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--color-muted);
+  margin-bottom: 0.35rem;
+}
+
+.conversiones-filters input,
+.conversiones-filters select {
+  width: 100%;
+  padding: 0.55rem 0.75rem;
+  border: 1px solid var(--color-border, #e8dfd8);
+  border-radius: var(--radius-sm, 8px);
+  font: inherit;
+  background: #fff;
+}
+
+.conversiones-filters__actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.conversiones-table-card .dt-container {
+  margin-top: 0.5rem;
+}
+
+.conversiones-form-card h2 {
+  font-size: 1.05rem;
+  margin: 0 0 1rem;
+  color: var(--color-text);
+}
+
+.conversiones-form-card + .conversiones-form-card {
+  margin-top: 1.25rem;
+}
+
+.conversiones-form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--color-border, #eee8e3);
+}
+
+.conversiones-formula-box {
+  margin: 0;
+  padding: 0.85rem 1rem;
+  background: var(--color-bg-alt, #fff5ef);
+  border: 1px solid var(--color-border, #e8dfd8);
+  border-radius: var(--radius-sm, 8px);
+  font-size: 0.92rem;
+  line-height: 1.5;
+}
+
+.conversiones-formula-box code {
+  font-size: 0.88rem;
+}
+
+.badge-generic {
+  background: #e8eef5;
+  color: #4a6080;
+  font-size: 0.78rem;
+}
+
+.badge-product {
+  background: #f0ebe6;
+  color: var(--color-text);
+  font-size: 0.78rem;
+}
+
+.page-header-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.conversiones-help-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.45rem 0.75rem;
+  border: 1px solid var(--color-border, #e8dfd8);
+  border-radius: var(--radius-sm, 8px);
+  background: #fff;
+  color: var(--color-primary-dark, #b85c6a);
+  font-size: 0.88rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.conversiones-help-btn:hover {
+  background: var(--color-bg-alt, #fff5ef);
+  border-color: var(--color-primary, #d4849a);
+}
+
+.conversiones-help-intro {
+  margin-bottom: 1.25rem;
+  padding: 1rem 1.15rem;
+}
+
+.conversiones-help-desc {
+  margin: 0.5rem 0 0;
+  font-size: 0.88rem;
+  line-height: 1.55;
+  color: var(--color-text);
+}
+
+.conversiones-form--help .form-field input[readonly],
+.conversiones-form--help .form-field textarea[readonly] {
+  background: var(--color-bg-alt, #faf7f5);
+  cursor: default;
+}
+
+.conversiones-form--help .form-field select:disabled {
+  background: var(--color-bg-alt, #faf7f5);
+  opacity: 1;
+  cursor: default;
+}
+
+@media (max-width: 900px) {
+  .conversiones-filters {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .conversiones-filters__actions {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 600px) {
+  .conversiones-filters {
+    grid-template-columns: 1fr;
+  }
+}

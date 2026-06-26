@@ -1,0 +1,54 @@
+{% extends "public_site/base_public.html" %}
+{% load static %}
+
+{% block title %}Contacto — BAKEBUDGE{% endblock %}
+{% block body_page %}contacto{% endblock %}
+
+{% block content %}
+  <section class="page-hero-mini">
+    <div class="container-narrow">
+      <div class="section-kicker">Contacto</div>
+      <h1>Estamos aquí para ayudarte</h1>
+      <p>
+        Valoramos cada consulta porque nos permite mejorar y seguir ofreciendo
+        la mejor experiencia en gestión de recetas y costos.
+      </p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-narrow contact-strip">
+      <div class="contact-card">
+        <h3>Hablemos</h3>
+        <p style="color:var(--muted);">
+          Si tienes preguntas sobre planes, funcionalidades o quieres una demo,
+          escríbenos con gusto te atenderemos.
+        </p>
+        <ul class="contact-list">
+          <li>✉️ <a href="mailto:bakebudg@gmail.com">bakebudg@gmail.com</a></li>
+          <li>🌎 Disponible en español</li>
+          <li>⏱ Respuesta en 24–48 h hábiles</li>
+        </ul>
+      </div>
+
+      <div class="contact-card contact-form">
+        <h3>Envíanos un mensaje</h3>
+        <form action="{% url 'public_site:contacto' %}" method="post" novalidate>
+          {% csrf_token %}
+          <label for="nombre">Nombre</label>
+          <input type="text" id="nombre" name="nombre" maxlength="150"
+                 value="{{ form_data.nombre }}" placeholder="Tu nombre" required>
+
+          <label for="email">Correo</label>
+          <input type="email" id="email" name="email"
+                 value="{{ form_data.email }}" placeholder="tu@correo.com" required>
+
+          <label for="mensaje">Mensaje</label>
+          <textarea id="mensaje" name="mensaje" placeholder="¿En qué podemos ayudarte?" required>{{ form_data.mensaje }}</textarea>
+
+          <button type="submit" class="btn btn-primary">Enviar mensaje</button>
+        </form>
+      </div>
+    </div>
+  </section>
+{% endblock %}

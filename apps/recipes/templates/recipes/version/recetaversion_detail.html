@@ -1,0 +1,65 @@
+{% extends "recipes/version/recetaversion_edit.html" %}
+{% load static catalog_extras %}
+
+{% block title %}Detalle {{ version.etiqueta }} — {{ receta.nombre }} - BAKEBUDGE{% endblock %}
+
+{% block app_content %}
+<div class="page-header page-header-row">
+  <div>
+    <div class="recetaversion-context">
+      <h1 style="margin:0;">{{ receta.nombre }}</h1>
+      <span class="badge-vigente">{{ version.etiqueta }}{% if version.es_version_actual %} · vigente{% endif %}</span>
+    </div>
+    <p>Versión histórica — solo lectura.</p>
+    <nav class="recetaversion-nav-links">
+      <a href="{% url 'recipes:recetaversion_list' receta.pk %}">Historial</a>
+      {% if version.es_version_actual %}
+      · <a href="{% url 'recipes:recetaversion_edit' receta.pk %}">Editar formulación</a>
+      {% endif %}
+    </nav>
+  </div>
+  <a href="{% url 'recipes:recetaversion_list' receta.pk %}" class="btn btn-outline">Volver al historial</a>
+</div>
+
+<section class="card recetas-form-card">
+  <h2>Resumen</h2>
+  <p>Rendimiento: {{ version.rendimiento_cantidad }} {{ version.rendimiento_unidad }}</p>
+  <p>Costo total: {{ version.costo_total|format_money:user }} · Porción: {{ version.costo_por_porcion|format_money:user }}</p>
+  <p>Precio sugerido: {{ version.precio_venta_sugerido|format_money:user }} (margen {{ version.margen_aplicado_pct }} %)</p>
+  {% if version.notas_cambio %}<p>Notas cambio: {{ version.notas_cambio }}</p>{% endif %}
+</section>
+
+<section class="card recetas-form-card">
+  <h2>Ingredientes</h2>
+  <div class="table-wrap">
+    <table class="table-bakebudge">
+      <thead><tr><th>Producto</th><th>Cantidad</th><th>Unidad</th><th>Costo línea</th></tr></thead>
+      <tbody>
+        {% for linea in ingredientes %}
+        <tr>
+          <td>{{ linea.producto.nombre }}</td>
+          <td>{{ linea.cantidad }}</td>
+          <td>{{ linea.unidad }}</td>
+          <td>{{ linea.costo_linea|format_money:user }}</td>
+        </tr>
+        {% empty %}
+        <tr><td colspan="4">Sin ingredientes.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="card recetas-form-card">
+  <h2>Pasos</h2>
+  <ol>
+    {% for paso in pasos %}
+    <li>{{ paso.instruccion }}{% if paso.tiempo_minutos %} ({{ paso.tiempo_minutos }} min){% endif %}</li>
+    {% empty %}
+    <li>Sin pasos documentados.</li>
+    {% endfor %}
+  </ol>
+</section>
+{% endblock %}
+
+{% block extra_js %}{% endblock %}

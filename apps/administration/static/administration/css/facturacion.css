@@ -1,0 +1,290 @@
+/* Módulo facturación (PaymentControl) — filtros y formulario */
+
+
+
+.facturacion-filters {
+
+  display: grid;
+
+  grid-template-columns: repeat(3, minmax(0, 1fr)) auto;
+
+  gap: 1rem;
+
+  align-items: end;
+
+  margin-bottom: 1.25rem;
+
+  padding-bottom: 1.25rem;
+
+  border-bottom: 1px solid var(--color-border, #eee8e3);
+
+}
+
+
+
+.facturacion-filters .form-field {
+
+  margin: 0;
+
+}
+
+
+
+.facturacion-filters label {
+
+  display: block;
+
+  font-size: 0.82rem;
+
+  font-weight: 700;
+
+  color: var(--color-muted);
+
+  margin-bottom: 0.35rem;
+
+}
+
+
+
+.facturacion-filters input,
+
+.facturacion-filters select {
+
+  width: 100%;
+
+  padding: 0.55rem 0.75rem;
+
+  border: 1px solid var(--color-border, #e8dfd8);
+
+  border-radius: var(--radius-sm, 8px);
+
+  font: inherit;
+
+  background: #fff;
+
+}
+
+
+
+.facturacion-filters__actions {
+
+  display: flex;
+
+  gap: 0.5rem;
+
+  flex-wrap: wrap;
+
+}
+
+
+
+.facturacion-table-card .dt-container {
+
+  margin-top: 0.5rem;
+
+}
+
+
+
+.facturacion-table-actions {
+
+  white-space: normal;
+
+  min-width: 10rem;
+
+  line-height: 1.65;
+
+}
+
+
+
+.facturacion-form-card h2 {
+
+  font-size: 1.05rem;
+
+  margin: 0 0 1rem;
+
+  color: var(--color-text);
+
+}
+
+
+
+.facturacion-form-card + .facturacion-form-card {
+
+  margin-top: 1.25rem;
+
+}
+
+
+
+.facturacion-form-actions {
+
+  display: flex;
+
+  flex-wrap: wrap;
+
+  gap: 0.75rem;
+
+  margin-top: 1.25rem;
+
+  padding-top: 1.25rem;
+
+  border-top: 1px solid var(--color-border, #eee8e3);
+
+}
+
+
+
+.page-header-actions {
+
+  display: flex;
+
+  flex-wrap: wrap;
+
+  align-items: center;
+
+  gap: 0.65rem;
+
+}
+
+
+
+.facturacion-help-btn {
+
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 0.4rem;
+
+  padding: 0.45rem 0.75rem;
+
+  border: 1px solid var(--color-border, #e8dfd8);
+
+  border-radius: var(--radius-sm, 8px);
+
+  background: #fff;
+
+  color: var(--color-primary-dark, #b85c6a);
+
+  font-size: 0.88rem;
+
+  font-weight: 700;
+
+  text-decoration: none;
+
+  transition: background 0.15s ease, border-color 0.15s ease;
+
+}
+
+
+
+.facturacion-help-btn:hover {
+
+  background: var(--color-bg-alt, #fff5ef);
+
+  border-color: var(--color-primary, #d4849a);
+
+}
+
+
+
+.facturacion-help-intro {
+
+  margin-bottom: 1.25rem;
+
+  padding: 1rem 1.15rem;
+
+}
+
+
+
+.facturacion-help-desc {
+
+  margin: 0.5rem 0 0;
+
+  font-size: 0.88rem;
+
+  line-height: 1.55;
+
+  color: var(--color-text);
+
+}
+
+
+
+.facturacion-form--help .form-field input[readonly],
+
+.facturacion-form--help .form-field textarea[readonly] {
+
+  background: var(--color-bg-alt, #faf7f5);
+
+  cursor: default;
+
+}
+
+
+
+.facturacion-form--help .form-field select:disabled {
+
+  background: var(--color-bg-alt, #faf7f5);
+
+  opacity: 1;
+
+  cursor: default;
+
+}
+
+
+
+.facturacion-provision-banner {
+
+  margin-bottom: 1.25rem;
+
+  padding: 0.85rem 1rem;
+
+  background: rgba(196, 232, 180, 0.35);
+
+  border: 1px solid #c4e8b4;
+
+  border-radius: var(--radius-sm, 12px);
+
+  font-size: 0.92rem;
+
+  color: var(--color-text, #4a4039);
+
+}
+
+
+
+@media (max-width: 900px) {
+
+  .facturacion-filters {
+
+    grid-template-columns: 1fr 1fr;
+
+  }
+
+
+
+  .facturacion-filters__actions {
+
+    grid-column: 1 / -1;
+
+  }
+
+}
+
+
+
+@media (max-width: 600px) {
+
+  .facturacion-filters {
+
+    grid-template-columns: 1fr;
+
+  }
+
+}
+

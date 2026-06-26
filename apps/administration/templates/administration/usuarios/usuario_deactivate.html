@@ -1,0 +1,88 @@
+{% extends "app_base.html" %}
+
+{% load static %}
+
+
+
+{% block title %}Desactivar usuario — {{ managed_user.username }} - BAKEBUDGE{% endblock %}
+
+{% block body_page %}usuarios{% endblock %}
+
+
+
+{% block extra_css %}
+
+<link rel="stylesheet" href="{% static 'administration/css/usuarios.css' %}">
+
+{% endblock %}
+
+
+
+{% block app_content %}
+
+<div class="page-header page-header-row">
+
+  <div>
+
+    <h1>Desactivar usuario</h1>
+
+    <p>Confirmación antes de desactivar una cuenta.</p>
+
+  </div>
+
+  <a href="{% url 'administration:usuario_list' %}" class="btn btn-outline">← Cancelar</a>
+
+</div>
+
+
+
+<section class="card">
+
+  <p style="margin:0 0 1rem;">¿Confirmas desactivar al usuario <strong>{{ managed_user.username }}</strong>?</p>
+
+
+
+  {% if not can_deactivate %}
+
+  <p style="color:var(--color-danger,#c45);font-size:0.9rem;margin:0 0 1.25rem;padding:0.75rem 1rem;background:#fff5f5;border-radius:8px;border:1px solid #f0d0d0;">
+
+    {{ block_message }}
+
+  </p>
+
+  {% endif %}
+
+
+
+  <p style="color:var(--color-muted);font-size:0.9rem;margin:0 0 1.25rem;">
+
+    En Django: <code>UserProfile.status=I</code> + <code>User.is_active=False</code>.
+
+    Los datos del usuario (productos, recetas) se conservan.
+
+  </p>
+
+
+
+  {% if can_deactivate %}
+
+  <form method="post">
+
+    {% csrf_token %}
+
+    <button type="submit" class="btn btn-primary"
+
+            style="background:var(--color-danger,#c45);border-color:var(--color-danger,#c45);">
+
+      Confirmar desactivación
+
+    </button>
+
+  </form>
+
+  {% endif %}
+
+</section>
+
+{% endblock %}
+

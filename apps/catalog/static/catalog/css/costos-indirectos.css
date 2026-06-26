@@ -1,0 +1,141 @@
+/* Módulo costos indirectos — filtros y formulario */
+
+.costos-indirectos-filters {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) auto;
+  gap: 1rem;
+  align-items: end;
+  margin-bottom: 1.25rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid var(--color-border, #eee8e3);
+}
+
+.costos-indirectos-filters .form-field {
+  margin: 0;
+}
+
+.costos-indirectos-filters label {
+  display: block;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--color-muted);
+  margin-bottom: 0.35rem;
+}
+
+.costos-indirectos-filters input,
+.costos-indirectos-filters select {
+  width: 100%;
+  padding: 0.55rem 0.75rem;
+  border: 1px solid var(--color-border, #e8dfd8);
+  border-radius: var(--radius-sm, 8px);
+  font: inherit;
+  background: #fff;
+}
+
+.costos-indirectos-filters__actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.costos-indirectos-table-card .dt-container {
+  margin-top: 0.5rem;
+}
+
+.costos-indirectos-form-card h2 {
+  font-size: 1.05rem;
+  margin: 0 0 1rem;
+  color: var(--color-text);
+}
+
+.costos-indirectos-form-card + .costos-indirectos-form-card {
+  margin-top: 1.25rem;
+}
+
+.costos-indirectos-form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--color-border, #eee8e3);
+}
+
+.costos-indirectos-tarifa-box {
+  padding: 0.75rem 1rem;
+  background: var(--color-bg-alt, #fff5ef);
+  border: 1px solid var(--color-border, #e8dfd8);
+  border-radius: var(--radius-sm, 8px);
+  font-size: 0.95rem;
+}
+
+.costos-indirectos-help-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.45rem 0.75rem;
+  border: 1px solid var(--color-border, #e8dfd8);
+  border-radius: var(--radius-sm, 8px);
+  background: #fff;
+  color: var(--color-primary-dark, #b85c6a);
+  font-size: 0.88rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.costos-indirectos-help-btn:hover {
+  background: var(--color-bg-alt, #fff5ef);
+  border-color: var(--color-primary, #d4849a);
+}
+
+.col-tarifa {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.page-header-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.costos-indirectos-help-intro {
+  margin-bottom: 1.25rem;
+  padding: 1rem 1.15rem;
+}
+
+.costos-indirectos-help-desc {
+  margin: 0.5rem 0 0;
+  font-size: 0.88rem;
+  line-height: 1.55;
+  color: var(--color-text);
+}
+
+.costos-indirectos-form--help .form-field input[readonly],
+.costos-indirectos-form--help .form-field textarea[readonly] {
+  background: var(--color-bg-alt, #faf7f5);
+  cursor: default;
+}
+
+.costos-indirectos-form--help .form-field select:disabled {
+  background: var(--color-bg-alt, #faf7f5);
+  opacity: 1;
+  cursor: default;
+}
+
+@media (max-width: 900px) {
+  .costos-indirectos-filters {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .costos-indirectos-filters__actions {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 700px) {
+  .costos-indirectos-filters {
+    grid-template-columns: 1fr;
+  }
+}

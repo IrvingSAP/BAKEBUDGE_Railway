@@ -1,0 +1,10 @@
+{% if noticia.tiene_detalle %}
+<a href="{% url 'noticias:detail' noticia.pk %}" class="news-link">Leer más →</a>
+{% else %}
+  {% if noticia.enlace_interno %}
+  <a href="{{ noticia.enlace_interno }}" class="news-link">Ver más →</a>
+  {% endif %}
+  {% if noticia.enlace_externo %}
+  <a href="{{ noticia.enlace_externo }}" class="news-link" target="_blank" rel="noopener">Abrir enlace →</a>
+  {% endif %}
+{% endif %}

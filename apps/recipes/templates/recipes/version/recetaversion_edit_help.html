@@ -1,0 +1,21 @@
+{% extends "app_base.html" %}
+{% load static %}
+
+{% block title %}Ayuda — Formulación - BAKEBUDGE{% endblock %}
+{% block body_page %}recetas{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'recipes/css/recetas.css' %}">
+{% endblock %}
+
+{% block app_content %}
+<div class="page-header">
+  <h1>Ayuda: formulación</h1>
+  <p>{{ receta.nombre }} — <code>RecetaVersion</code> vigente.</p>
+</div>
+<section class="card recetas-help">
+  <p>Ingredientes solo de productos <strong>Activos</strong>. Un producto por versión.</p>
+  <p>Los costos se recalculan al guardar según conversiones de unidad del catálogo.</p>
+  <p>El precio sugerido usa el margen objetivo de tu perfil salvo que lo edites manualmente.</p>
+</section>
+{% endblock %}

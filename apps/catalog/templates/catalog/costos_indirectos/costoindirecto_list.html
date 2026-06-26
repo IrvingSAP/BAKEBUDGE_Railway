@@ -1,0 +1,90 @@
+{% extends "app_base.html" %}
+{% load static catalog_extras %}
+
+{% block title %}Costos indirectos - BAKEBUDGE{% endblock %}
+{% block body_page %}costos-indirectos{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'catalog/vendor/dataTables.dataTables.min.css' %}">
+<link rel="stylesheet" href="{% static 'catalog/css/costos-indirectos.css' %}">
+{% endblock %}
+
+{% block app_content %}
+<div class="page-header page-header-row">
+  <div>
+    <h1>Costos indirectos</h1>
+    <p>Catalogo de costos de operacion por unidad de cobro.</p>
+  </div>
+  <a href="{% url 'catalog:costoindirecto_create' %}" class="btn btn-primary">+ Nuevo costo indirecto</a>
+</div>
+
+<section class="card costos-indirectos-table-card">
+  <div class="costos-indirectos-filters" role="search" aria-label="Filtrar costos indirectos">
+    <div class="form-field">
+      <label for="filter-nombre">Nombre</label>
+      <input type="search" id="filter-nombre" placeholder="Buscar por nombre...">
+    </div>
+    <div class="form-field">
+      <label for="filter-estado">Estado</label>
+      <select id="filter-estado">
+        <option value="">Todos</option>
+        <option value="Activo">Activo</option>
+        <option value="En proceso">En proceso</option>
+        <option value="Inactivo">Inactivo</option>
+      </select>
+    </div>
+    <div class="form-field">
+      <label for="filter-unidad">Unidad cobro</label>
+      <select id="filter-unidad">
+        <option value="">Todas</option>
+        <option value="hora">hora</option>
+        <option value="minuto">minuto</option>
+        <option value="lote">lote</option>
+        <option value="porcion">porcion</option>
+        <option value="mes">mes</option>
+        <option value="fijo">fijo</option>
+      </select>
+    </div>
+    <div class="costos-indirectos-filters__actions">
+      <button type="button" class="btn btn-outline" id="filter-limpiar">Limpiar filtros</button>
+    </div>
+  </div>
+
+  <div class="table-wrap">
+    <table id="tabla-costos-indirectos" class="table-bakebudge">
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Costo/unidad</th>
+          <th>Unidad cobro</th>
+          <th>Tarifa ref.</th>
+          <th>Estado</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for costo in costos %}
+        <tr>
+          <td>{{ costo.nombre }}</td>
+          <td>{{ costo.costo_por_unidad|format_money:user }}</td>
+          <td>{{ costo.unidad_cobro }}</td>
+          <td class="col-tarifa">{{ costo.costo_por_unidad|format_money:user }} / {{ costo.unidad_cobro }}</td>
+          <td><span class="badge {{ costo.status|status_badge }}">{{ costo.status|status_label }}</span></td>
+          <td class="table-actions">
+            <a href="{% url 'catalog:costoindirecto_edit' costo.pk %}">Editar</a> -
+            <a href="{% url 'catalog:costoindirecto_delete' costo.pk %}">Eliminar</a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'catalog/vendor/jquery.min.js' %}"></script>
+<script src="{% static 'catalog/vendor/dataTables.min.js' %}"></script>
+<script src="{% static 'catalog/vendor/datatables-init.js' %}"></script>
+<script src="{% static 'catalog/js/costoindirecto_list.js' %}"></script>
+{% endblock %}

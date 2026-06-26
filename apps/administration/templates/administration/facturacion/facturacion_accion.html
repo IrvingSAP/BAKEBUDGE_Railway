@@ -1,0 +1,106 @@
+{% extends "app_base.html" %}
+
+{% load static %}
+
+
+
+{% block title %}Acción período — Facturación - BAKEBUDGE{% endblock %}
+
+{% block body_page %}facturacion{% endblock %}
+
+
+
+{% block extra_css %}
+
+<link rel="stylesheet" href="{% static 'administration/css/facturacion.css' %}">
+
+{% endblock %}
+
+
+
+{% block app_content %}
+
+<div class="page-header page-header-row">
+
+  <div>
+
+    <h1>
+
+      {% if is_pendiente %}Cancelar período pendiente
+
+      {% elif can_act %}Suspender período activo
+
+      {% else %}Período histórico{% endif %}
+
+    </h1>
+
+    <p>Confirmación antes de cambiar el estado del período.</p>
+
+  </div>
+
+  <a href="{% url 'administration:facturacion_list' %}" class="btn btn-outline">← Cancelar</a>
+
+</div>
+
+
+
+<section class="card">
+
+  {% if can_act %}
+
+  <p style="margin:0 0 1rem;">
+
+    {% if is_pendiente %}
+
+    ¿Confirmas cancelar el período pendiente de <strong>{{ payment.owner.username }}</strong>?
+
+    {% else %}
+
+    ¿Confirmas suspender el período activo de <strong>{{ payment.owner.username }}</strong>?
+
+    {% endif %}
+
+  </p>
+
+  {% else %}
+
+  <p style="color:var(--color-danger,#c45);font-size:0.9rem;margin:0 0 1.25rem;padding:0.75rem 1rem;background:#fff5f5;border-radius:8px;border:1px solid #f0d0d0;">
+
+    {{ block_message }}
+
+  </p>
+
+  {% endif %}
+
+
+
+  <p style="color:var(--color-muted);font-size:0.9rem;margin:0 0 1.25rem;">
+
+    En Django: <code>estado → suspendido</code>. No se elimina el registro.
+
+  </p>
+
+
+
+  {% if can_act %}
+
+  <form method="post">
+
+    {% csrf_token %}
+
+    <button type="submit" class="btn btn-primary"
+
+            style="background:var(--color-danger,#c45);border-color:var(--color-danger,#c45);">
+
+      {% if is_pendiente %}Confirmar cancelación{% else %}Confirmar suspensión{% endif %}
+
+    </button>
+
+  </form>
+
+  {% endif %}
+
+</section>
+
+{% endblock %}
+

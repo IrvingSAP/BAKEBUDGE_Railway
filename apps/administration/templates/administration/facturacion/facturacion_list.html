@@ -1,0 +1,206 @@
+{% extends "app_base.html" %}
+
+{% load static admin_extras %}
+
+
+
+{% block title %}Facturación - BAKEBUDGE{% endblock %}
+
+{% block body_page %}facturacion{% endblock %}
+
+
+
+{% block extra_css %}
+
+<link rel="stylesheet" href="{% static 'catalog/vendor/dataTables.dataTables.min.css' %}">
+
+<link rel="stylesheet" href="{% static 'administration/css/facturacion.css' %}">
+
+{% endblock %}
+
+
+
+{% block app_content %}
+
+<div class="page-header page-header-row">
+
+  <div>
+
+    <h1>Facturación</h1>
+
+    <p>Suscripciones y pagos — <code>billing_paymentcontrol</code>. Solo usuarios <strong>User</strong>.</p>
+
+  </div>
+
+  <a href="{% url 'administration:facturacion_create' %}" class="btn btn-primary">+ Nuevo período</a>
+
+</div>
+
+
+
+<section class="card facturacion-table-card">
+
+  <div class="facturacion-filters" role="search" aria-label="Filtrar períodos de pago">
+
+    <div class="form-field">
+
+      <label for="filter-usuario">Usuario</label>
+
+      <input type="search" id="filter-usuario" placeholder="Buscar por username…" autocomplete="off">
+
+    </div>
+
+    <div class="form-field">
+
+      <label for="filter-estado">Estado</label>
+
+      <select id="filter-estado">
+
+        <option value="">Todos</option>
+
+        <option value="Pendiente">Pendiente</option>
+
+        <option value="Activo">Activo</option>
+
+        <option value="Suspendido">Suspendido</option>
+
+        <option value="Consumido">Consumido</option>
+
+      </select>
+
+    </div>
+
+    <div class="form-field">
+
+      <label for="filter-modalidad">Modalidad</label>
+
+      <select id="filter-modalidad">
+
+        <option value="">Todas</option>
+
+        <option value="Mensual">Mensual</option>
+
+        <option value="Anual">Anual</option>
+
+      </select>
+
+    </div>
+
+    <div class="facturacion-filters__actions">
+
+      <button type="button" class="btn btn-outline" id="filter-limpiar">Limpiar filtros</button>
+
+    </div>
+
+  </div>
+
+
+
+  <div class="table-wrap">
+
+    <table id="tabla-facturacion" class="table-bakebudge">
+
+      <thead>
+
+        <tr>
+
+          <th>Usuario</th>
+
+          <th>Modalidad</th>
+
+          <th>Estado</th>
+
+          <th>Inicio</th>
+
+          <th>Fin</th>
+
+          <th>Monto</th>
+
+          <th>Método</th>
+
+          <th>Fecha pago</th>
+
+          <th>Acciones</th>
+
+        </tr>
+
+      </thead>
+
+      <tbody>
+
+        {% for pago in pagos %}
+
+        <tr>
+
+          <td>{{ pago.owner.username }}</td>
+
+          <td>{{ pago.modalidad|payment_modalidad_label }}</td>
+
+          <td><span class="badge {{ pago.estado|payment_estado_badge }}">{{ pago.estado|payment_estado_label }}</span></td>
+
+          <td data-order="{% if pago.start_date %}{{ pago.start_date|date:'Ymd' }}{% else %}0{% endif %}">
+
+            {% if pago.start_date %}{{ pago.start_date|date:"d/m/Y" }}{% else %}—{% endif %}
+
+          </td>
+
+          <td>{% if pago.end_date %}{{ pago.end_date|date:"d/m/Y" }}{% else %}—{% endif %}</td>
+
+          <td>{% if pago.monto %}{{ pago.monto_display }}{% else %}—{% endif %}</td>
+
+          <td>{{ pago|payment_method_label }}</td>
+
+          <td data-order="{% if pago.payment_date %}{{ pago.payment_date|date:'Ymd' }}{% else %}0{% endif %}">
+
+            {% if pago.payment_date %}{{ pago.payment_date|date:"d/m/Y" }}{% else %}—{% endif %}
+
+          </td>
+
+          <td class="table-actions facturacion-table-actions">
+
+            <a href="{% url 'administration:facturacion_edit' pago.pk %}">
+
+              {% if pago.estado == 'consumido' %}Ver{% else %}Editar{% endif %}
+
+            </a>
+
+            {% if pago.estado == 'activo' %}
+
+             · <a href="{% url 'administration:facturacion_accion' pago.pk %}">Suspender</a>
+
+            {% elif pago.estado == 'pendiente' %}
+
+             · <a href="{% url 'administration:facturacion_accion' pago.pk %}">Cancelar</a>
+
+            {% endif %}
+
+          </td>
+
+        </tr>
+
+        {% endfor %}
+
+      </tbody>
+
+    </table>
+
+  </div>
+
+</section>
+
+{% endblock %}
+
+
+
+{% block extra_js %}
+
+<script src="{% static 'catalog/vendor/jquery.min.js' %}"></script>
+
+<script src="{% static 'catalog/vendor/dataTables.min.js' %}"></script>
+
+<script src="{% static 'catalog/vendor/datatables-init.js' %}"></script>
+
+<script src="{% static 'administration/js/facturacion_list.js' %}"></script>
+
+{% endblock %}
+

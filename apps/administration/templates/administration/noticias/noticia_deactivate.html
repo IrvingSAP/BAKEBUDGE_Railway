@@ -1,0 +1,47 @@
+{% extends "app_base.html" %}
+{% load static noticias_extras %}
+
+{% block title %}Desactivar noticia - BAKEBUDGE{% endblock %}
+{% block body_page %}gestion-noticias{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'administration/css/noticias.css' %}">
+{% endblock %}
+
+{% block app_content %}
+<div class="page-header page-header-row">
+  <div>
+    <h1>Desactivar noticia</h1>
+    <p>La noticia dejará de mostrarse en el feed; el registro se conserva (<code>status → I</code>).</p>
+  </div>
+  <a href="{% url 'administration:noticia_list' %}" class="btn btn-outline">← Cancelar</a>
+</div>
+
+<section class="card">
+  {% if can_deactivate %}
+  <p style="margin:0 0 1rem;">¿Confirmas desactivar esta noticia?</p>
+  {% else %}
+  <p class="app-empty-state">{{ block_message }}</p>
+  {% endif %}
+
+  <dl style="margin:0 0 1.25rem;font-size:0.95rem;">
+    <dt style="font-weight:700;">Título</dt>
+    <dd style="margin:0 0 0.75rem;">{{ noticia.titulo }}</dd>
+    <dt style="font-weight:700;">Tipo</dt>
+    <dd style="margin:0 0 0.75rem;">{{ noticia.tipo }}</dd>
+    <dt style="font-weight:700;">Vigencia</dt>
+    <dd style="margin:0 0 0.75rem;">{{ noticia.visible_desde|date:"d/m/Y" }} — {{ noticia.visible_hasta|date:"d/m/Y" }}</dd>
+    <dt style="font-weight:700;">Estado</dt>
+    <dd style="margin:0;"><span class="badge {{ noticia.status|noticia_status_badge }}">{{ noticia.status|noticia_status_label }}</span></dd>
+  </dl>
+
+  {% if can_deactivate %}
+  <form method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-primary" style="background:var(--color-danger,#c45);border-color:var(--color-danger,#c45);">Confirmar desactivación</button>
+  </form>
+  {% else %}
+  <a href="{% url 'administration:noticia_list' %}" class="btn btn-outline">Volver al listado</a>
+  {% endif %}
+</section>
+{% endblock %}

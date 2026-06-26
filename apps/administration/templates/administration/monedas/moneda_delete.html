@@ -1,0 +1,35 @@
+{% extends "app_base.html" %}
+{% load static %}
+
+{% block title %}Eliminar moneda - BAKEBUDGE{% endblock %}
+{% block body_page %}monedas{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'administration/css/monedas.css' %}">
+{% endblock %}
+
+{% block app_content %}
+<div class="page-header">
+  <h1>Eliminar moneda</h1>
+  <p>Esta acción elimina la moneda del catálogo global.</p>
+</div>
+
+<section class="card">
+  <p>
+    <strong>{{ moneda.codigo }}</strong> — {{ moneda.nombre }}
+    ({{ moneda.simbolo }}, {{ moneda.decimales }} dec.)
+  </p>
+  <p>Perfiles que usan esta moneda: <strong>{{ perfiles_count }}</strong></p>
+  {% if perfiles_count > 0 %}
+  <p class="app-empty-state">
+    No se puede eliminar porque hay perfiles con esta moneda preferida.
+    Puedes marcarla como inactiva para ocultarla de selectores nuevos.
+  </p>
+  {% endif %}
+  <form method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-primary" {% if perfiles_count > 0 %}disabled{% endif %}>Sí, eliminar</button>
+    <a href="{% url 'administration:moneda_list' %}" class="btn btn-outline">Cancelar</a>
+  </form>
+</section>
+{% endblock %}

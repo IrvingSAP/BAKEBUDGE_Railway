@@ -1,0 +1,85 @@
+{% extends "app_base.html" %}
+{% load static catalog_extras production_extras %}
+
+{% block title %}Producción - BAKEBUDGE{% endblock %}
+{% block body_page %}produccion{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'catalog/vendor/dataTables.dataTables.min.css' %}">
+<link rel="stylesheet" href="{% static 'production/css/produccion.css' %}">
+{% endblock %}
+
+{% block app_content %}
+<div class="page-header page-header-row">
+  <div>
+    <h1>Órdenes de producción</h1>
+    <p>Planifica lotes, congela costos al iniciar y registra cada elaboración.</p>
+  </div>
+  <a href="{% url 'production:orden_create' %}" class="btn btn-primary">+ Nueva orden</a>
+</div>
+
+<section class="card">
+  <div class="produccion-filters" role="search" aria-label="Filtrar órdenes">
+    <div class="form-field">
+      <label for="filter-busqueda">Código o receta</label>
+      <input type="search" id="filter-busqueda" placeholder="Buscar…" autocomplete="off">
+    </div>
+    <div class="form-field">
+      <label for="filter-estado">Estado</label>
+      <select id="filter-estado">
+        <option value="">Todos</option>
+        <option value="Borrador">Borrador</option>
+        <option value="En proceso">En proceso</option>
+        <option value="Completada">Completada</option>
+        <option value="Cancelada">Cancelada</option>
+      </select>
+    </div>
+    <div class="produccion-filters__actions">
+      <button type="button" class="btn btn-outline" id="filter-limpiar">Limpiar filtros</button>
+    </div>
+  </div>
+
+  <div class="table-wrap">
+    <table id="tabla-ordenes" class="table-bakebudge">
+      <thead>
+        <tr>
+          <th>Código</th>
+          <th>Receta</th>
+          <th>Lotes</th>
+          <th>Costo estimado</th>
+          <th>Estado</th>
+          <th>Fecha</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for orden in ordenes %}
+        <tr>
+          <td>{{ orden.codigo }}</td>
+          <td>{{ orden.receta.nombre }} {{ orden.receta_version.etiqueta }}</td>
+          <td>{{ orden.cantidad_lotes }}</td>
+          <td>{{ orden.costo_estimado|format_money:user }}</td>
+          <td><span class="badge {{ orden.estado|estado_badge }}">{{ orden.estado|estado_label }}</span></td>
+          <td>{{ orden.fecha_listado|date:"Y-m-d" }}</td>
+          <td class="table-actions">
+            <a href="{% url 'production:orden_detail' orden.pk %}">Ver</a>
+            {% if orden.es_editable %}
+            · <a href="{% url 'production:orden_edit' orden.pk %}">Editar</a>
+            {% endif %}
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="7">No hay órdenes. Crea la primera con «+ Nueva orden».</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'catalog/vendor/dataTables.min.js' %}"></script>
+<script src="{% static 'production/js/orden_list.js' %}"></script>
+{% endblock %}

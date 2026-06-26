@@ -1,0 +1,29 @@
+{% extends "app_base.html" %}
+{% load static catalog_extras %}
+
+{% block title %}Eliminar categoria - BAKEBUDGE{% endblock %}
+{% block body_page %}categorias{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'catalog/css/categorias.css' %}">
+{% endblock %}
+
+{% block app_content %}
+<div class="page-header">
+  <h1>Eliminar categoria</h1>
+  <p>Esta accion eliminara la categoria de tu catalogo.</p>
+</div>
+
+<section class="card">
+  <p><strong>{{ categoria.nombre }}</strong> {% if categoria.es_predeterminada %}(predeterminada){% endif %}</p>
+  <p>Productos asociados: {{ productos_count }}</p>
+  {% if productos_count > 0 %}
+  <p class="app-empty-state">No se puede eliminar porque tiene productos asociados.</p>
+  {% endif %}
+  <form method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-primary" {% if productos_count > 0 %}disabled{% endif %}>Si, eliminar</button>
+    <a href="{% url 'catalog:categoria_list' %}" class="btn btn-outline">Cancelar</a>
+  </form>
+</section>
+{% endblock %}

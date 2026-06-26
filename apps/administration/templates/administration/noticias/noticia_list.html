@@ -1,0 +1,96 @@
+{% extends "app_base.html" %}
+{% load static noticias_extras %}
+
+{% block title %}Gestión noticias - BAKEBUDGE{% endblock %}
+{% block body_page %}gestion-noticias{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'catalog/vendor/dataTables.dataTables.min.css' %}">
+<link rel="stylesheet" href="{% static 'administration/css/noticias.css' %}">
+{% endblock %}
+
+{% block app_content %}
+<div class="page-header page-header-row">
+  <div>
+    <h1>Gestión noticias</h1>
+    <p>CRUD de <code>noticias_noticia</code> — solo Master. El feed de lectura está en <a href="{% url 'noticias:feed' %}">Noticias</a>.</p>
+  </div>
+  <a href="{% url 'administration:noticia_create' %}" class="btn btn-primary">+ Nueva noticia</a>
+</div>
+
+<section class="card noticias-table-card">
+  <div class="noticias-filters" role="search" aria-label="Filtrar noticias">
+    <div class="form-field">
+      <label for="filter-titulo">Título</label>
+      <input type="search" id="filter-titulo" placeholder="Buscar…" autocomplete="off">
+    </div>
+    <div class="form-field">
+      <label for="filter-tipo">Tipo</label>
+      <input type="search" id="filter-tipo" placeholder="Ej. Aviso" autocomplete="off">
+    </div>
+    <div class="form-field">
+      <label for="filter-alcance">Alcance</label>
+      <select id="filter-alcance">
+        <option value="">Todos</option>
+        <option value="Global">Global</option>
+        <option value="Personal">Personal</option>
+      </select>
+    </div>
+    <div class="form-field">
+      <label for="filter-estado">Estado</label>
+      <select id="filter-estado">
+        <option value="">Todos</option>
+        <option value="Activo">Activo</option>
+        <option value="Inactivo">Inactivo</option>
+      </select>
+    </div>
+    <div class="noticias-filters__actions">
+      <button type="button" class="btn btn-outline" id="filter-limpiar">Limpiar filtros</button>
+    </div>
+  </div>
+
+  <div class="table-wrap">
+    <table id="tabla-noticias" class="table-bakebudge">
+      <thead>
+        <tr>
+          <th>Título</th>
+          <th>Tipo</th>
+          <th>Alcance</th>
+          <th>Visible desde</th>
+          <th>Visible hasta</th>
+          <th>Estado</th>
+          <th>Fecha noticia</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for noticia in noticias %}
+        <tr>
+          <td>{{ noticia.titulo }}</td>
+          <td>{{ noticia.tipo }}</td>
+          <td><span class="badge {{ noticia.alcance|noticia_alcance_badge }}">{{ noticia.alcance|noticia_alcance_label }}</span></td>
+          <td data-order="{{ noticia.visible_desde|date:'Ymd' }}">{{ noticia.visible_desde|date:"d/m/Y" }}</td>
+          <td data-order="{{ noticia.visible_hasta|date:'Ymd' }}">{{ noticia.visible_hasta|date:"d/m/Y" }}</td>
+          <td><span class="badge {{ noticia.status|noticia_status_badge }}">{{ noticia.status|noticia_status_label }}</span></td>
+          <td data-order="{{ noticia.fecha_noticia|date:'Ymd' }}">{{ noticia.fecha_noticia|date:"d/m/Y" }}</td>
+          <td class="table-actions">
+            <a href="{% url 'administration:noticia_edit' noticia.pk %}">Editar</a>
+            · <a href="{% url 'administration:noticia_copy' noticia.pk %}">Copiar</a>
+            {% if noticia.status == 'A' %}
+             · <a href="{% url 'administration:noticia_deactivate' noticia.pk %}">Desactivar</a>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'catalog/vendor/jquery.min.js' %}"></script>
+<script src="{% static 'catalog/vendor/dataTables.min.js' %}"></script>
+<script src="{% static 'catalog/vendor/datatables-init.js' %}"></script>
+<script src="{% static 'administration/js/noticia_list.js' %}"></script>
+{% endblock %}

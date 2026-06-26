@@ -1,0 +1,30 @@
+{% extends "security/base_acceso.html" %}
+
+{% block title %}Actualizar 2FA — BAKEBUDGE{% endblock %}
+{% block body_page %}actualizar-2fa{% endblock %}
+
+{% block acceso_content %}
+<main class="acceso-card">
+  <h1>Actualizar autenticación 2FA</h1>
+
+  <div class="acceso-banner acceso-banner--warning">
+    Perderás el factor TOTP actual. Deberás verificar tu correo nuevamente y escanear un código QR nuevo.
+  </div>
+
+  <p class="acceso-lead">
+    Confirma con tu contraseña para iniciar el re-enrolamiento. El correo registrado actúa como segundo factor de recuperación.
+  </p>
+
+  <form class="acceso-form" method="post" novalidate>
+    {% csrf_token %}
+    <label for="password">Contraseña actual</label>
+    <input type="password" id="password" name="password" autocomplete="current-password"
+           placeholder="••••••••" required>
+
+    <div class="acceso-actions">
+      <button type="submit" class="btn btn-primary btn-block">Confirmar actualización</button>
+      <a href="{% url 'security:totp' %}" class="btn btn-outline btn-block">Volver</a>
+    </div>
+  </form>
+</main>
+{% endblock %}

@@ -1,0 +1,150 @@
+{% extends "app_base.html" %}
+
+{% load static catalog_extras %}
+
+
+
+{% block title %}Ayuda: editar usuario - BAKEBUDGE{% endblock %}
+
+{% block body_page %}usuarios{% endblock %}
+
+
+
+{% block extra_css %}
+
+<link rel="stylesheet" href="{% static 'administration/css/usuarios.css' %}">
+
+{% endblock %}
+
+
+
+{% block app_content %}
+
+<div class="page-header page-header-row">
+
+  <div>
+
+    <h1>Ayuda: editar usuario</h1>
+
+    <p>Guía de los campos del formulario de edición. Solo consulta — no guarda datos.</p>
+
+  </div>
+
+  <a href="{% url 'administration:usuario_edit' managed_user.pk %}" class="btn btn-primary">← Volver al formulario</a>
+
+</div>
+
+
+
+<div class="usuarios-help-intro card">
+
+  <p>
+
+    Edición de cuenta y perfil de <strong>{{ managed_user.username }}</strong>.
+
+    La contraseña y la seguridad (correo / 2FA) se gestionan en pantallas dedicadas.
+
+  </p>
+
+</div>
+
+
+
+<div class="usuarios-form usuarios-form--help" aria-readonly="true">
+
+  <section class="card usuarios-form-card">
+
+    <h2>Identificación</h2>
+
+    <div class="form-grid">
+
+      <div class="form-field">
+
+        <label>ID</label>
+
+        <input type="text" value="{{ managed_user.pk }}" readonly tabindex="-1">
+
+        <p class="usuarios-help-desc">Identificador interno — solo lectura.</p>
+
+      </div>
+
+      <div class="form-field">
+
+        <label>Fecha de registro</label>
+
+        <input type="text" value="{{ managed_user.date_joined|date:'d/m/Y H:i' }}" readonly tabindex="-1">
+
+        <p class="usuarios-help-desc"><code>User.date_joined</code> — no editable.</p>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+
+  <section class="card usuarios-form-card">
+
+    <h2>Cuenta y perfil</h2>
+
+    <div class="form-grid">
+
+      <div class="form-field">
+
+        <label>Usuario</label>
+
+        <input type="text" value="{{ managed_user.username }}" readonly tabindex="-1">
+
+        <p class="usuarios-help-desc">Editable; debe ser único en la plataforma.</p>
+
+      </div>
+
+      <div class="form-field">
+
+        <label>Tipo</label>
+
+        <select disabled tabindex="-1">
+
+          <option selected>{{ managed_user.profile.user_type }} — {{ managed_user.profile.get_user_type_display }}</option>
+
+        </select>
+
+        <p class="usuarios-help-desc">No degradar al único Master activo.</p>
+
+      </div>
+
+      <div class="form-field">
+
+        <label>Estado cuenta</label>
+
+        <select disabled tabindex="-1">
+
+          <option selected>{{ managed_user.profile.status }} — {{ managed_user.profile.status|status_label }}</option>
+
+        </select>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+
+  <section class="card usuarios-form-card">
+
+    <div class="usuarios-form-actions" style="border-top:none;padding-top:0;margin-top:0;">
+
+      <a href="{% url 'administration:usuario_edit' managed_user.pk %}" class="btn btn-primary">Volver al formulario</a>
+
+      <a href="{% url 'administration:usuario_list' %}" class="btn btn-outline">Ir al listado</a>
+
+    </div>
+
+  </section>
+
+</div>
+
+{% endblock %}
+

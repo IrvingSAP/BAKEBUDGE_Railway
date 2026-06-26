@@ -1,0 +1,94 @@
+{% extends "app_base.html" %}
+{% load static catalog_extras %}
+
+{% block title %}Conversiones - BAKEBUDGE{% endblock %}
+{% block body_page %}conversiones{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'catalog/vendor/dataTables.dataTables.min.css' %}">
+<link rel="stylesheet" href="{% static 'catalog/css/conversiones.css' %}">
+{% endblock %}
+
+{% block app_content %}
+<div class="page-header page-header-row">
+  <div>
+    <h1>Conversiones de unidad</h1>
+    <p>Reglas de equivalencia entre unidades de uso y unidades base.</p>
+  </div>
+  <a href="{% url 'catalog:conversion_create' %}" class="btn btn-primary">+ Nueva conversion</a>
+</div>
+
+<section class="card conversiones-table-card">
+  <div class="conversiones-filters" role="search" aria-label="Filtrar conversiones">
+    <div class="form-field">
+      <label for="filter-texto">Etiqueta / unidad</label>
+      <input type="search" id="filter-texto" placeholder="Buscar por etiqueta o unidad...">
+    </div>
+    <div class="form-field">
+      <label for="filter-alcance">Alcance</label>
+      <select id="filter-alcance">
+        <option value="">Todos</option>
+        <option value="generica">Genérica</option>
+        <option value="producto">Por producto</option>
+      </select>
+    </div>
+    <div class="form-field">
+      <label for="filter-hacia">Hacia unidad</label>
+      <select id="filter-hacia">
+        <option value="">Todas</option>
+        {% for unidad in hacia_unidades %}
+        <option value="{{ unidad }}">{{ unidad }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="conversiones-filters__actions">
+      <button type="button" class="btn btn-outline" id="filter-limpiar">Limpiar filtros</button>
+    </div>
+  </div>
+
+  <div class="table-wrap">
+    <table id="tabla-conversiones" class="table-bakebudge">
+      <thead>
+        <tr>
+          <th>Etiqueta</th>
+          <th>Alcance</th>
+          <th>Desde</th>
+          <th>Hacia</th>
+          <th>Factor</th>
+          <th>Equivalencia</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for conversion in conversiones %}
+        <tr>
+          <td>{{ conversion.nombre|default:"Sin etiqueta" }}</td>
+          <td>
+            {% if conversion.producto %}
+            <span class="badge badge-product">{{ conversion.producto.nombre }}</span>
+            {% else %}
+            <span class="badge badge-generic">Genérica</span>
+            {% endif %}
+          </td>
+          <td>{{ conversion.desde_unidad }}</td>
+          <td>{{ conversion.hacia_unidad }}</td>
+          <td>{{ conversion.factor }}</td>
+          <td>1 {{ conversion.desde_unidad }} = {{ conversion.factor }} {{ conversion.hacia_unidad }}</td>
+          <td class="table-actions">
+            <a href="{% url 'catalog:conversion_edit' conversion.pk %}">Editar</a> -
+            <a href="{% url 'catalog:conversion_delete' conversion.pk %}">Eliminar</a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'catalog/vendor/jquery.min.js' %}"></script>
+<script src="{% static 'catalog/vendor/dataTables.min.js' %}"></script>
+<script src="{% static 'catalog/vendor/datatables-init.js' %}"></script>
+<script src="{% static 'catalog/js/conversion_list.js' %}"></script>
+{% endblock %}

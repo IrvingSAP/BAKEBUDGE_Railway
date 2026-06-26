@@ -1,0 +1,97 @@
+{% extends "app_base.html" %}
+{% load static %}
+
+{% block title %}Nueva orden - BAKEBUDGE{% endblock %}
+{% block body_page %}produccion{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'production/css/produccion.css' %}">
+{% endblock %}
+
+{% block app_content %}
+<div class="page-header page-header-row">
+  <div>
+    <h1>Nueva orden de producción</h1>
+    <p>Planificación en estado <strong>borrador</strong>.</p>
+  </div>
+  <div class="page-header-actions">
+    <a href="{% url 'production:orden_create_help' %}" class="produccion-help-btn" target="_blank" rel="noopener" title="Ayuda nueva orden">
+      <img src="{% static 'catalog/images/icon-help.svg' %}" alt="" width="20" height="20">
+      <span>Ayuda</span>
+    </a>
+    <a href="{% url 'production:orden_list' %}" class="btn btn-outline">← Volver al listado</a>
+  </div>
+</div>
+
+<form id="form-orden-create" method="post" class="produccion-form" novalidate>
+  {% csrf_token %}
+
+  <section class="card produccion-form-card">
+    <h2>Receta y versión</h2>
+    <div class="form-grid">
+      <div class="form-field" style="grid-column: 1 / -1;">
+        <label for="receta_id">Receta <span aria-hidden="true">*</span></label>
+        <select id="receta_id" name="receta_id" required>
+          <option value="">Seleccionar…</option>
+          {% for receta in recetas %}
+          <option value="{{ receta.pk }}" {% if form_data.receta_id == receta.pk|stringformat:"s" %}selected{% endif %}>{{ receta.nombre }}</option>
+          {% endfor %}
+        </select>
+        <span class="form-hint">Solo recetas con versión vigente. Entrada <code>?receta_id=</code> preselecciona.</span>
+      </div>
+      <div class="form-field">
+        <label>Versión</label>
+        <p id="version-label" class="form-hint" style="margin:0;font-weight:700;">—</p>
+      </div>
+    </div>
+    {% for aviso in avisos %}
+    <div class="produccion-aviso" role="status">{{ aviso }}</div>
+    {% endfor %}
+  </section>
+
+  <section class="card produccion-form-card">
+    <h2>Planificación</h2>
+    <div class="form-grid">
+      <div class="form-field">
+        <label for="cantidad_lotes">Cantidad de lotes <span aria-hidden="true">*</span></label>
+        <input type="number" id="cantidad_lotes" name="cantidad_lotes" step="0.0001" min="0.0001"
+               required value="{{ form_data.cantidad_lotes }}">
+        <span class="form-hint">1 = una tanda completa de la versión.</span>
+      </div>
+      <div class="form-field">
+        <label for="fecha_programada">Fecha programada</label>
+        <input type="date" id="fecha_programada" name="fecha_programada" value="{{ form_data.fecha_programada }}">
+      </div>
+      <div class="form-field" style="grid-column: 1 / -1;">
+        <label for="notas">Notas</label>
+        <textarea id="notas" name="notas" rows="3" placeholder="Cliente, entrega, variaciones…">{{ form_data.notas }}</textarea>
+      </div>
+    </div>
+    <div class="produccion-preview" aria-live="polite">
+      <div class="produccion-preview-stat">
+        <span class="label">Costo estimado</span>
+        <span class="value" id="preview-costo">—</span>
+      </div>
+      <div class="produccion-preview-stat">
+        <span class="label">Rendimiento esperado</span>
+        <span class="value" id="preview-rendimiento">—</span>
+      </div>
+      <div class="produccion-preview-stat">
+        <span class="label">Costo / porción</span>
+        <span class="value" id="preview-porcion">—</span>
+      </div>
+    </div>
+  </section>
+
+  <div class="produccion-form-actions">
+    <button type="submit" class="btn btn-primary">Crear orden</button>
+    <a href="{% url 'production:orden_list' %}" class="btn btn-outline">Cancelar</a>
+  </div>
+</form>
+
+{{ recetas_preview|json_script:"recetas-preview-data" }}
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'production/js/orden_create.js' %}"></script>
+{% endblock %}

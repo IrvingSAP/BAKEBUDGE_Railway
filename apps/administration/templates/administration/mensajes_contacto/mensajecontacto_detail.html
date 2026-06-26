@@ -1,0 +1,60 @@
+{% extends "app_base.html" %}
+{% load static admin_extras %}
+
+{% block title %}Detalle mensaje - BAKEBUDGE{% endblock %}
+{% block body_page %}mensajes-contacto{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'administration/css/mensajecontacto.css' %}">
+{% endblock %}
+
+{% block app_content %}
+<div class="page-header page-header-row">
+  <div>
+    <div style="display:flex;align-items:center;gap:0.75rem;flex-wrap:wrap;">
+      <h1 style="margin:0;">{{ mensaje.nombre }}</h1>
+      <span class="badge {{ mensaje.estado|mensaje_estado_badge }}">{{ mensaje.estado|mensaje_estado_label }}</span>
+    </div>
+    <p>Detalle de solicitud #{{ mensaje.pk }}.</p>
+  </div>
+  <a href="{% url 'administration:mensajecontacto_list' %}" class="btn btn-outline">← Listado</a>
+</div>
+
+<section class="card">
+  <h2 style="margin:0 0 1rem;font-size:1.05rem;">Datos del solicitante</h2>
+  <div class="mensajecontacto-detail-meta">
+    <div class="meta-item">
+      <span class="label">Correo</span>
+      <div class="value">{{ mensaje.email }}</div>
+    </div>
+    <div class="meta-item">
+      <span class="label">Fecha de envío</span>
+      <div class="value">{{ mensaje.created_at|date:"d/m/Y H:i" }}</div>
+    </div>
+    <div class="meta-item">
+      <span class="label">Leído el</span>
+      <div class="value">{% if mensaje.leido_at %}{{ mensaje.leido_at|date:"d/m/Y H:i" }}{% else %}—{% endif %}</div>
+    </div>
+    <div class="meta-item">
+      <span class="label">IP origen</span>
+      <div class="value">{{ mensaje.ip_origen|default:"—" }}</div>
+    </div>
+  </div>
+</section>
+
+<section class="card">
+  <h2 style="margin:0 0 1rem;font-size:1.05rem;">Mensaje</h2>
+  <p class="mensajecontacto-mensaje-body">{{ mensaje.mensaje }}</p>
+  <div class="mensajecontacto-detail-actions">
+    {% if mensaje.is_pendiente %}
+    <form method="post" style="display:inline;">
+      {% csrf_token %}
+      <button type="submit" name="marcar_leido" value="1" class="btn btn-primary">Marcar como leído</button>
+    </form>
+    {% endif %}
+    <a href="mailto:{{ mensaje.email }}" class="btn btn-outline">Responder por correo</a>
+    <a href="{% url 'administration:mensajecontacto_delete' mensaje.pk %}" class="btn btn-outline"
+       style="color:var(--color-danger,#c45);border-color:var(--color-danger,#c45);">Eliminar</a>
+  </div>
+</section>
+{% endblock %}

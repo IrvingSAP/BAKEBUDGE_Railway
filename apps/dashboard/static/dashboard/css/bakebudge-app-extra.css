@@ -1,0 +1,13 @@
+.app-nav a.is-pending,
+.app-nav-sub a.is-pending {
+  opacity: 0.55;
+  pointer-events: none;
+  cursor: default;
+}
+
+.app-empty-state {
+  margin: 0;
+  padding: 1rem 0;
+  color: var(--color-muted);
+  font-size: 0.92rem;
+}

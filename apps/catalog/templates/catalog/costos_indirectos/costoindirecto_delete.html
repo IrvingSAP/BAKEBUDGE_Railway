@@ -1,0 +1,26 @@
+{% extends "app_base.html" %}
+{% load static catalog_extras %}
+
+{% block title %}Eliminar costo indirecto - BAKEBUDGE{% endblock %}
+{% block body_page %}costos-indirectos{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'catalog/css/costos-indirectos.css' %}">
+{% endblock %}
+
+{% block app_content %}
+<div class="page-header">
+  <h1>Eliminar costo indirecto</h1>
+  <p>Confirma la eliminacion de este costo indirecto.</p>
+</div>
+
+<section class="card">
+  <p><strong>{{ costo_indirecto.nombre }}</strong></p>
+  <p>{{ costo_indirecto.costo_por_unidad|format_money:user }} / {{ costo_indirecto.unidad_cobro }}</p>
+  <form method="post">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-primary">Si, eliminar</button>
+    <a href="{% url 'catalog:costoindirecto_list' %}" class="btn btn-outline">Cancelar</a>
+  </form>
+</section>
+{% endblock %}

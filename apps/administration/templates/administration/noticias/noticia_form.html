@@ -1,0 +1,160 @@
+{% extends "app_base.html" %}
+{% load static %}
+
+{% block title %}{% if noticia %}Editar noticia{% else %}Nueva noticia{% endif %} - BAKEBUDGE{% endblock %}
+{% block body_page %}gestion-noticias{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'administration/css/noticias.css' %}">
+{% endblock %}
+
+{% block app_content %}
+<div class="page-header page-header-row">
+  <div>
+    <h1>{% if noticia %}Editar noticia{% else %}Nueva noticia{% endif %}</h1>
+    <p>{% if noticia %}Modificación de <code>Noticia</code> #{{ noticia.pk }}{% else %}Alta en <code>noticias_noticia</code> — solo Master.{% endif %}</p>
+  </div>
+  <a href="{% url 'administration:noticia_list' %}" class="btn btn-outline">← Volver al listado</a>
+</div>
+
+<form method="post" novalidate data-bb-validate-form data-bb-noticia-form class="noticias-form">
+  {% csrf_token %}
+
+  {% if noticia %}
+  <section class="card noticias-form-card">
+    <h2>Auditoría</h2>
+    <div class="form-grid">
+      <div class="form-field">
+        <label for="audit_created">Creado</label>
+        <input type="text" id="audit_created"
+               value="{{ noticia.created_at|date:'d/m/Y H:i' }} — {{ noticia.created_by.username }}"
+               readonly>
+      </div>
+      <div class="form-field">
+        <label for="audit_updated">Actualizado</label>
+        <input type="text" id="audit_updated"
+               value="{{ noticia.updated_at|date:'d/m/Y H:i' }}{% if noticia.updated_by %} — {{ noticia.updated_by.username }}{% endif %}"
+               readonly>
+      </div>
+    </div>
+  </section>
+  {% endif %}
+
+  <section class="card noticias-form-card">
+    <h2>Alcance y tipo</h2>
+    <div class="form-grid">
+      <div class="form-field" style="grid-column: 1 / -1;">
+        <span class="label-block">Alcance *</span>
+        <div class="noticias-alcance-radios">
+          <label>
+            <input type="radio" name="alcance" value="G" {% if form_data.alcance == 'G' %}checked{% endif %}> Global (todos)
+          </label>
+          <label>
+            <input type="radio" name="alcance" value="P" {% if form_data.alcance == 'P' %}checked{% endif %}> Personal (destinatarios)
+          </label>
+        </div>
+      </div>
+      <div class="form-field noticias-destinatarios" {% if form_data.alcance != 'P' %}hidden{% endif %}>
+        <label for="destinatarios">Destinatarios</label>
+        <select id="destinatarios" name="destinatarios" multiple size="5">
+          {% for user in destinatario_users %}
+          <option value="{{ user.pk }}" {% if user.pk|stringformat:"s" in destinatarios_selected %}selected{% endif %}>
+            {{ user.username }}{% if user.profile.nombre_negocio %} — {{ user.profile.nombre_negocio }}{% endif %}
+          </option>
+          {% endfor %}
+        </select>
+        <span class="form-hint">Ctrl+clic para varios usuarios</span>
+      </div>
+      <div class="form-field">
+        <label for="tipo">Tipo *</label>
+        <input type="text" id="tipo" name="tipo" maxlength="20" required
+               value="{{ form_data.tipo }}" placeholder="Nueva, Mejora, Aviso…">
+      </div>
+      <div class="form-field">
+        <label for="status">Estado *</label>
+        <select id="status" name="status" required>
+          <option value="A" {% if form_data.status == 'A' %}selected{% endif %}>A — Activo</option>
+          <option value="I" {% if form_data.status == 'I' %}selected{% endif %}>I — Inactivo</option>
+        </select>
+      </div>
+    </div>
+  </section>
+
+  <section class="card noticias-form-card">
+    <h2>Contenido</h2>
+    <div class="form-grid">
+      <div class="form-field" style="grid-column: 1 / -1;">
+        <label for="titulo">Título *</label>
+        <input type="text" id="titulo" name="titulo" maxlength="200" required value="{{ form_data.titulo }}">
+      </div>
+      <div class="form-field" style="grid-column: 1 / -1;">
+        <label for="resumen">Resumen</label>
+        <input type="text" id="resumen" name="resumen" maxlength="300"
+               value="{{ form_data.resumen }}" placeholder="Opcional — tarjeta en listado">
+      </div>
+      <div class="form-field" style="grid-column: 1 / -1;">
+        <label for="detalle">Detalle</label>
+        <textarea id="detalle" name="detalle" rows="6">{{ form_data.detalle }}</textarea>
+        <span class="form-hint">Opcional — si se completa, el feed mostrará «Leer más» hacia la vista de detalle.</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="card noticias-form-card">
+    <h2>Fechas y visibilidad</h2>
+    <div class="form-grid">
+      <div class="form-field">
+        <label for="fecha_noticia">Fecha noticia *</label>
+        <input type="date" id="fecha_noticia" name="fecha_noticia" required value="{{ form_data.fecha_noticia }}">
+      </div>
+      <div class="form-field">
+        <label for="orden">Orden</label>
+        <input type="number" id="orden" name="orden" min="0" value="{{ form_data.orden|default:'0' }}">
+      </div>
+      <div class="form-field">
+        <label for="visible_desde">Visible desde *</label>
+        <input type="date" id="visible_desde" name="visible_desde" required value="{{ form_data.visible_desde }}">
+      </div>
+      <div class="form-field">
+        <label for="visible_hasta">Visible hasta *</label>
+        <input type="date" id="visible_hasta" name="visible_hasta" required value="{{ form_data.visible_hasta }}">
+      </div>
+      <div class="form-field">
+        <label class="checkbox-label">
+          <input type="checkbox" id="destacada" name="destacada" value="1" {% if form_data.destacada %}checked{% endif %}> Destacada
+        </label>
+      </div>
+    </div>
+  </section>
+
+  <section class="card noticias-form-card">
+    <h2>Enlaces opcionales</h2>
+    <div class="form-grid">
+      <div class="form-field">
+        <label for="enlace_interno">Enlace interno</label>
+        <input type="text" id="enlace_interno" name="enlace_interno" maxlength="200"
+               value="{{ form_data.enlace_interno }}" placeholder="/app/productos/">
+        <span class="form-hint">Opcional — ruta dentro de BAKEBUDGE. En el feed se muestra si no hay detalle; si hay detalle, aparece en la vista de detalle.</span>
+      </div>
+      <div class="form-field">
+        <label for="enlace_externo">Enlace externo</label>
+        <input type="url" id="enlace_externo" name="enlace_externo"
+               value="{{ form_data.enlace_externo }}" placeholder="https://…">
+        <span class="form-hint">Opcional — URL externa. Misma regla de visibilidad que el enlace interno.</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="card noticias-form-card">
+    <div class="noticias-form-actions">
+      <button type="submit" class="btn btn-primary">{% if noticia %}Guardar cambios{% else %}Guardar noticia{% endif %}</button>
+      <a href="{% url 'administration:noticia_list' %}" class="btn btn-outline">Cancelar</a>
+    </div>
+  </section>
+</form>
+{% include "catalog/partials/form_validation.html" %}
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'administration/js/noticia_form.js' %}"></script>
+{% endblock %}

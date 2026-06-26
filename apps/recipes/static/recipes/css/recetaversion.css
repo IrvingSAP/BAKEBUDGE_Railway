@@ -1,0 +1,287 @@
+/* Submódulo RecetaVersion — formulación, ingredientes, pasos */
+
+.recetaversion-context {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 1rem;
+  margin-bottom: 0.35rem;
+}
+
+.recetaversion-context .badge-vigente {
+  display: inline-block;
+  padding: 0.2rem 0.55rem;
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  background: #e8f5e9;
+  color: #2e7d32;
+  border-radius: 999px;
+}
+
+.recetaversion-context .badge-historica {
+  background: #f0eeec;
+  color: var(--color-muted);
+}
+
+.recetaversion-nav-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.recetaversion-nav-links a {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--color-primary-dark, #b85c6a);
+  text-decoration: none;
+}
+
+.recetaversion-nav-links a:hover {
+  text-decoration: underline;
+}
+
+.recetaversion-nav-links .sep {
+  color: var(--color-border, #ccc);
+  user-select: none;
+}
+
+.recetaversion-cost-panel {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 0.65rem;
+  margin-bottom: 1rem;
+}
+
+.recetaversion-cost-panel .recetas-version-stat .value--warn {
+  color: #c62828;
+}
+
+.recetaversion-section-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.recetaversion-section-header h2 {
+  margin: 0;
+  font-size: 1.05rem;
+}
+
+.recetaversion-ingredientes .table-bakebudge input,
+.recetaversion-ingredientes .table-bakebudge select,
+.recetaversion-indirectos .table-bakebudge input,
+.recetaversion-indirectos .table-bakebudge select {
+  width: 100%;
+  min-width: 0;
+  padding: 0.4rem 0.5rem;
+  border: 1px solid var(--color-border, #e8dfd8);
+  border-radius: var(--radius-sm, 6px);
+  font: inherit;
+  font-size: 0.88rem;
+}
+
+.recetaversion-indirectos .col-unidad {
+  font-size: 0.85rem;
+  color: var(--color-muted);
+  white-space: nowrap;
+}
+
+.recetaversion-indirectos .col-notas input {
+  font-size: 0.82rem;
+}
+
+.recetaversion-ingredientes .col-costo,
+.recetaversion-indirectos .col-costo {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.recetaversion-ingredientes .row-aviso td {
+  background: #fff8e1;
+  font-size: 0.82rem;
+  color: #8d6e00;
+  padding: 0.45rem 0.75rem;
+}
+
+.recetaversion-pasos {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.recetaversion-paso-item {
+  display: grid;
+  grid-template-columns: auto 1fr auto auto;
+  gap: 0.65rem;
+  align-items: start;
+  padding: 0.85rem 0;
+  border-bottom: 1px solid var(--color-border, #eee8e3);
+}
+
+.recetaversion-paso-item:last-child {
+  border-bottom: none;
+}
+
+.recetaversion-paso-orden {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 2rem;
+  height: 2rem;
+  font-weight: 800;
+  font-size: 0.9rem;
+  background: var(--color-bg-alt, #fff5ef);
+  border: 1px solid var(--color-border, #e8dfd8);
+  border-radius: 50%;
+  color: var(--color-primary-dark, #b85c6a);
+}
+
+.recetaversion-paso-fields {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.recetaversion-paso-fields textarea {
+  width: 100%;
+  min-height: 3.5rem;
+  padding: 0.5rem 0.65rem;
+  border: 1px solid var(--color-border, #e8dfd8);
+  border-radius: var(--radius-sm, 8px);
+  font: inherit;
+  resize: vertical;
+}
+
+.recetaversion-paso-tiempo {
+  width: 5rem;
+  padding: 0.45rem 0.5rem;
+  border: 1px solid var(--color-border, #e8dfd8);
+  border-radius: var(--radius-sm, 6px);
+  font: inherit;
+}
+
+.recetaversion-paso-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.recetaversion-paso-actions button {
+  padding: 0.25rem 0.45rem;
+  font-size: 0.78rem;
+  border: 1px solid var(--color-border, #e8dfd8);
+  border-radius: var(--radius-sm, 6px);
+  background: #fff;
+  cursor: pointer;
+}
+
+.recetaversion-paso-actions button:hover {
+  background: var(--color-bg-alt, #fff5ef);
+}
+
+.recetaversion-paso-actions .btn-remove {
+  color: #c62828;
+}
+
+.recetaversion-readonly .recetaversion-paso-item {
+  grid-template-columns: auto 1fr auto;
+}
+
+.recetaversion-readonly input,
+.recetaversion-readonly textarea,
+.recetaversion-readonly select {
+  background: var(--color-bg-alt, #faf7f5);
+  border-color: transparent;
+  pointer-events: none;
+}
+
+.recetaversion-precio-block {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--color-border, #eee8e3);
+}
+
+.recetaversion-precio-calc {
+  margin: 0.5rem 0;
+}
+
+.recetaversion-precio-override {
+  color: var(--color-primary-dark, #b85c6a);
+  font-weight: 700;
+  font-size: 0.82rem;
+}
+
+  padding: 1rem;
+  background: var(--color-bg-alt, #fff5ef);
+  border: 1px solid var(--color-border, #e8dfd8);
+  border-radius: var(--radius-sm, 8px);
+  margin-bottom: 1rem;
+}
+
+.recetaversion-create-source dl {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 0.35rem 1rem;
+  margin: 0.5rem 0 0;
+  font-size: 0.9rem;
+}
+
+.recetaversion-create-source dt {
+  font-weight: 700;
+  color: var(--color-muted);
+}
+
+.recetaversion-checkboxes {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+.recetaversion-checkboxes label {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+@media (max-width: 700px) {
+  .recetaversion-paso-item {
+    grid-template-columns: 1fr;
+  }
+
+  .recetaversion-paso-orden {
+    justify-self: start;
+  }
+
+  .recetaversion-paso-actions {
+    flex-direction: row;
+  }
+}
+
+.receta-costos-rendimiento {
+  margin: 0;
+}
+
+.receta-costos-table .col-num {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.receta-costos-table tfoot .receta-costos-subtotal td {
+  font-weight: 700;
+  border-top: 2px solid var(--color-border, #ddd);
+  padding-top: 0.65rem;
+}
+
+.receta-costos-detalle .row-aviso td {
+  background: #fff8e1;
+}

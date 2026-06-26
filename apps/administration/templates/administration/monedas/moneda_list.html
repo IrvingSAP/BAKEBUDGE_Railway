@@ -1,0 +1,87 @@
+{% extends "app_base.html" %}
+{% load static %}
+
+{% block title %}Monedas - BAKEBUDGE{% endblock %}
+{% block body_page %}monedas{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'catalog/vendor/dataTables.dataTables.min.css' %}">
+<link rel="stylesheet" href="{% static 'administration/css/monedas.css' %}">
+{% endblock %}
+
+{% block app_content %}
+<div class="page-header page-header-row">
+  <div>
+    <h1>Monedas</h1>
+    <p>Catálogo global de monedas para perfiles y costos. Solo Master.</p>
+  </div>
+  <a href="{% url 'administration:moneda_create' %}" class="btn btn-primary">+ Nueva moneda</a>
+</div>
+
+<section class="card monedas-table-card">
+  <div class="monedas-filters" role="search" aria-label="Filtrar monedas">
+    <div class="form-field">
+      <label for="filter-texto">Nombre</label>
+      <input type="search" id="filter-texto" placeholder="Buscar por nombre...">
+    </div>
+    <div class="form-field">
+      <label for="filter-activa">Estado</label>
+      <select id="filter-activa">
+        <option value="">Todas</option>
+        <option value="Activa">Activa</option>
+        <option value="Inactiva">Inactiva</option>
+      </select>
+    </div>
+    <div class="monedas-filters__actions">
+      <button type="button" class="btn btn-outline" id="filter-limpiar">Limpiar filtros</button>
+    </div>
+  </div>
+
+  <div class="table-wrap">
+    <table id="tabla-monedas" class="table-bakebudge">
+      <thead>
+        <tr>
+          <th>Código</th>
+          <th>Nombre</th>
+          <th>Símbolo</th>
+          <th>Decimales</th>
+          <th>Estado</th>
+          <th>Orden</th>
+          <th>Perfiles</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for moneda in monedas %}
+        <tr>
+          <td><span class="monedas-codigo-badge">{{ moneda.codigo }}</span></td>
+          <td>{{ moneda.nombre }}</td>
+          <td>{{ moneda.simbolo }}</td>
+          <td>{{ moneda.decimales }}</td>
+          <td>
+            {% if moneda.activa %}
+            <span class="badge badge-moneda-activa">Activa</span>
+            {% else %}
+            <span class="badge badge-moneda-inactiva">Inactiva</span>
+            {% endif %}
+          </td>
+          <td>{{ moneda.orden }}</td>
+          <td>{{ moneda.perfiles_count }}</td>
+          <td class="table-actions">
+            <a href="{% url 'administration:moneda_edit' moneda.codigo %}">Editar</a> -
+            <a href="{% url 'administration:moneda_delete' moneda.codigo %}">Eliminar</a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'catalog/vendor/jquery.min.js' %}"></script>
+<script src="{% static 'catalog/vendor/dataTables.min.js' %}"></script>
+<script src="{% static 'catalog/vendor/datatables-init.js' %}"></script>
+<script src="{% static 'administration/js/moneda_list.js' %}"></script>
+{% endblock %}

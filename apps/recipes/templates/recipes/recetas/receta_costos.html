@@ -1,0 +1,155 @@
+{% extends "app_base.html" %}
+{% load static catalog_extras %}
+
+{% block title %}Costos — {{ receta.nombre }} - BAKEBUDGE{% endblock %}
+{% block body_page %}recetas{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'recipes/css/recetas.css' %}">
+<link rel="stylesheet" href="{% static 'recipes/css/recetaversion.css' %}">
+{% endblock %}
+
+{% block app_content %}
+<div class="page-header page-header-row">
+  <div>
+    <div class="recetaversion-context">
+      <h1 style="margin:0;">{{ receta.nombre }}</h1>
+      <span class="badge-vigente">{{ version.etiqueta }} · vigente</span>
+    </div>
+    <p>Desglose de costos de la versión vigente — solo consulta.</p>
+    <nav class="recetaversion-nav-links" aria-label="Navegación receta">
+      <a href="{% url 'recipes:recetaversion_edit' receta.pk %}">Formulación</a>
+      <span class="sep">·</span>
+      <a href="{% url 'recipes:receta_edit' receta.pk %}">Cabecera receta</a>
+      <span class="sep">·</span>
+      <a href="{% url 'recipes:recetaversion_list' receta.pk %}">Historial versiones</a>
+    </nav>
+  </div>
+  <a href="{% url 'recipes:receta_list' %}" class="btn btn-outline">Listado recetas</a>
+</div>
+
+<section class="card recetas-form-card">
+  <h2>Resumen de costos</h2>
+  <div class="recetaversion-cost-panel" aria-label="Totales de la versión">
+    <div class="recetas-version-stat">
+      <span class="label">Ingredientes</span>
+      <span class="value">{{ version.costo_ingredientes|format_money:user }}</span>
+    </div>
+    <div class="recetas-version-stat">
+      <span class="label">Indirectos</span>
+      <span class="value">{{ version.costo_indirectos|format_money:user }}</span>
+    </div>
+    <div class="recetas-version-stat">
+      <span class="label">Costo total</span>
+      <span class="value">{{ version.costo_total|format_money:user }}</span>
+    </div>
+    <div class="recetas-version-stat">
+      <span class="label">Costo / porción</span>
+      <span class="value">{{ version.costo_por_porcion|format_money:user }}</span>
+    </div>
+    <div class="recetas-version-stat">
+      <span class="label">Precio sugerido</span>
+      <span class="value">{{ version.precio_venta_sugerido|format_money:user }}</span>
+    </div>
+    <div class="recetas-version-stat">
+      <span class="label">Margen</span>
+      <span class="value">{{ version.margen_aplicado_pct }} %</span>
+    </div>
+  </div>
+  <p class="form-hint receta-costos-rendimiento">
+    Rendimiento: <strong>{{ version.rendimiento_cantidad }} {{ version.rendimiento_unidad }}</strong>
+  </p>
+</section>
+
+<section class="card recetas-form-card receta-costos-detalle recetaversion-indirectos">
+  <div class="recetaversion-section-header">
+    <h2>Detalle de costos — ingredientes</h2>
+  </div>
+  <p class="form-hint">
+    <strong>Costo receta</strong> = cantidad convertida a unidad base × costo base del producto
+    (según <a href="{% url 'catalog:conversion_list' %}">Conversiones de unidad</a>).
+  </p>
+  <div class="table-wrap">
+    <table class="table-bakebudge receta-costos-table" aria-label="Detalle de costos por ingrediente">
+      <thead>
+        <tr>
+          <th>Producto</th>
+          <th class="col-num">Cantidad</th>
+          <th>Unidad base</th>
+          <th class="col-num">Costo base</th>
+          <th>Unidad receta</th>
+          <th class="col-num">Costo receta</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for linea in lineas_costo %}
+        <tr{% if linea.sin_conversion %} class="row-aviso"{% endif %}>
+          <td>{{ linea.producto_nombre }}</td>
+          <td class="col-num">{{ linea.cantidad }}</td>
+          <td>{{ linea.unidad_base }}</td>
+          <td class="col-num">{{ linea.costo_base|format_money:user }} / {{ linea.unidad_base }}</td>
+          <td>{{ linea.unidad_receta }}</td>
+          <td class="col-num">
+            {% if linea.sin_conversion %}
+            <span class="value--warn" title="Sin conversión a unidad base">—</span>
+            {% else %}
+            {{ linea.costo_receta|format_money:user }}
+            {% endif %}
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="6">Sin ingredientes en la formulación.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+      {% if lineas_costo %}
+      <tfoot>
+        <tr class="receta-costos-subtotal">
+          <td colspan="5">Subtotal ingredientes</td>
+          <td class="col-num">{{ version.costo_ingredientes|format_money:user }}</td>
+        </tr>
+      </tfoot>
+      {% endif %}
+    </table>
+  </div>
+</section>
+
+{% if lineas_indirecto %}
+<section class="card recetas-form-card receta-costos-detalle recetaversion-indirectos">
+  <div class="recetaversion-section-header">
+    <h2>Detalle de costos — indirectos</h2>
+  </div>
+  <div class="table-wrap">
+    <table class="table-bakebudge receta-costos-table" aria-label="Detalle de costos indirectos">
+      <thead>
+        <tr>
+          <th>Gasto indirecto</th>
+          <th class="col-num">Cantidad</th>
+          <th>Unidad cobro</th>
+          <th class="col-num">Tarifa</th>
+          <th class="col-num">Costo línea</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for linea in lineas_indirecto %}
+        <tr>
+          <td>{{ linea.nombre }}</td>
+          <td class="col-num">{{ linea.cantidad }}</td>
+          <td>{{ linea.unidad_cobro }}</td>
+          <td class="col-num">{{ linea.tarifa|format_money:user }} / {{ linea.unidad_cobro }}</td>
+          <td class="col-num">{{ linea.costo_linea|format_money:user }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+      <tfoot>
+        <tr class="receta-costos-subtotal">
+          <td colspan="4">Subtotal indirectos</td>
+          <td class="col-num">{{ version.costo_indirectos|format_money:user }}</td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+</section>
+{% endif %}
+{% endblock %}

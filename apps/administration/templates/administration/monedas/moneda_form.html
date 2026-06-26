@@ -1,0 +1,64 @@
+{% extends "app_base.html" %}
+{% load static %}
+
+{% block title %}{% if moneda %}Editar moneda{% else %}Nueva moneda{% endif %} - BAKEBUDGE{% endblock %}
+{% block body_page %}monedas{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'administration/css/monedas.css' %}">
+{% endblock %}
+
+{% block app_content %}
+<div class="page-header page-header-row">
+  <div>
+    <h1>{% if moneda %}Editar moneda{% else %}Nueva moneda{% endif %}</h1>
+    <p>{% if moneda %}Actualiza los datos de «{{ moneda.codigo }}».{% else %}Alta en catálogo global <code>core_moneda</code>.{% endif %}</p>
+  </div>
+  <a href="{% url 'administration:moneda_list' %}" class="btn btn-outline">Volver al listado</a>
+</div>
+
+<form method="post" novalidate data-bb-validate-form>
+  {% csrf_token %}
+  <section class="card monedas-form-card">
+    <h2>Datos de moneda</h2>
+    <div class="form-grid">
+      <div class="form-field">
+        <label for="codigo">Código ISO *</label>
+        {% if moneda %}
+        <input type="text" id="codigo" value="{{ moneda.codigo }}" readonly>
+        {% else %}
+        <input type="text" id="codigo" name="codigo" maxlength="3" value="{{ form_data.codigo }}"
+               placeholder="COP" required autocomplete="off" style="text-transform: uppercase;">
+        {% endif %}
+      </div>
+      <div class="form-field">
+        <label for="nombre">Nombre *</label>
+        <input type="text" id="nombre" name="nombre" maxlength="80" value="{{ form_data.nombre }}" required>
+      </div>
+      <div class="form-field">
+        <label for="simbolo">Símbolo *</label>
+        <input type="text" id="simbolo" name="simbolo" maxlength="10" value="{{ form_data.simbolo }}" required>
+      </div>
+      <div class="form-field">
+        <label for="decimales">Decimales *</label>
+        <input type="number" id="decimales" name="decimales" min="0" max="6" value="{{ form_data.decimales }}" required>
+      </div>
+      <div class="form-field">
+        <label for="orden">Orden *</label>
+        <input type="number" id="orden" name="orden" min="0" value="{{ form_data.orden }}" required>
+      </div>
+      <div class="form-field">
+        <label>
+          <input type="checkbox" name="activa" value="1" {% if form_data.activa %}checked{% endif %}>
+          Moneda activa (visible en selectores de perfil)
+        </label>
+      </div>
+    </div>
+    <div class="monedas-form-actions">
+      <button type="submit" class="btn btn-primary">{% if moneda %}Guardar cambios{% else %}Guardar moneda{% endif %}</button>
+      <a href="{% url 'administration:moneda_list' %}" class="btn btn-outline">Cancelar</a>
+    </div>
+  </section>
+</form>
+{% include "catalog/partials/form_validation.html" %}
+{% endblock %}

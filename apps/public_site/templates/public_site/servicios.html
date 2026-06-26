@@ -1,0 +1,76 @@
+{% extends "public_site/base_public.html" %}
+{% load static %}
+
+{% block title %}Servicios — BAKEBUDGE{% endblock %}
+{% block body_page %}servicios{% endblock %}
+
+{% block content %}
+  <section class="page-hero-mini">
+    <div class="container-narrow">
+      <div class="section-kicker">Servicios</div>
+      <h1>Gestión integral para tu repostería</h1>
+      <p>
+        BAKEBUDGE está diseñada para facilitar la creación, organización y evaluación de recetas.
+        Calcula costos con precios actualizados, planifica producción y analiza rentabilidad.
+      </p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container-narrow">
+      <div class="features-grid">
+        <article class="feature-card">
+          <img class="feature-card__img" src="{% static 'public_site/image/recetas.jpg' %}" alt="Recetas personalizadas" loading="lazy">
+          <div class="feature-body">
+            <h3>Recetas personalizadas</h3>
+            <p>Registra platos con ingredientes detallados, pasos de preparación y versionado histórico.</p>
+          </div>
+        </article>
+        <article class="feature-card">
+          <img class="feature-card__img" src="{% static 'public_site/image/costos.jpg' %}" alt="Cálculo automático de costos" loading="lazy">
+          <div class="feature-body">
+            <h3>Cálculo automático de costos</h3>
+            <p>Obtén estimaciones precisas con conversión de unidades e indirectos incluidos.</p>
+          </div>
+        </article>
+        <article class="feature-card">
+          <img class="feature-card__img" src="{% static 'public_site/image/insumos.jpg' %}" alt="Catálogo de insumos" loading="lazy">
+          <div class="feature-body">
+            <h3>Catálogo de insumos</h3>
+            <p>Controla productos, categorías y precios por unidad base para optimizar compras.</p>
+          </div>
+        </article>
+        <article class="feature-card">
+          <img class="feature-card__img feature-card__img--contain" src="{% static 'public_site/image/analitica.png' %}" alt="Análisis de rentabilidad" loading="lazy">
+          <div class="feature-body">
+            <h3>Análisis de rentabilidad</h3>
+            <p>Evalúa margen objetivo vs real y ajusta precios de venta con datos concretos.</p>
+          </div>
+        </article>
+        <article class="feature-card">
+          <img class="feature-card__img feature-card__img--contain" src="{% static 'public_site/image/PRODUCCION.png' %}" alt="Planificación de producción" loading="lazy">
+          <div class="feature-body">
+            <h3>Planificación de producción</h3>
+            <p>Órdenes por lotes, fechas programadas y costo congelado al iniciar elaboración.</p>
+          </div>
+        </article>
+        <article class="feature-card">
+          <img class="feature-card__img feature-card__img--contain" src="{% static 'public_site/image/analitica.png' %}" alt="Dashboard analítico" loading="lazy">
+          <div class="feature-body">
+            <h3>Dashboard analítico</h3>
+            <p>Rankings de recetas e insumos, evolución de costos y alertas de pérdida.</p>
+          </div>
+        </article>
+      </div>
+
+      <div class="cta-box" style="margin-top:3rem;">
+        <h2>¿Listo para transformar tu cocina?</h2>
+        <p>Nuestra misión es ayudarte a tomar decisiones informadas y rentables.</p>
+        <div class="cta-actions">
+          <a href="{% url 'public_site:contacto' %}" class="btn btn-primary">Solicitar acceso</a>
+          <a href="{% url 'public_site:contacto' %}" class="btn btn-outline">Contactar</a>
+        </div>
+      </div>
+    </div>
+  </section>
+{% endblock %}

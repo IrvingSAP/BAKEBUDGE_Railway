@@ -1,0 +1,37 @@
+{% extends "security/base_acceso.html" %}
+
+{% block title %}Ingresar — BAKEBUDGE{% endblock %}
+{% block body_page %}login{% endblock %}
+
+{% block acceso_content %}
+<main class="acceso-card">
+  <h1>Ingresar</h1>
+  <p class="acceso-lead">Accede con tu usuario y contraseña. Si es tu primer ingreso, completarás la verificación de correo y 2FA.</p>
+
+  {% if show_provisioned %}
+  <div class="acceso-banner">
+    Tu cuenta fue creada por un administrador. Ingresa para completar la configuración de seguridad.
+  </div>
+  {% endif %}
+
+  <form class="acceso-form" method="post" novalidate>
+    {% csrf_token %}
+    <label for="username">Usuario</label>
+    <input type="text" id="username" name="username" autocomplete="username"
+           placeholder="tu_usuario" maxlength="150" required>
+
+    <label for="password">Contraseña</label>
+    <input type="password" id="password" name="password" autocomplete="current-password"
+           placeholder="••••••••" required>
+
+    <div class="acceso-actions">
+      <button type="submit" class="btn btn-primary btn-block">Ingresar</button>
+    </div>
+  </form>
+
+  <div class="acceso-links">
+    <a href="{% url 'public_site:contacto' %}">¿No tienes cuenta? Solicitar acceso</a>
+    <p>¿Olvidaste tu contraseña? Contacta a soporte en esta versión.</p>
+  </div>
+</main>
+{% endblock %}

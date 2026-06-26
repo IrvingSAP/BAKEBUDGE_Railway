@@ -1,0 +1,73 @@
+{% extends "app_base.html" %}
+{% load static catalog_extras %}
+
+{% block title %}{% if conversion %}Editar conversion{% else %}Nueva conversion{% endif %} - BAKEBUDGE{% endblock %}
+{% block body_page %}conversiones{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'catalog/css/conversiones.css' %}">
+{% endblock %}
+
+{% block app_content %}
+<div class="page-header page-header-row">
+  <div>
+    <h1>{% if conversion %}Editar conversion{% else %}Nueva conversion{% endif %}</h1>
+    <p>Define equivalencias para recetas y productos.</p>
+  </div>
+  <div class="page-header-actions">
+    {% if conversion %}
+    {% url 'catalog:conversion_edit_help' conversion.pk as help_url %}
+    {% include "catalog/partials/form_help_link.html" with help_btn_class="conversiones-help-btn" help_title="Ayuda para editar conversión" %}
+    {% else %}
+    {% url 'catalog:conversion_create_help' as help_url %}
+    {% include "catalog/partials/form_help_link.html" with help_btn_class="conversiones-help-btn" help_title="Ayuda para crear conversión" %}
+    {% endif %}
+    <a href="{% url 'catalog:conversion_list' %}" class="btn btn-outline">Volver al listado</a>
+  </div>
+</div>
+
+<form method="post" novalidate data-bb-validate-form>
+  {% csrf_token %}
+  <section class="card conversiones-form-card">
+    <h2>Datos de conversion</h2>
+    <div class="form-grid">
+      <div class="form-field">
+        <label for="producto">Producto (opcional)</label>
+        <select id="producto" name="producto">
+          <option value="">Generica</option>
+          {% for producto in productos %}
+          <option value="{{ producto.pk }}" {% if form_data.producto == producto.pk|stringformat:'s' %}selected{% endif %}>
+            {{ producto.nombre }} ({{ producto.unidad_base }})
+          </option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="form-field">
+        <label for="nombre">Etiqueta</label>
+        <input type="text" id="nombre" name="nombre" maxlength="50" value="{{ form_data.nombre }}">
+      </div>
+      <div class="form-field">
+        <label for="desde_unidad">Desde unidad *</label>
+        <input type="text" id="desde_unidad" name="desde_unidad" maxlength="20" value="{{ form_data.desde_unidad }}" required>
+      </div>
+      <div class="form-field">
+        <label for="hacia_unidad">Hacia unidad *</label>
+        <input type="text" id="hacia_unidad" name="hacia_unidad" maxlength="20" value="{{ form_data.hacia_unidad }}" required>
+      </div>
+      <div class="form-field">
+        <label for="factor">Factor *</label>
+        <input type="number" id="factor" name="factor" step="0.000001" min="0.000001" value="{{ form_data.factor }}" required>
+      </div>
+      <div class="form-field" style="grid-column: 1 / -1;">
+        <label for="notas">Notas</label>
+        <textarea id="notas" name="notas" rows="3">{{ form_data.notas }}</textarea>
+      </div>
+    </div>
+    <div class="conversiones-form-actions">
+      <button type="submit" class="btn btn-primary">{% if conversion %}Guardar cambios{% else %}Guardar conversion{% endif %}</button>
+      <a href="{% url 'catalog:conversion_list' %}" class="btn btn-outline">Cancelar</a>
+    </div>
+  </section>
+</form>
+{% include "catalog/partials/form_validation.html" %}
+{% endblock %}

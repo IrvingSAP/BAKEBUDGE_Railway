@@ -1,0 +1,212 @@
+{% extends "app_base.html" %}
+
+{% load static %}
+
+
+
+{% block title %}Seguridad — {{ managed_user.username }} - BAKEBUDGE{% endblock %}
+
+{% block body_page %}usuarios{% endblock %}
+
+
+
+{% block extra_css %}
+
+<link rel="stylesheet" href="{% static 'administration/css/usuarios.css' %}">
+
+{% endblock %}
+
+
+
+{% block app_content %}
+
+<div class="page-header page-header-row">
+
+  <div>
+
+    <h1>Seguridad — correo y 2FA</h1>
+
+    <p>Campos de <code>UserProfile</code> — verificación de correo y autenticador TOTP. Solo Master.</p>
+
+  </div>
+
+  <a href="{% url 'administration:usuario_list' %}" class="btn btn-outline">← Volver al listado</a>
+
+</div>
+
+
+
+<form method="post" novalidate class="usuarios-form">
+
+  {% csrf_token %}
+
+
+
+  <section class="card usuarios-form-card">
+
+    <h2>Usuario (<code>auth.User</code>)</h2>
+
+    <div class="form-grid">
+
+      <div class="form-field">
+
+        <label for="usuario_display">Usuario</label>
+
+        <input type="text" id="usuario_display" value="{{ managed_user.username }}" readonly tabindex="-1">
+
+      </div>
+
+      <div class="form-field">
+
+        <label for="email_display">Correo</label>
+
+        <input type="email" id="email_display" value="{{ managed_user.email }}" readonly tabindex="-1">
+
+      </div>
+
+      <div class="form-field">
+
+        <label for="first_name_display">Nombre</label>
+
+        <input type="text" id="first_name_display" value="{{ managed_user.first_name }}" readonly tabindex="-1">
+
+      </div>
+
+      <div class="form-field">
+
+        <label for="last_name_display">Apellido</label>
+
+        <input type="text" id="last_name_display" value="{{ managed_user.last_name }}" readonly tabindex="-1">
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+
+  <section class="card usuarios-form-card">
+
+    <h2>Verificación de correo</h2>
+
+    <div class="form-grid">
+
+      <div class="form-field">
+
+        <label class="checkbox-label">
+
+          <input type="checkbox" name="email_confirmed" value="1"
+
+                 {% if managed_user.profile.email_confirmed %}checked{% endif %}>
+
+          Correo verificado (<code>email_confirmed</code>)
+
+        </label>
+
+        <span class="form-hint">Master puede marcar manualmente en casos excepcionales.</span>
+
+      </div>
+
+      <div class="form-field">
+
+        <label for="email_confirm_code">Código de confirmación</label>
+
+        <input type="text" id="email_confirm_code"
+
+               value="{{ managed_user.profile.email_confirm_code|default:'—' }}" readonly tabindex="-1">
+
+        <span class="form-hint">6 dígitos; caduca en +5 min</span>
+
+      </div>
+
+      <div class="form-field">
+
+        <label for="email_confirm_exp">Caducidad del código</label>
+
+        <input type="text" id="email_confirm_exp"
+
+               value="{% if managed_user.profile.email_confirm_exp %}{{ managed_user.profile.email_confirm_exp|date:'d/m/Y H:i' }}{% else %}—{% endif %}"
+
+               readonly tabindex="-1">
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+
+  <section class="card usuarios-form-card">
+
+    <h2>Autenticación en dos pasos (2FA)</h2>
+
+    <div class="form-grid">
+
+      <div class="form-field">
+
+        <label class="checkbox-label">
+
+          <input type="checkbox" name="tfa_verified" value="1"
+
+                 {% if managed_user.profile.tfa_verified %}checked{% endif %}>
+
+          2FA completado (<code>tfa_verified</code>)
+
+        </label>
+
+      </div>
+
+      <div class="form-field">
+
+        <label for="totp_secret_display">Secreto TOTP</label>
+
+        <input type="text" id="totp_secret_display" value="{{ totp_secret_masked }}" readonly tabindex="-1">
+
+      </div>
+
+      <div class="form-field">
+
+        <label for="last_totp_reset">Último reset 2FA</label>
+
+        <input type="text" id="last_totp_reset"
+
+               value="{% if managed_user.profile.last_totp_reset %}{{ managed_user.profile.last_totp_reset|date:'d/m/Y H:i' }}{% else %}—{% endif %}"
+
+               readonly tabindex="-1">
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+
+  <section class="card usuarios-form-card">
+
+    <div class="usuarios-form-actions">
+
+      <button type="submit" class="btn btn-primary">Guardar cambios</button>
+
+      <button type="submit" class="btn btn-outline" name="reenviar_codigo" value="1">Reenviar código correo</button>
+
+      <button type="submit" class="btn btn-outline" name="reset_2fa" value="1">Reset 2FA</button>
+
+      <a href="{% url 'administration:usuario_list' %}" class="btn btn-outline">Cancelar</a>
+
+    </div>
+
+    <p class="form-hint" style="margin-top:1rem;margin-bottom:0;">
+
+      Reset 2FA limpia <code>totp_secret</code> y flags de verificación según reglas de negocio.
+
+    </p>
+
+  </section>
+
+</form>
+
+{% endblock %}
+

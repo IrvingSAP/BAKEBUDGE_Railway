@@ -1,0 +1,64 @@
+{% load static core_extras %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}BAKEBUDGE{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'dashboard/css/bakebudge-app.css' %}">
+  <link rel="stylesheet" href="{% static 'dashboard/css/bakebudge-app-extra.css' %}">
+  <link rel="stylesheet" href="{% static 'css/bakebudge-modal.css' %}">
+  <link rel="stylesheet" href="{% static 'css/bakebudge-form-errors.css' %}">
+  {% block extra_css %}{% endblock %}
+</head>
+<body data-page="{% block body_page %}dashboard{% endblock %}">
+
+  <div class="sidebar-overlay" data-sidebar-overlay aria-hidden="true"></div>
+
+  <div class="app-layout">
+    {% include "partials/app_sidebar.html" %}
+
+    <div class="app-main">
+      <header class="app-topbar">
+        <button type="button" class="sidebar-toggle" data-sidebar-toggle aria-label="Abrir menú">☰</button>
+        <span class="app-topbar-brand app-brand">BAKE<span>BUDGE</span></span>
+        <div class="app-user">
+          <span class="app-user-label">Usuario</span>
+          <strong class="app-user-name">{{ user.username }}</strong>
+        </div>
+      </header>
+
+      {% block app_content %}{% endblock %}
+    </div>
+  </div>
+
+  {% include "public_site/partials/modal_global.html" %}
+
+  <script src="{% static 'js/bakebudge-modal.js' %}"></script>
+  <script src="{% static 'js/bakebudge-form-errors.js' %}"></script>
+  <script src="{% static 'dashboard/js/main.js' %}"></script>
+  {% if message_modal %}
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      BakeBudgeModal.show({
+        type: {{ error_tipo|default:"ER"|as_json }},
+        message: {{ message_modal|as_json }}
+      });
+    });
+  </script>
+  {% endif %}
+  {% if messages %}
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      {% for message in messages %}
+      BakeBudgeModal.show({
+        type: {% if "error" in message.tags %}"ER"{% elif "warning" in message.tags %}"AV"{% elif "info" in message.tags %}"IN"{% else %}"OK"{% endif %},
+        message: "{{ message|escapejs }}"
+      });
+      {% endfor %}
+    });
+  </script>
+  {% endif %}
+  {% block extra_js %}{% endblock %}
+</body>
+</html>

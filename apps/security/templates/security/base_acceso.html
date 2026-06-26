@@ -1,0 +1,39 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Acceso — BAKEBUDGE{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'security/css/acceso.css' %}">
+  <link rel="stylesheet" href="{% static 'css/bakebudge-modal.css' %}">
+  {% block extra_css %}{% endblock %}
+</head>
+<body class="acceso-page" data-page="{% block body_page %}acceso{% endblock %}">
+
+  <div class="acceso-shell">
+    <a class="acceso-brand" href="{% url 'public_site:home' %}">BAKE<span>BUDGE</span></a>
+
+    {% block acceso_content %}{% endblock %}
+
+    <p class="acceso-footer"><a href="{% url 'public_site:home' %}">← Volver al inicio</a></p>
+  </div>
+
+  {% include "public_site/partials/modal_global.html" %}
+
+  <script src="{% static 'js/bakebudge-modal.js' %}"></script>
+  {% if messages %}
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      {% for message in messages %}
+      BakeBudgeModal.show({
+        type: {% if "error" in message.tags %}"ER"{% elif "warning" in message.tags %}"AV"{% elif "info" in message.tags %}"IN"{% else %}"OK"{% endif %},
+        message: "{{ message|escapejs }}"
+      });
+      {% endfor %}
+    });
+  </script>
+  {% endif %}
+  {% block extra_js %}{% endblock %}
+</body>
+</html>

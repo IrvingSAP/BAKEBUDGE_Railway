@@ -1,0 +1,93 @@
+{% extends "app_base.html" %}
+{% load static catalog_extras %}
+
+{% block title %}Recetas - BAKEBUDGE{% endblock %}
+{% block body_page %}recetas{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'catalog/vendor/dataTables.dataTables.min.css' %}">
+<link rel="stylesheet" href="{% static 'recipes/css/recetas.css' %}">
+{% endblock %}
+
+{% block app_content %}
+<div class="page-header page-header-row">
+  <div>
+    <h1>Recetas</h1>
+    <p>Cabecera de receta, versión vigente y métricas de costo por porción.</p>
+  </div>
+  <a href="{% url 'recipes:receta_create' %}" class="btn btn-primary">+ Nueva receta</a>
+</div>
+
+<section class="card recetas-table-card">
+  <div class="recetas-filters" role="search" aria-label="Filtrar recetas">
+    <div class="form-field">
+      <label for="filter-nombre">Nombre</label>
+      <input type="search" id="filter-nombre" placeholder="Buscar por nombre de receta…" autocomplete="off">
+    </div>
+    <div class="form-field">
+      <label for="filter-estado">Estado</label>
+      <select id="filter-estado">
+        <option value="">Todos</option>
+        <option value="Activo">Activo</option>
+        <option value="En proceso">En proceso</option>
+        <option value="Inactivo">Inactivo</option>
+      </select>
+    </div>
+    <div class="recetas-filters__actions">
+      <button type="button" class="btn btn-outline" id="filter-limpiar">Limpiar filtros</button>
+    </div>
+  </div>
+
+  <div class="table-wrap">
+    <table id="tabla-recetas" class="table-bakebudge">
+      <thead>
+        <tr>
+          <th>Receta</th>
+          <th>Versión</th>
+          <th>Rendimiento</th>
+          <th>Costo total</th>
+          <th>Costo / porción</th>
+          <th>Precio sugerido</th>
+          <th>Estado</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for receta in recetas %}
+        <tr>
+          <td>{{ receta.nombre }}</td>
+          <td>{% if receta.version_actual %}v{{ receta.version_actual.numero_version }}{% else %}—{% endif %}</td>
+          <td>
+            {% if receta.version_actual %}
+              {{ receta.version_actual.rendimiento_cantidad }} {{ receta.version_actual.rendimiento_unidad }}
+            {% else %}—{% endif %}
+          </td>
+          <td>{% if receta.version_actual %}{{ receta.version_actual.costo_total|format_money:user }}{% else %}—{% endif %}</td>
+          <td>{% if receta.version_actual %}{{ receta.version_actual.costo_por_porcion|format_money:user }}{% else %}—{% endif %}</td>
+          <td>{% if receta.version_actual %}{{ receta.version_actual.precio_venta_sugerido|format_money:user }}{% else %}—{% endif %}</td>
+          <td><span class="badge {{ receta.status|status_badge }}">{{ receta.status|status_label }}</span></td>
+          <td class="table-actions">
+            <a href="{% url 'recipes:receta_edit' receta.pk %}">Editar</a>
+            {% if receta.version_actual %}
+            · <a href="{% url 'recipes:recetaversion_edit' receta.pk %}">Formulación</a>
+            · <a href="{% url 'production:orden_create' %}?receta_id={{ receta.pk }}">Producir</a>
+            · <a href="{% url 'recipes:receta_costos' receta.pk %}">Costos</a>
+            {% endif %}
+            · <a href="{% url 'recipes:receta_delete' receta.pk %}">Eliminar</a>
+          </td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="8">No hay recetas. Crea la primera con «+ Nueva receta».</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'catalog/vendor/dataTables.min.js' %}"></script>
+<script src="{% static 'recipes/js/receta_list.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,69 @@
+{% extends "app_base.html" %}
+{% load static %}
+
+{% block title %}Seguridad de la cuenta - BAKEBUDGE{% endblock %}
+{% block body_page %}cuenta-seguridad{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'accounts/css/cuenta_seguridad.css' %}">
+{% endblock %}
+
+{% block app_content %}
+<div class="page-header">
+  <h1>Seguridad de la cuenta</h1>
+  <p>Cambia tu contraseña y reinicia la verificación de correo y autenticador 2FA.</p>
+</div>
+
+<section class="card cuenta-seguridad-form">
+  <div class="cuenta-seguridad-banner" role="note">
+    Perderás el factor TOTP actual. Deberás verificar tu correo nuevamente, escanear un código QR nuevo
+    y volver a ingresar con tu nueva contraseña. Se cerrará tu sesión actual.
+  </div>
+
+  <p class="cuenta-seguridad-readonly">
+    Usuario: <strong>{{ user.username }}</strong>
+    · Correo: {{ user.email }}
+    · Repostería: {{ app_profile.nombre_negocio|default:"—" }}
+  </p>
+
+  <form method="post" novalidate>
+    {% csrf_token %}
+    <div class="form-grid">
+      <div class="form-field">
+        <label for="password_current">Contraseña actual</label>
+        <input type="password" id="password_current" name="password_current"
+               autocomplete="current-password" placeholder="••••••••" required
+               {% if errors.password_current %}aria-invalid="true"{% endif %}>
+      </div>
+      <div class="form-field">
+        <label for="password_new">Nueva contraseña</label>
+        <input type="password" id="password_new" name="password_new"
+               autocomplete="new-password" placeholder="••••••••" required
+               {% if errors.password_new %}aria-invalid="true"{% endif %}>
+        <small style="color:var(--color-muted);font-size:0.82rem;">
+          Mínimo 8 caracteres; no puede ser igual a la anterior ni al nombre de usuario.
+        </small>
+      </div>
+      <div class="form-field">
+        <label for="password_confirm">Confirmar nueva contraseña</label>
+        <input type="password" id="password_confirm" name="password_confirm"
+               autocomplete="new-password" placeholder="••••••••" required
+               {% if errors.password_confirm %}aria-invalid="true"{% endif %}>
+      </div>
+      <div class="form-field form-field--ack">
+        <label for="confirm_ack">
+          <input type="checkbox" id="confirm_ack" name="confirm_ack" value="1"
+                 {% if form_data.confirm_ack %}checked{% endif %}
+                 {% if errors.confirm_ack %}aria-invalid="true"{% endif %}>
+          Entiendo que debo reconfigurar correo y 2FA, y que se cerrará mi sesión.
+        </label>
+      </div>
+    </div>
+
+    <div class="cuenta-seguridad-actions">
+      <button type="submit" class="btn btn-primary">Confirmar cambio de seguridad</button>
+      <a href="{% url 'accounts:perfil' %}" class="btn btn-outline">Volver al perfil</a>
+    </div>
+  </form>
+</section>
+{% endblock %}

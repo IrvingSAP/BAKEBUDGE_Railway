@@ -1,0 +1,195 @@
+{% extends "app_base.html" %}
+{% load static catalog_extras %}
+
+{% block title %}Estadísticas — BAKEBUDGE{% endblock %}
+{% block body_page %}estadisticas{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'catalog/vendor/dataTables.dataTables.min.css' %}">
+<link rel="stylesheet" href="{% static 'analytics/css/estadisticas.css' %}">
+{% endblock %}
+
+{% block app_content %}
+<div class="page-header">
+  <h1>Estadísticas</h1>
+  <p>Snapshots de producción completada — solo órdenes finalizadas de tu cuenta.</p>
+</div>
+
+<section class="card">
+  <form method="get" id="estadisticas-filters" class="estadisticas-filters" role="search" aria-label="Filtrar estadísticas">
+    <div class="form-field">
+      <label for="filter-periodo">Periodo</label>
+      <select id="filter-periodo" name="periodo">
+        <option value="">Todos</option>
+        {% for opt in summary.periodo_options %}
+        <option value="{{ opt.value }}"{% if summary.filtros.periodo == opt.value %} selected{% endif %}>{{ opt.label }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="form-field">
+      <label for="filter-receta">Receta</label>
+      <select id="filter-receta" name="receta">
+        <option value="">Todas</option>
+        {% for receta in summary.receta_options %}
+        <option value="{{ receta.pk }}"{% if summary.filtros.receta == receta.pk|stringformat:"s" %} selected{% endif %}>{{ receta.nombre }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="form-field">
+      <label for="filter-categoria">Categoría insumo</label>
+      <select id="filter-categoria" name="categoria">
+        <option value="">Todas</option>
+        {% for cat in summary.categoria_options %}
+        <option value="{{ cat }}"{% if summary.filtros.categoria == cat %} selected{% endif %}>{{ cat }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="estadisticas-filters__actions">
+      <button type="button" class="btn btn-outline" id="filter-limpiar"
+              data-clear-url="{% url 'analytics:estadisticas_home' %}">Limpiar filtros</button>
+    </div>
+  </form>
+</section>
+
+<div class="stats-grid">
+  <article class="stat-card">
+    <div class="label">Margen real (periodo)</div>
+    <div class="value">
+      {% if summary.kpis.margen_avg is not None %}{{ summary.kpis.margen_avg|floatformat:1 }}%{% else %}—{% endif %}
+    </div>
+    <div class="hint">Objetivo {{ margen_objetivo|floatformat:0 }}%</div>
+  </article>
+  <article class="stat-card">
+    <div class="label">Ganancia total</div>
+    <div class="value">{{ summary.kpis.ganancia_total|format_money:user }}</div>
+    <div class="hint">{{ summary.periodo_hint }}</div>
+  </article>
+  <article class="stat-card">
+    <div class="label">Órdenes completadas</div>
+    <div class="value">{{ summary.kpis.ordenes_count }}</div>
+    <div class="hint">Con snapshot analytics</div>
+  </article>
+  <article class="stat-card">
+    <div class="label">Órdenes con pérdida</div>
+    <div class="value">{{ summary.kpis.perdidas_count }}</div>
+    <div class="hint">Margen &lt; 0</div>
+  </article>
+</div>
+
+<div class="content-grid">
+  <section class="card">
+    <h2>Recetas más producidas</h2>
+    <ul class="bar-list">
+      {% for item in summary.ranking_recetas %}
+      <li>
+        <div class="bar-label"><span>{{ item.label }}</span><span>{{ item.display }}</span></div>
+        <div class="bar-track"><div class="bar-fill" style="width:{{ item.pct }}%"></div></div>
+      </li>
+      {% empty %}
+      <li><p class="form-hint">Sin datos para el filtro actual.</p></li>
+      {% endfor %}
+    </ul>
+  </section>
+  <section class="card">
+    <h2>Insumos más usados</h2>
+    <ul class="bar-list">
+      {% for item in summary.ranking_insumos %}
+      <li>
+        <div class="bar-label"><span>{{ item.label }}</span><span>{{ item.display }}</span></div>
+        <div class="bar-track"><div class="bar-fill" style="width:{{ item.pct }}%;background:var(--color-secondary)"></div></div>
+      </li>
+      {% empty %}
+      <li><p class="form-hint">Sin datos para el filtro actual.</p></li>
+      {% endfor %}
+    </ul>
+  </section>
+</div>
+
+<div class="estadisticas-widget-row">
+  <section class="card">
+    <h2>Versiones más productivas</h2>
+    <ul class="bar-list">
+      {% for item in summary.ranking_versiones %}
+      <li>
+        <div class="bar-label"><span>{{ item.label }}</span><span>{{ item.display }}</span></div>
+        <div class="bar-track"><div class="bar-fill" style="width:{{ item.pct }}%"></div></div>
+      </li>
+      {% empty %}
+      <li><p class="form-hint">Sin datos para el filtro actual.</p></li>
+      {% endfor %}
+    </ul>
+  </section>
+  <section class="card">
+    <h2>Evolución costo / porción</h2>
+    <ul class="bar-list">
+      {% for item in summary.evolucion_costo %}
+      <li>
+        <div class="bar-label"><span>{{ item.label }}</span><span>{{ item.display }}</span></div>
+        <div class="bar-track"><div class="bar-fill" style="width:{{ item.pct }}%"></div></div>
+      </li>
+      {% empty %}
+      <li><p class="form-hint">Sin datos.</p></li>
+      {% endfor %}
+    </ul>
+  </section>
+  <section class="card">
+    <h2>Ratio indirectos / ingredientes</h2>
+    <p class="form-hint">
+      {% if summary.ratio_indirectos_label %}
+      {{ summary.ratio_indirectos_label }}% indirectos sobre ingredientes (promedio periodo)
+      {% else %}—{% endif %}
+    </p>
+    <div class="estadisticas-ratio">
+      <div class="estadisticas-ratio-bar">
+        <div class="estadisticas-ratio-fill" style="width:{{ summary.ratio_indirectos_pct }}%"></div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<section class="card" style="margin-top:1.25rem;">
+  <h2>Detalle por producción completada</h2>
+  <div class="table-wrap">
+    <table id="tabla-analytics" class="table-bakebudge">
+      <thead>
+        <tr>
+          <th>Código</th>
+          <th>Receta</th>
+          <th>Unidades</th>
+          <th>Costo prod.</th>
+          <th>Precio venta</th>
+          <th>Margen real</th>
+          <th>Ganancia</th>
+          <th>Período</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for fila in summary.filas %}
+        <tr>
+          <td><a href="{% url 'production:orden_detail' fila.orden_produccion_id %}">{{ fila.orden_codigo }}</a></td>
+          <td>{{ fila.receta_nombre }} v{{ fila.receta_version_numero }}</td>
+          <td>{{ fila.unidades_producidas }}</td>
+          <td>{{ fila.costo_produccion_total|format_money:user }}</td>
+          <td>{{ fila.precio_venta_total|format_money:user }}</td>
+          <td class="{% if fila.margen_real_pct is not None and fila.margen_real_pct < 0 %}estadisticas-margen-negativo{% endif %}">
+            {% if fila.margen_real_pct is not None %}{{ fila.margen_real_pct|floatformat:1 }}%{% else %}—{% endif %}
+          </td>
+          <td class="{% if fila.ganancia_real < 0 %}estadisticas-margen-negativo{% endif %}">{{ fila.ganancia_real|format_money:user }}</td>
+          <td data-order="{{ fila.periodo_anio }}-{{ fila.periodo_mes|stringformat:'02d' }}">{{ fila.periodo_mes }}/{{ fila.periodo_anio }}</td>
+        </tr>
+        {% empty %}
+        <tr>
+          <td colspan="8">Aún no hay producciones completadas con snapshot analytics.</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'catalog/vendor/dataTables.min.js' %}"></script>
+<script src="{% static 'catalog/vendor/datatables-init.js' %}"></script>
+<script src="{% static 'analytics/js/estadisticas.js' %}"></script>
+{% endblock %}

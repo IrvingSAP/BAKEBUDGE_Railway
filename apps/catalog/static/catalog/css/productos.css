@@ -1,0 +1,227 @@
+/* Módulo productos — filtros del listado */
+
+.productos-filters {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) auto;
+  gap: 1rem;
+  align-items: end;
+  margin-bottom: 1.25rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid var(--color-border, #eee8e3);
+}
+
+.productos-filters .form-field {
+  margin: 0;
+}
+
+.productos-filters label {
+  display: block;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--color-muted);
+  margin-bottom: 0.35rem;
+}
+
+.productos-filters input,
+.productos-filters select {
+  width: 100%;
+  padding: 0.55rem 0.75rem;
+  border: 1px solid var(--color-border, #e8dfd8);
+  border-radius: var(--radius-sm, 8px);
+  font: inherit;
+  background: #fff;
+}
+
+.productos-filters__actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.productos-table-card .dt-container {
+  margin-top: 0.5rem;
+}
+
+.productos-table-card .dt-length select {
+  padding: 0.35rem 0.5rem;
+  border-radius: var(--radius-sm, 8px);
+  border: 1px solid var(--color-border, #e8dfd8);
+}
+
+.badge-inactive {
+  background: #f0e6de;
+  color: var(--color-muted);
+}
+
+/* Formulario producto (create / edit) */
+
+.productos-form-card h2 {
+  font-size: 1.05rem;
+  margin: 0 0 1rem;
+  color: var(--color-text);
+}
+
+.productos-form-card + .productos-form-card {
+  margin-top: 1.25rem;
+}
+
+.productos-form-card .form-grid {
+  margin-top: 0;
+}
+
+.form-hint {
+  display: block;
+  margin-top: 0.35rem;
+  font-size: 0.82rem;
+  color: var(--color-muted);
+  line-height: 1.4;
+}
+
+.form-hint code {
+  font-size: 0.78rem;
+}
+
+.form-hint--warn {
+  color: var(--color-primary-dark, #b85c6a);
+  margin-top: 0.5rem;
+}
+
+.productos-form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1.25rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--color-border, #eee8e3);
+}
+
+.productos-relaciones {
+  margin: 0;
+  padding-left: 1.15rem;
+  color: var(--color-muted);
+  font-size: 0.88rem;
+  line-height: 1.55;
+}
+
+.productos-relaciones li + li {
+  margin-top: 0.35rem;
+}
+
+.productos-moneda-badge {
+  display: inline-block;
+  padding: 0.45rem 0.75rem;
+  background: var(--color-bg-alt, #fff5ef);
+  border: 1px solid var(--color-border, #e8dfd8);
+  border-radius: var(--radius-sm, 8px);
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.page-header-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.productos-help-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.45rem 0.75rem;
+  border: 1px solid var(--color-border, #e8dfd8);
+  border-radius: var(--radius-sm, 8px);
+  background: #fff;
+  color: var(--color-primary-dark, #b85c6a);
+  font-size: 0.88rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.productos-help-btn:hover {
+  background: var(--color-bg-alt, #fff5ef);
+  border-color: var(--color-primary, #d4849a);
+}
+
+.productos-help-btn img {
+  display: block;
+  flex-shrink: 0;
+}
+
+.productos-help-intro {
+  margin-bottom: 1.25rem;
+  padding: 1rem 1.15rem;
+}
+
+.productos-help-intro p {
+  margin: 0;
+  color: var(--color-muted);
+  line-height: 1.55;
+  font-size: 0.92rem;
+}
+
+.productos-form--help {
+  margin-top: 0;
+}
+
+.productos-form-card--help .form-field input[readonly],
+.productos-form-card--help .form-field textarea[readonly] {
+  background: var(--color-bg-alt, #faf7f5);
+  color: var(--color-text);
+  cursor: default;
+}
+
+.productos-form-card--help .form-field select:disabled {
+  background: var(--color-bg-alt, #faf7f5);
+  color: var(--color-text);
+  opacity: 1;
+  cursor: default;
+}
+
+.productos-help-desc {
+  margin: 0.5rem 0 0;
+  font-size: 0.88rem;
+  line-height: 1.55;
+  color: var(--color-text);
+}
+
+.productos-help-list {
+  margin: 1rem 0 0;
+  padding-left: 1.15rem;
+  font-size: 0.88rem;
+  line-height: 1.55;
+  color: var(--color-muted);
+}
+
+.productos-help-list li + li {
+  margin-top: 0.35rem;
+}
+
+.productos-help-actions-demo {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.65rem;
+}
+
+.btn--demo {
+  pointer-events: none;
+  cursor: default;
+}
+
+@media (max-width: 900px) {
+  .productos-filters {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .productos-filters__actions {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 600px) {
+  .productos-filters {
+    grid-template-columns: 1fr;
+  }
+}

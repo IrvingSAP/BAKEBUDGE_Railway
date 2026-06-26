@@ -1,0 +1,96 @@
+{% extends "app_base.html" %}
+{% load catalog_extras %}
+
+{% block title %}Dashboard — BAKEBUDGE{% endblock %}
+{% block body_page %}dashboard{% endblock %}
+
+{% block app_content %}
+<div class="page-header">
+  <h1>Dashboard</h1>
+  <p>Resumen de tu repostería: costos, producción reciente y próximos pasos.</p>
+</div>
+
+<div class="stats-grid">
+  <a href="{% url 'catalog:producto_list' %}" class="stat-card stat-card-link">
+    <div class="label">Productos activos</div>
+    <div class="value">{{ summary.productos_activos }}</div>
+    <div class="hint">Insumos en catálogo</div>
+  </a>
+  <a href="{% url 'recipes:receta_list' %}" class="stat-card stat-card-link">
+    <div class="label">Recetas</div>
+    <div class="value">{{ summary.recetas }}</div>
+    <div class="hint">{{ summary.recetas_vigentes }} con versión vigente</div>
+  </a>
+  <a href="{% url 'production:orden_list' %}" class="stat-card stat-card-link">
+    <div class="label">Órdenes del mes</div>
+    <div class="value">{{ summary.ordenes_mes }}</div>
+    <div class="hint">{{ summary.ordenes_completadas }} completadas</div>
+  </a>
+  <a href="{% url 'analytics:estadisticas_home' %}" class="stat-card stat-card-link">
+    <div class="label">Margen promedio</div>
+    <div class="value">{{ summary.margen_promedio|floatformat:1 }}%</div>
+    <div class="hint">Objetivo: {{ summary.margen_objetivo|floatformat:0 }}% · Ver estadísticas</div>
+  </a>
+</div>
+
+<div class="content-grid">
+  <section class="card">
+    <h2>Primeros pasos</h2>
+    <ul class="checklist">
+      <li>
+        <span class="check{% if summary.tiene_productos %} done{% endif %}" aria-hidden="true">{% if summary.tiene_productos %}✓{% endif %}</span>
+        <div>
+          <strong>Crear primer producto</strong>
+          <p style="margin:0.25rem 0 0;color:var(--color-muted);font-size:0.9rem;">
+            Registra insumos con costo y unidad base.
+            <a href="{% url 'catalog:producto_list' %}">Ver productos</a>
+          </p>
+        </div>
+      </li>
+      <li>
+        <span class="check{% if summary.tiene_recetas %} done{% endif %}" aria-hidden="true">{% if summary.tiene_recetas %}✓{% endif %}</span>
+        <div>
+          <strong>Crear primera receta</strong>
+          <p style="margin:0.25rem 0 0;color:var(--color-muted);font-size:0.9rem;">
+            Añade ingredientes, pasos y calcula el costo por porción.
+            <a href="{% url 'recipes:receta_list' %}">Ver recetas</a>
+          </p>
+        </div>
+      </li>
+    </ul>
+  </section>
+
+  <section class="card">
+    <h2>Producción reciente</h2>
+    <div class="table-wrap">
+      <table class="table-bakebudge">
+        <thead>
+          <tr>
+            <th>Orden</th>
+            <th>Receta</th>
+            <th>Estado</th>
+            <th>Costo</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for orden in summary.produccion_reciente %}
+          <tr>
+            <td><a href="{% url 'production:orden_detail' orden.pk %}">{{ orden.codigo }}</a></td>
+            <td>{{ orden.receta }}</td>
+            <td><span class="badge {{ orden.estado_class }}">{{ orden.estado_label }}</span></td>
+            <td>{{ orden.costo|format_money:user }}</td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="4" class="app-empty-state">Aún no hay órdenes de producción registradas.</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <p style="margin:1rem 0 0;font-size:0.88rem;">
+      <a href="{% url 'production:orden_list' %}" style="color:var(--color-primary-dark);font-weight:700;">Ver todas las órdenes →</a>
+    </p>
+  </section>
+</div>
+{% endblock %}

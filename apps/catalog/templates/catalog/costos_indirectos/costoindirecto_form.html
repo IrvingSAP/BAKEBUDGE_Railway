@@ -1,0 +1,70 @@
+{% extends "app_base.html" %}
+{% load static catalog_extras %}
+
+{% block title %}{% if costo_indirecto %}Editar costo indirecto{% else %}Nuevo costo indirecto{% endif %} - BAKEBUDGE{% endblock %}
+{% block body_page %}costos-indirectos{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'catalog/css/costos-indirectos.css' %}">
+{% endblock %}
+
+{% block app_content %}
+<div class="page-header page-header-row">
+  <div>
+    <h1>{% if costo_indirecto %}Editar costo indirecto{% else %}Nuevo costo indirecto{% endif %}</h1>
+    <p>Configura los gastos indirectos para tus calculos de produccion.</p>
+  </div>
+  <div class="page-header-actions">
+    {% if costo_indirecto %}
+    {% url 'catalog:costoindirecto_edit_help' costo_indirecto.pk as help_url %}
+    {% include "catalog/partials/form_help_link.html" with help_btn_class="costos-indirectos-help-btn" help_title="Ayuda para editar costo indirecto" %}
+    {% else %}
+    {% url 'catalog:costoindirecto_create_help' as help_url %}
+    {% include "catalog/partials/form_help_link.html" with help_btn_class="costos-indirectos-help-btn" help_title="Ayuda para crear costo indirecto" %}
+    {% endif %}
+    <a href="{% url 'catalog:costoindirecto_list' %}" class="btn btn-outline">Volver al listado</a>
+  </div>
+</div>
+
+<form method="post" novalidate data-bb-validate-form>
+  {% csrf_token %}
+  <section class="card costos-indirectos-form-card">
+    <h2>Datos de costo</h2>
+    <div class="form-grid">
+      <div class="form-field">
+        <label for="nombre">Nombre *</label>
+        <input type="text" id="nombre" name="nombre" maxlength="50" value="{{ form_data.nombre }}" required>
+      </div>
+      <div class="form-field">
+        <label for="unidad_cobro">Unidad cobro *</label>
+        <select id="unidad_cobro" name="unidad_cobro">
+          {% for value, label in unidad_cobro_choices %}
+          <option value="{{ value }}" {% if form_data.unidad_cobro == value %}selected{% endif %}>{{ label }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="form-field">
+        <label for="costo_por_unidad">Costo por unidad *</label>
+        <input type="number" id="costo_por_unidad" name="costo_por_unidad" step="0.0001" min="0" value="{{ form_data.costo_por_unidad }}" required>
+      </div>
+      <div class="form-field">
+        <label for="status">Estado *</label>
+        <select id="status" name="status">
+          {% for value, label in status_choices %}
+          <option value="{{ value }}" {% if form_data.status == value %}selected{% endif %}>{{ label }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="form-field" style="grid-column: 1 / -1;">
+        <label for="notas">Notas</label>
+        <textarea id="notas" name="notas" rows="3">{{ form_data.notas }}</textarea>
+      </div>
+    </div>
+    <div class="costos-indirectos-form-actions">
+      <button type="submit" class="btn btn-primary">{% if costo_indirecto %}Guardar cambios{% else %}Guardar costo indirecto{% endif %}</button>
+      <a href="{% url 'catalog:costoindirecto_list' %}" class="btn btn-outline">Cancelar</a>
+    </div>
+  </section>
+</form>
+{% include "catalog/partials/form_validation.html" %}
+{% endblock %}

@@ -1,0 +1,13 @@
+{% load core_extras %}
+{% if errors %}
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  var form = document.querySelector("[data-bb-validate-form]");
+  if (!form || !window.BakeBudgeFormErrors) {
+    return;
+  }
+  BakeBudgeFormErrors.bindClearOnInput(form);
+  BakeBudgeFormErrors.apply(form, {{ errors|as_json }}, { focus: false });
+});
+</script>
+{% endif %}

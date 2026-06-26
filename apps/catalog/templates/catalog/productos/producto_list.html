@@ -1,0 +1,87 @@
+{% extends "app_base.html" %}
+{% load static catalog_extras %}
+
+{% block title %}Productos - BAKEBUDGE{% endblock %}
+{% block body_page %}productos{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'catalog/vendor/dataTables.dataTables.min.css' %}">
+<link rel="stylesheet" href="{% static 'catalog/css/productos.css' %}">
+{% endblock %}
+
+{% block app_content %}
+<div class="page-header page-header-row">
+  <div>
+    <h1>Productos</h1>
+    <p>Catalogo de insumos y materiales con costo por unidad base.</p>
+  </div>
+  <a href="{% url 'catalog:producto_create' %}" class="btn btn-primary">+ Nuevo producto</a>
+</div>
+
+<section class="card productos-table-card">
+  <div class="productos-filters" role="search" aria-label="Filtrar productos">
+    <div class="form-field">
+      <label for="filter-nombre">Nombre</label>
+      <input type="search" id="filter-nombre" placeholder="Buscar por nombre...">
+    </div>
+    <div class="form-field">
+      <label for="filter-categoria">Categoria</label>
+      <select id="filter-categoria">
+        <option value="">Todas</option>
+        {% for categoria in categorias %}
+        <option value="{{ categoria }}">{{ categoria }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="form-field">
+      <label for="filter-estado">Estado</label>
+      <select id="filter-estado">
+        <option value="">Todos</option>
+        <option value="Activo">Activo</option>
+        <option value="En proceso">En proceso</option>
+        <option value="Inactivo">Inactivo</option>
+      </select>
+    </div>
+    <div class="productos-filters__actions">
+      <button type="button" class="btn btn-outline" id="filter-limpiar">Limpiar filtros</button>
+    </div>
+  </div>
+
+  <div class="table-wrap">
+    <table id="tabla-productos" class="table-bakebudge">
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Categoria</th>
+          <th>Unidad base</th>
+          <th>Costo / unidad</th>
+          <th>Estado</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for producto in productos %}
+        <tr>
+          <td>{{ producto.nombre }}</td>
+          <td>{{ producto.categoria.nombre }}</td>
+          <td>{{ producto.unidad_base }}</td>
+          <td>{{ producto.costo_por_unidad_base|format_money:user }}</td>
+          <td><span class="badge {{ producto.status|status_badge }}">{{ producto.status|status_label }}</span></td>
+          <td class="table-actions">
+            <a href="{% url 'catalog:producto_edit' producto.pk %}">Editar</a> -
+            <a href="{% url 'catalog:producto_delete' producto.pk %}">Eliminar</a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'catalog/vendor/jquery.min.js' %}"></script>
+<script src="{% static 'catalog/vendor/dataTables.min.js' %}"></script>
+<script src="{% static 'catalog/vendor/datatables-init.js' %}"></script>
+<script src="{% static 'catalog/js/producto_list.js' %}"></script>
+{% endblock %}

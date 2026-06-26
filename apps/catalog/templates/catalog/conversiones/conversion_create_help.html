@@ -1,0 +1,133 @@
+{% extends "app_base.html" %}
+{% load static catalog_extras %}
+
+{% block title %}Ayuda — Crear conversión — BAKEBUDGE{% endblock %}
+{% block body_page %}conversiones{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'catalog/css/conversiones.css' %}">
+{% endblock %}
+
+{% block app_content %}
+<div class="page-header page-header-row">
+  <div>
+    <h1>Ayuda: crear conversión</h1>
+    <p>Guía de los campos del formulario de alta. Solo consulta — no guarda datos.</p>
+  </div>
+  <a href="{% url 'catalog:conversion_create' %}" class="btn btn-primary">← Volver al formulario</a>
+</div>
+
+<div class="conversiones-help-intro card">
+  <p>
+    Una <strong>conversión de unidad</strong> define cuánto equivale una medida culinaria
+    (taza, cucharada, onza…) en la unidad destino (gramos, mililitros, etc.).
+    Completa los campos marcados con <span aria-hidden="true">*</span> para registrarla.
+    Puedes crear reglas genéricas o específicas por producto.
+  </p>
+</div>
+
+<div class="conversiones-form conversiones-form--help" aria-readonly="true">
+  <section class="card conversiones-form-card conversiones-form-card--help">
+    <h2>Alcance</h2>
+    <div class="form-grid">
+      <div class="form-field" style="grid-column: 1 / -1;">
+        <label for="help-producto">Producto</label>
+        <select id="help-producto" disabled tabindex="-1">
+          <option selected>Genérica (sin producto)</option>
+        </select>
+        <p class="conversiones-help-desc">
+          Opcional. Si dejas «Genérica», la regla aplica a cualquier producto que use esa unidad de origen.
+          Si eliges un producto, la conversión solo aplica a él y la unidad destino debe coincidir
+          con la unidad base del producto (p. ej. gramos para harina).
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="card conversiones-form-card conversiones-form-card--help">
+    <h2>Regla</h2>
+    <div class="form-grid">
+      <div class="form-field">
+        <label for="help-desde">Desde unidad <span aria-hidden="true">*</span></label>
+        <input type="text" id="help-desde" value="taza" readonly tabindex="-1">
+        <p class="conversiones-help-desc">
+          Unidad de origen en recetas o medidas culinarias (máximo 20 caracteres).
+          Ejemplos: «taza», «cucharada», «oz», «unidad».
+        </p>
+      </div>
+      <div class="form-field">
+        <label for="help-hacia">Hacia unidad <span aria-hidden="true">*</span></label>
+        <input type="text" id="help-hacia" value="g" readonly tabindex="-1">
+        <p class="conversiones-help-desc">
+          Unidad destino a la que se convierte (máximo 20 caracteres).
+          Suele ser la unidad base del producto: g, ml, kg, unidad…
+        </p>
+      </div>
+      <div class="form-field">
+        <label for="help-factor">Factor <span aria-hidden="true">*</span></label>
+        <input type="text" id="help-factor" value="120" readonly tabindex="-1">
+        <p class="conversiones-help-desc">
+          Número mayor que 0 que define la equivalencia:
+          <strong>1 × desde = factor × hacia</strong>.
+          Ejemplo: 1 taza = 120 g → factor = 120.
+        </p>
+      </div>
+      <div class="form-field" style="grid-column: 1 / -1;">
+        <label>Vista previa</label>
+        <div class="conversiones-formula-box">1 <code>taza</code> = <strong>120</strong> <code>g</code></div>
+        <p class="conversiones-help-desc">
+          Se actualiza en tiempo real al escribir en el formulario real.
+          Te ayuda a verificar que la regla tiene sentido antes de guardar.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="card conversiones-form-card conversiones-form-card--help">
+    <h2>Información</h2>
+    <div class="form-grid">
+      <div class="form-field" style="grid-column: 1 / -1;">
+        <label for="help-nombre">Nombre / etiqueta</label>
+        <input type="text" id="help-nombre" value="Taza a gramos (genérica)" readonly tabindex="-1">
+        <p class="conversiones-help-desc">
+          Opcional. Etiqueta visible en el listado (máximo 50 caracteres).
+          Si está vacía, se muestra automáticamente «desde → hacia».
+        </p>
+      </div>
+      <div class="form-field" style="grid-column: 1 / -1;">
+        <label for="help-notas">Notas</label>
+        <textarea id="help-notas" rows="3" readonly tabindex="-1">Medida estándar US — harina sin tamizar.</textarea>
+        <p class="conversiones-help-desc">
+          Opcional. Texto libre para recordar el origen de la medida o referencias culinarias.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="card conversiones-form-card conversiones-form-card--help">
+    <h2>Acciones del formulario real</h2>
+    <div class="conversiones-form-actions" style="border-top:none;padding-top:0;margin-top:0;">
+      <span class="btn btn-primary btn--demo">Guardar conversión</span>
+      <span class="btn btn-outline btn--demo">Cancelar</span>
+    </div>
+    <ul class="conversiones-help-desc" style="margin-top:1rem;padding-left:1.25rem;">
+      <li><strong>Guardar conversión</strong> — valida unidades y factor; comprueba duplicados por alcance.</li>
+      <li><strong>Cancelar</strong> — regresa al listado sin guardar cambios.</li>
+    </ul>
+  </section>
+
+  <section class="card conversiones-form-card conversiones-form-card--required-note">
+    <p class="form-hint" style="margin:0;">
+      Campos obligatorios al crear: desde unidad, hacia unidad y factor.
+      Si falta alguno o el factor no es válido, verás un mensaje de error en pantalla.
+    </p>
+  </section>
+
+  <section class="card conversiones-form-card">
+    <div class="conversiones-form-actions" style="border-top:none;padding-top:0;margin-top:0;">
+      <a href="{% url 'catalog:conversion_create' %}" class="btn btn-primary">Volver al formulario de alta</a>
+      <a href="{% url 'catalog:conversion_list' %}" class="btn btn-outline">Ir al listado</a>
+    </div>
+  </section>
+</div>
+{% endblock %}

@@ -1,0 +1,124 @@
+{% extends "app_base.html" %}
+{% load static catalog_extras %}
+
+{% block title %}{% if receta %}Editar receta{% else %}Nueva receta{% endif %} - BAKEBUDGE{% endblock %}
+{% block body_page %}recetas{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'recipes/css/recetas.css' %}">
+{% endblock %}
+
+{% block app_content %}
+<div class="page-header page-header-row">
+  <div>
+    <h1>{% if receta %}Editar receta{% else %}Nueva receta{% endif %}</h1>
+    <p>{% if receta %}Cabecera de <strong>{{ receta.nombre }}</strong>.{% else %}Alta con versión inicial <strong>v1</strong>.{% endif %}</p>
+  </div>
+  <div class="page-header-actions">
+    {% if receta %}
+    <a href="{% url 'recipes:receta_edit_help' receta.pk %}" class="recetas-help-btn" target="_blank" rel="noopener"
+       title="Ayuda para editar receta">
+      <img src="{% static 'catalog/images/icon-help.svg' %}" alt="" width="20" height="20">
+      <span>Ayuda</span>
+    </a>
+    {% else %}
+    <a href="{% url 'recipes:receta_create_help' %}" class="recetas-help-btn" target="_blank" rel="noopener"
+       title="Ayuda para crear receta">
+      <img src="{% static 'catalog/images/icon-help.svg' %}" alt="" width="20" height="20">
+      <span>Ayuda</span>
+    </a>
+    {% endif %}
+    <a href="{% url 'recipes:receta_list' %}" class="btn btn-outline">Volver al listado</a>
+  </div>
+</div>
+
+<form method="post" class="recetas-form" enctype="multipart/form-data" novalidate data-bb-validate-form>
+  {% csrf_token %}
+
+  <section class="card recetas-form-card">
+    <h2>Identificación</h2>
+    <div class="form-grid">
+      <div class="form-field" style="grid-column: 1 / -1;">
+        <label for="nombre">Nombre <span aria-hidden="true">*</span></label>
+        <input type="text" id="nombre" name="nombre" maxlength="100" required
+               value="{{ form_data.nombre }}" autocomplete="off">
+      </div>
+      <div class="form-field" style="grid-column: 1 / -1;">
+        <label for="descripcion_corta">Descripción corta</label>
+        <input type="text" id="descripcion_corta" name="descripcion_corta" maxlength="255"
+               value="{{ form_data.descripcion_corta }}" autocomplete="off">
+      </div>
+      <div class="form-field" style="grid-column: 1 / -1;">
+        <label for="notas">Notas</label>
+        <textarea id="notas" name="notas" rows="3">{{ form_data.notas }}</textarea>
+      </div>
+      <div class="form-field" style="grid-column: 1 / -1;">
+        <label for="imagen">Imagen</label>
+        <input type="file" id="imagen" name="imagen" accept="image/*">
+        {% if receta and receta.imagen %}
+        <span class="form-hint">Actual: {{ receta.imagen.name }}</span>
+        {% endif %}
+      </div>
+    </div>
+  </section>
+
+  {% if receta %}
+  <section class="card recetas-form-card">
+    <h2>Estado y versión vigente</h2>
+    <div class="form-grid">
+      <div class="form-field">
+        <label for="status">Estado</label>
+        <select id="status" name="status">
+          {% for value, label in status_choices %}
+          <option value="{{ value }}" {% if form_data.status == value %}selected{% endif %}>{{ label }}</option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
+    {% if version %}
+    <div class="recetas-version-summary">
+      <p>
+        <strong>{{ version.etiqueta }}</strong> —
+        rendimiento {{ version.rendimiento_cantidad }} {{ version.rendimiento_unidad }} ·
+        costo total {{ version.costo_total|format_money:user }} ·
+        precio sugerido {{ version.precio_venta_sugerido|format_money:user }}
+      </p>
+      <p>
+        <a href="{% url 'recipes:recetaversion_edit' receta.pk %}">Formulación</a> ·
+        <a href="{% url 'recipes:recetaversion_list' receta.pk %}">Historial</a> ·
+        <a href="{% url 'recipes:recetaversion_create' receta.pk %}">Nueva versión</a>
+      </p>
+    </div>
+    {% endif %}
+  </section>
+  {% else %}
+  <section class="card recetas-form-card">
+    <h2>Versión inicial v1</h2>
+    <div class="form-grid">
+      <div class="form-field">
+        <label for="rendimiento_cantidad">Cantidad <span aria-hidden="true">*</span></label>
+        <input type="number" id="rendimiento_cantidad" name="rendimiento_cantidad"
+               step="0.0001" min="0.0001" required value="{{ form_data.rendimiento_cantidad }}">
+      </div>
+      <div class="form-field">
+        <label for="rendimiento_unidad">Unidad <span aria-hidden="true">*</span></label>
+        <input type="text" id="rendimiento_unidad" name="rendimiento_unidad" maxlength="30"
+               required value="{{ form_data.rendimiento_unidad }}" autocomplete="off">
+      </div>
+    </div>
+  </section>
+  {% endif %}
+
+  <div class="form-actions recetas-form-actions">
+    <button type="submit" class="btn btn-primary">Guardar</button>
+    {% if not receta %}
+    <button type="submit" name="marcar_activo" value="1" class="btn btn-outline">Guardar y marcar activo</button>
+    {% endif %}
+    <a href="{% url 'recipes:receta_list' %}" class="btn btn-outline">Cancelar</a>
+  </div>
+</form>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'recipes/js/receta_form.js' %}"></script>
+{% endblock %}

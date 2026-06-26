@@ -1,0 +1,28 @@
+{% extends "app_base.html" %}
+{% load static catalog_extras %}
+
+{% block title %}Eliminar receta - BAKEBUDGE{% endblock %}
+{% block body_page %}recetas{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'recipes/css/recetas.css' %}">
+{% endblock %}
+
+{% block app_content %}
+<div class="page-header">
+  <h1>Eliminar receta</h1>
+  <p>Confirma qué hacer con <strong>{{ receta.nombre }}</strong>.</p>
+</div>
+
+<section class="card">
+  <p>Estado actual: <span class="badge {{ receta.status|status_badge }}">{{ receta.status|status_label }}</span></p>
+  <p class="form-hint">Se recomienda <strong>inactivar</strong> para conservar historial. El borrado físico elimina versiones e ingredientes.</p>
+
+  <form method="post" class="recetas-delete-actions">
+    {% csrf_token %}
+    <button type="submit" name="accion" value="inactivar" class="btn btn-primary">Inactivar</button>
+    <button type="submit" name="accion" value="eliminar" class="btn btn-outline">Eliminar permanentemente</button>
+    <a href="{% url 'recipes:receta_list' %}" class="btn btn-outline">Cancelar</a>
+  </form>
+</section>
+{% endblock %}

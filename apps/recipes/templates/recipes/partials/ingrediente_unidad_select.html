@@ -1,0 +1,9 @@
+<select name="ingrediente_unidad" required class="ingrediente-unidad-select" aria-label="Unidad del ingrediente">
+  <option value="">Seleccionar…</option>
+  {% for u in unidad_options %}
+  <option value="{{ u }}" {% if u == selected_unidad %}selected{% endif %}>{{ u }}</option>
+  {% endfor %}
+  {% if selected_unidad and selected_unidad not in unidad_options %}
+  <option value="{{ selected_unidad }}" selected>{{ selected_unidad }}</option>
+  {% endif %}
+</select>

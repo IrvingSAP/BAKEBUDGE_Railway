@@ -1,0 +1,19 @@
+{% load static %}
+<header class="site-header">
+  <div class="container-narrow site-nav" data-site-nav>
+    <a class="brand" href="{% url 'public_site:home' %}">BAKE<span>BUDGE</span></a>
+
+    <button type="button" class="nav-toggle" data-nav-toggle aria-label="Menú">☰</button>
+
+    <ul class="nav-links">
+      <li><a href="{% url 'public_site:home' %}" data-nav="inicio">Inicio</a></li>
+      <li><a href="{% url 'public_site:servicios' %}" data-nav="servicios">Servicios</a></li>
+      <li><a href="{% url 'public_site:contacto' %}" data-nav="contacto">Contacto</a></li>
+    </ul>
+
+    <div class="nav-actions">
+      <a href="/ingresar/" class="btn btn-outline">Entrar</a>
+      <a href="{% url 'public_site:contacto' %}" class="btn btn-primary">Solicitar acceso</a>
+    </div>
+  </div>
+</header>

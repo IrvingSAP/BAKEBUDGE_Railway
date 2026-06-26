@@ -1,0 +1,48 @@
+<aside class="app-sidebar" data-app-sidebar>
+  <a class="app-brand" href="{% url 'dashboard:home' %}">BAKE<span>BUDGE</span></a>
+  <ul class="app-nav">
+    <li><a href="{% url 'dashboard:home' %}" data-nav="dashboard">Dashboard</a></li>
+    <li><a href="{% url 'catalog:producto_list' %}" data-nav="productos">Productos</a></li>
+    <li><a href="{% url 'recipes:receta_list' %}" data-nav="recetas">Recetas</a></li>
+    <li><a href="{% url 'production:orden_list' %}" data-nav="produccion">Producción</a></li>
+    <li><a href="{% url 'analytics:estadisticas_home' %}" data-nav="estadisticas">Estadísticas</a></li>
+    <li class="app-nav-group" data-nav-group="catalogo-base">
+      <button type="button" class="app-nav-group__toggle" data-nav-group-toggle
+              aria-expanded="false" aria-controls="nav-catalogo-base">
+        Catálogo base
+      </button>
+      <ul class="app-nav-sub" id="nav-catalogo-base">
+        <li><a href="{% url 'catalog:categoria_list' %}" data-nav="categorias">Categorías</a></li>
+        <li><a href="{% url 'catalog:conversion_list' %}" data-nav="conversiones">Conversiones de unidad</a></li>
+        <li><a href="{% url 'catalog:costoindirecto_list' %}" data-nav="costos-indirectos">Costos indirectos</a></li>
+      </ul>
+    </li>
+    <li><a href="{% url 'accounts:perfil' %}" data-nav="perfil">Perfil</a></li>
+    <li><a href="{% url 'noticias:feed' %}" data-nav="noticias">Noticias</a></li>
+    <li><a href="{% url 'ayuda:home' %}" data-nav="ayuda-general">Ayuda General</a></li>
+    {% if app_is_master %}
+    <li class="app-nav-separator" aria-hidden="true"></li>
+    <li class="app-nav-group" data-nav-group="administracion">
+      <button type="button" class="app-nav-group__toggle" data-nav-group-toggle
+              aria-expanded="false" aria-controls="nav-administracion">
+        Administración
+      </button>
+      <ul class="app-nav-sub" id="nav-administracion">
+        <li><a href="{% url 'administration:moneda_list' %}" data-nav="monedas">Monedas</a></li>
+        <li><a href="{% url 'administration:usuario_list' %}" data-nav="usuarios">Usuarios</a></li>
+        <li><a href="{% url 'administration:facturacion_list' %}" data-nav="facturacion">Facturación</a></li>
+        <li><a href="{% url 'administration:noticia_list' %}" data-nav="gestion-noticias">Gestión noticias</a></li>
+        <li><a href="{% url 'administration:mensajecontacto_list' %}" data-nav="mensajes-contacto">Mensajes contacto</a></li>
+      </ul>
+    </li>
+    {% endif %}
+  </ul>
+  <div class="app-sidebar-footer">
+    <strong>{{ app_profile.nombre_negocio|default:"Mi repostería" }}</strong>
+    <span>{{ user.email }}</span>
+    <form method="post" action="{% url 'security:logout' %}">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-outline btn-logout">Cerrar sesión</button>
+    </form>
+  </div>
+</aside>

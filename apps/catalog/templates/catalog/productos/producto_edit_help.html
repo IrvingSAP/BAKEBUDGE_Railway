@@ -1,0 +1,165 @@
+{% extends "app_base.html" %}
+{% load static catalog_extras %}
+
+{% block title %}Ayuda — Editar producto — BAKEBUDGE{% endblock %}
+{% block body_page %}productos{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'catalog/css/productos.css' %}">
+{% endblock %}
+
+{% block app_content %}
+<div class="page-header page-header-row">
+  <div>
+    <h1>Ayuda: editar producto</h1>
+    <p>Guía de los campos del formulario de edición. Solo consulta — no guarda datos.</p>
+  </div>
+  <a href="{% url 'catalog:producto_edit' producto.pk %}" class="btn btn-primary">← Volver al formulario</a>
+</div>
+
+<div class="productos-help-intro card">
+  <p>
+    Al <strong>editar</strong> un producto actualizas un insumo que ya existe en tu catálogo.
+    Los campos se cargan con los valores guardados; puedes corregir nombre, costo, categoría o estado.
+    Solo puedes modificar productos de tu cuenta. Los marcados con <span aria-hidden="true">*</span> son obligatorios.
+  </p>
+</div>
+
+<div class="productos-form productos-form--help" aria-readonly="true">
+  <section class="card productos-form-card productos-form-card--help">
+    <h2>Identificación</h2>
+    <div class="form-grid">
+      <div class="form-field">
+        <label for="help-pk">ID</label>
+        <input type="text" id="help-pk" value="{{ producto.pk }}" readonly tabindex="-1">
+        <p class="productos-help-desc">
+          Identificador interno del producto. Es solo lectura: no se puede cambiar al editar.
+          Sirve para distinguir registros en el sistema y en enlaces de edición o eliminación.
+        </p>
+      </div>
+      <div class="form-field" style="grid-column: 1 / -1;">
+        <label for="help-nombre">Nombre <span aria-hidden="true">*</span></label>
+        <input type="text" id="help-nombre" value="{{ producto.nombre }}" readonly tabindex="-1">
+        <p class="productos-help-desc">
+          Nombre con el que identificarás el insumo en listados, recetas y reportes.
+          Puedes renombrarlo si corriges un error tipográfico o unificas criterios (máximo 150 caracteres).
+        </p>
+      </div>
+      <div class="form-field">
+        <label for="help-categoria">Categoría <span aria-hidden="true">*</span></label>
+        <select id="help-categoria" disabled tabindex="-1">
+          <option selected>{{ producto.categoria.nombre }}</option>
+        </select>
+        <p class="productos-help-desc">
+          Clasifica el producto según tu catálogo personal: Insumo, Empaque, Decoración u Otro.
+          Cambiar la categoría reorganiza filtros del listado; solo verás categorías activas de tu cuenta.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="card productos-form-card productos-form-card--help">
+    <h2>Costo y unidad base</h2>
+    <div class="form-grid">
+      <div class="form-field">
+        <label for="help-unidad">Unidad base <span aria-hidden="true">*</span></label>
+        <select id="help-unidad" disabled tabindex="-1">
+          <option selected>{{ producto.unidad_base }}</option>
+        </select>
+        <p class="productos-help-desc">
+          Unidad en la que se expresa el costo y las cantidades en recetas.
+          Al editar, el valor actual aparece preseleccionado. Las opciones provienen de tus reglas de conversión;
+          si cambias la unidad base, revisa que el costo siga teniendo sentido para la nueva unidad.
+        </p>
+      </div>
+      <div class="form-field">
+        <label for="help-costo">Costo por unidad base <span aria-hidden="true">*</span></label>
+        <input type="text" id="help-costo" value="{{ producto.costo_por_unidad_base }}" readonly tabindex="-1">
+        <p class="productos-help-desc">
+          Precio de compra <em>por cada unidad base</em>, en la moneda de tu perfil.
+          Actualízalo cuando cambie el precio de compra. Debe ser un número <strong>mayor que cero</strong>
+          (no negativo ni cero). Los cambios afectan el costo de recetas que usen este producto.
+        </p>
+      </div>
+      <div class="form-field">
+        <label>Moneda (perfil)</label>
+        {% with moneda=request.user.profile.moneda %}
+        <span class="productos-moneda-badge">{% if moneda %}{{ moneda.codigo }} ({{ moneda.simbolo }}){% else %}COP ($){% endif %}</span>
+        {% endwith %}
+        <p class="productos-help-desc">
+          Moneda configurada en tu perfil. No se modifica desde este formulario;
+          todos los costos del catálogo se muestran en esa moneda.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="card productos-form-card productos-form-card--help">
+    <h2>Información adicional</h2>
+    <div class="form-grid">
+      <div class="form-field">
+        <label for="help-proveedor">Proveedor / marca</label>
+        <input type="text" id="help-proveedor" value="{{ producto.proveedor|default:'Diana' }}" readonly tabindex="-1">
+        <p class="productos-help-desc">
+          Opcional. Marca, proveedor o tienda habitual. Útil para actualizar referencias
+          si cambias de proveedor sin renombrar el producto.
+        </p>
+      </div>
+      <div class="form-field" style="grid-column: 1 / -1;">
+        <label for="help-notas">Notas</label>
+        <textarea id="help-notas" rows="3" readonly tabindex="-1">{{ producto.notas|default:'Presentación bolsa 1 kg' }}</textarea>
+        <p class="productos-help-desc">
+          Opcional. Notas internas: presentación, factura, equivalencias u observaciones
+          que quieras conservar al revisar el producto más adelante.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="card productos-form-card productos-form-card--help">
+    <h2>Estado en catálogo</h2>
+    <div class="form-grid">
+      <div class="form-field">
+        <label for="help-status">Estado <span aria-hidden="true">*</span></label>
+        <select id="help-status" disabled tabindex="-1">
+          <option selected>{{ producto.status }} — {{ producto.status|status_label }}</option>
+        </select>
+        <p class="productos-help-desc">
+          <strong>P — En proceso:</strong> aún en definición; no aparece en recetas nuevas.<br>
+          <strong>A — Activo:</strong> disponible al armar recetas.<br>
+          <strong>I — Inactivo:</strong> archivado; no se ofrece en selectores nuevos pero conserva historial.
+          Al editar puedes cambiar el estado según el ciclo de vida del insumo.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="card productos-form-card productos-form-card--help">
+    <h2>Acciones del formulario real</h2>
+    <div class="productos-help-actions-demo">
+      <span class="btn btn-primary btn--demo">Guardar cambios</span>
+      <span class="btn btn-outline btn--demo">Guardar y marcar activo</span>
+      <span class="btn btn-outline btn--demo">Cancelar</span>
+    </div>
+    <ul class="productos-help-list">
+      <li><strong>Guardar cambios</strong> — valida los campos obligatorios y actualiza el producto con el estado seleccionado.</li>
+      <li><strong>Guardar y marcar activo</strong> — guarda los cambios y deja el producto en estado Activo de inmediato.</li>
+      <li><strong>Cancelar</strong> — regresa al listado sin guardar modificaciones.</li>
+    </ul>
+  </section>
+
+  <section class="card productos-form-card productos-form-card--required-note">
+    <p class="form-hint" style="margin:0;">
+      Campos obligatorios al editar: nombre, categoría, unidad base y costo por unidad base (&gt; 0).
+      Si falta alguno o el costo no es válido, verás un mensaje de error en pantalla.
+    </p>
+  </section>
+
+  <section class="card productos-form-card">
+    <div class="productos-form-actions" style="border-top:none;padding-top:0;margin-top:0;">
+      <a href="{% url 'catalog:producto_edit' producto.pk %}" class="btn btn-primary">Volver al formulario de edición</a>
+      <a href="{% url 'catalog:producto_list' %}" class="btn btn-outline">Ir al listado</a>
+    </div>
+  </section>
+</div>
+{% endblock %}

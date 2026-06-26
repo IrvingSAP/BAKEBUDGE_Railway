@@ -1,0 +1,140 @@
+{% extends "app_base.html" %}
+{% load static catalog_extras %}
+
+{% block title %}Ayuda — Editar conversión — BAKEBUDGE{% endblock %}
+{% block body_page %}conversiones{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'catalog/css/conversiones.css' %}">
+{% endblock %}
+
+{% block app_content %}
+<div class="page-header page-header-row">
+  <div>
+    <h1>Ayuda: editar conversión</h1>
+    <p>Guía de los campos del formulario de edición. Solo consulta — no guarda datos.</p>
+  </div>
+  <a href="{% url 'catalog:conversion_edit' conversion.pk %}" class="btn btn-primary">← Volver al formulario</a>
+</div>
+
+<div class="conversiones-help-intro card">
+  <p>
+    Al <strong>editar</strong> una conversión actualizas una regla que ya existe en tu catálogo.
+    Los campos se cargan con los valores guardados; puedes corregir factor, etiqueta o notas.
+    Solo puedes modificar conversiones de tu cuenta. Los marcados con <span aria-hidden="true">*</span> son obligatorios.
+  </p>
+</div>
+
+<div class="conversiones-form conversiones-form--help" aria-readonly="true">
+  <section class="card conversiones-form-card conversiones-form-card--help">
+    <h2>Identificación</h2>
+    <div class="form-grid">
+      <div class="form-field">
+        <label for="help-pk">ID</label>
+        <input type="text" id="help-pk" value="{{ conversion.pk }}" readonly tabindex="-1">
+        <p class="conversiones-help-desc">
+          Identificador interno de la conversión. Es solo lectura: no se puede cambiar al editar.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="card conversiones-form-card conversiones-form-card--help">
+    <h2>Alcance</h2>
+    <div class="form-grid">
+      <div class="form-field" style="grid-column: 1 / -1;">
+        <label for="help-producto">Producto</label>
+        <select id="help-producto" disabled tabindex="-1">
+          <option selected>{% if conversion.producto %}{{ conversion.producto.nombre }}{% else %}Genérica (sin producto){% endif %}</option>
+        </select>
+        <p class="conversiones-help-desc">
+          Producto al que aplica la regla, o «Genérica» si no está vinculada.
+          Al editar, puedes cambiar el alcance si no genera duplicados con otra regla existente.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="card conversiones-form-card conversiones-form-card--help">
+    <h2>Regla</h2>
+    <div class="form-grid">
+      <div class="form-field">
+        <label for="help-desde">Desde unidad <span aria-hidden="true">*</span></label>
+        <input type="text" id="help-desde" value="{{ conversion.desde_unidad }}" readonly tabindex="-1">
+        <p class="conversiones-help-desc">
+          Unidad de origen. Puedes corregirla si hubo un error tipográfico (máximo 20 caracteres).
+          No puede duplicar otra regla del mismo alcance.
+        </p>
+      </div>
+      <div class="form-field">
+        <label for="help-hacia">Hacia unidad <span aria-hidden="true">*</span></label>
+        <input type="text" id="help-hacia" value="{{ conversion.hacia_unidad }}" readonly tabindex="-1">
+        <p class="conversiones-help-desc">
+          Unidad destino. Si hay producto seleccionado, debe coincidir con su unidad base.
+        </p>
+      </div>
+      <div class="form-field">
+        <label for="help-factor">Factor <span aria-hidden="true">*</span></label>
+        <input type="text" id="help-factor" value="{{ conversion.factor }}" readonly tabindex="-1">
+        <p class="conversiones-help-desc">
+          Factor de equivalencia: <strong>1 × desde = factor × hacia</strong>.
+          Ajusta el valor si refinaste la medida (p. ej. harina colmada vs. tamizada).
+        </p>
+      </div>
+      <div class="form-field" style="grid-column: 1 / -1;">
+        <label>Vista previa</label>
+        <div class="conversiones-formula-box">1 <code>{{ conversion.desde_unidad }}</code> = <strong>{{ conversion.factor }}</strong> <code>{{ conversion.hacia_unidad }}</code></div>
+        <p class="conversiones-help-desc">
+          Vista previa en tiempo real de la regla. Se actualiza al modificar los campos del formulario real.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="card conversiones-form-card conversiones-form-card--help">
+    <h2>Información</h2>
+    <div class="form-grid">
+      <div class="form-field" style="grid-column: 1 / -1;">
+        <label for="help-nombre">Nombre / etiqueta</label>
+        <input type="text" id="help-nombre" value="{{ conversion.nombre|default:'Harina: taza a gramos' }}" readonly tabindex="-1">
+        <p class="conversiones-help-desc">
+          Etiqueta visible en listados. Puedes renombrarla para clarificar el alcance o la referencia.
+        </p>
+      </div>
+      <div class="form-field" style="grid-column: 1 / -1;">
+        <label for="help-notas">Notas</label>
+        <textarea id="help-notas" rows="3" readonly tabindex="-1">{{ conversion.notas|default:'Medida colmada — harina de trigo local' }}</textarea>
+        <p class="conversiones-help-desc">
+          Notas sobre el origen de la medida o condiciones de uso (tamizado, temperatura, etc.).
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="card conversiones-form-card conversiones-form-card--help">
+    <h2>Acciones del formulario real</h2>
+    <div class="conversiones-form-actions" style="border-top:none;padding-top:0;margin-top:0;">
+      <span class="btn btn-primary btn--demo">Guardar cambios</span>
+      <span class="btn btn-outline btn--demo">Cancelar</span>
+    </div>
+    <ul class="conversiones-help-desc" style="margin-top:1rem;padding-left:1.25rem;">
+      <li><strong>Guardar cambios</strong> — valida unidades y factor; actualiza la conversión.</li>
+      <li><strong>Cancelar</strong> — regresa al listado sin guardar modificaciones.</li>
+    </ul>
+  </section>
+
+  <section class="card conversiones-form-card conversiones-form-card--required-note">
+    <p class="form-hint" style="margin:0;">
+      Campos obligatorios al editar: desde unidad, hacia unidad y factor.
+      Si falta alguno o el factor no es válido, verás un mensaje de error en pantalla.
+    </p>
+  </section>
+
+  <section class="card conversiones-form-card">
+    <div class="conversiones-form-actions" style="border-top:none;padding-top:0;margin-top:0;">
+      <a href="{% url 'catalog:conversion_edit' conversion.pk %}" class="btn btn-primary">Volver al formulario de edición</a>
+      <a href="{% url 'catalog:conversion_list' %}" class="btn btn-outline">Ir al listado</a>
+    </div>
+  </section>
+</div>
+{% endblock %}

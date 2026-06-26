@@ -1,0 +1,38 @@
+{% extends "app_base.html" %}
+{% load noticias_extras %}
+
+{% block title %}{{ noticia.titulo }} - Noticias - BAKEBUDGE{% endblock %}
+{% block body_page %}noticias{% endblock %}
+
+{% block app_content %}
+<div class="page-header page-header-row">
+  <div>
+    <h1>{{ noticia.titulo }}</h1>
+    <p>Detalle de la noticia del sistema.</p>
+  </div>
+  <a href="{% url 'noticias:feed' %}" class="btn btn-outline">← Volver a noticias</a>
+</div>
+
+<article class="news-card news-detail{% if noticia|noticia_card_muted %} news-card--muted{% endif %}">
+  <div class="news-meta">
+    <span class="badge {{ noticia.tipo|noticia_tipo_badge }}">{{ noticia.tipo }}</span>
+    {% if noticia.alcance == 'P' %}
+    <span class="badge badge-process">Personal</span>
+    {% endif %}
+    <time datetime="{{ noticia.fecha_noticia|date:'Y-m-d' }}">{{ noticia.fecha_noticia|date:'d M Y' }}</time>
+  </div>
+
+  <div class="news-detail-body">{{ noticia.detalle|linebreaksbr }}</div>
+
+  {% if noticia.enlace_interno or noticia.enlace_externo %}
+  <div class="news-detail-links">
+    {% if noticia.enlace_interno %}
+    <a href="{{ noticia.enlace_interno }}" class="news-link">Ir al módulo →</a>
+    {% endif %}
+    {% if noticia.enlace_externo %}
+    <a href="{{ noticia.enlace_externo }}" class="news-link" target="_blank" rel="noopener">Abrir enlace externo →</a>
+    {% endif %}
+  </div>
+  {% endif %}
+</article>
+{% endblock %}

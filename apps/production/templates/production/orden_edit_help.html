@@ -1,0 +1,20 @@
+{% extends "app_base.html" %}
+{% load static %}
+
+{% block title %}Ayuda — Editar orden - BAKEBUDGE{% endblock %}
+{% block body_page %}produccion{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'production/css/produccion.css' %}">
+{% endblock %}
+
+{% block app_content %}
+<div class="page-header">
+  <h1>Ayuda: editar orden {{ orden.codigo }}</h1>
+  <p>Solo órdenes en <strong>borrador</strong>.</p>
+</div>
+<section class="card produccion-form-card">
+  <p>Puedes ajustar lotes, fecha programada y notas. El costo estimado se recalcula al guardar.</p>
+  <p>Para cambiar la receta o versión, crea una nueva orden.</p>
+</section>
+{% endblock %}

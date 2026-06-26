@@ -1,0 +1,98 @@
+{% extends "app_base.html" %}
+{% load static catalog_extras %}
+
+{% block title %}{% if producto %}Editar producto{% else %}Nuevo producto{% endif %} - BAKEBUDGE{% endblock %}
+{% block body_page %}productos{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'catalog/css/productos.css' %}">
+{% endblock %}
+
+{% block app_content %}
+<div class="page-header page-header-row">
+  <div>
+    <h1>{% if producto %}Editar producto{% else %}Nuevo producto{% endif %}</h1>
+    <p>Completa los datos del producto para tu catalogo.</p>
+  </div>
+  <div class="page-header-actions">
+    {% if producto %}
+    {% url 'catalog:producto_edit_help' producto.pk as help_url %}
+    {% include "catalog/partials/form_help_link.html" with help_btn_class="productos-help-btn" help_title="Ayuda para editar producto" %}
+    {% else %}
+    {% url 'catalog:producto_create_help' as help_url %}
+    {% include "catalog/partials/form_help_link.html" with help_btn_class="productos-help-btn" help_title="Ayuda para crear producto" %}
+    {% endif %}
+    <a href="{% url 'catalog:producto_list' %}" class="btn btn-outline">Volver al listado</a>
+  </div>
+</div>
+
+<form method="post" class="productos-form" novalidate data-bb-validate-form>
+  {% csrf_token %}
+  <section class="card productos-form-card">
+    <h2>Datos basicos</h2>
+    <div class="form-grid">
+      <div class="form-field" style="grid-column: 1 / -1;">
+        <label for="nombre">Nombre *</label>
+        <input type="text" id="nombre" name="nombre" maxlength="150" value="{{ form_data.nombre }}" required>
+      </div>
+      <div class="form-field">
+        <label for="categoria">Categoria *</label>
+        <select id="categoria" name="categoria" required>
+          <option value="">Seleccionar...</option>
+          {% for categoria in categorias %}
+          <option value="{{ categoria.pk }}" {% if form_data.categoria == categoria.pk|stringformat:'s' %}selected{% endif %}>
+            {{ categoria.nombre }}
+          </option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="form-field">
+        <label for="status">Estado *</label>
+        <select id="status" name="status">
+          {% for value, label in status_choices %}
+          <option value="{{ value }}" {% if form_data.status == value %}selected{% endif %}>{{ label }}</option>
+          {% endfor %}
+        </select>
+      </div>
+    </div>
+  </section>
+
+  <section class="card productos-form-card">
+    <h2>Costo y unidad base</h2>
+    <div class="form-grid">
+      <div class="form-field">
+        <label for="unidad_base">Unidad base *</label>
+        <select id="unidad_base" name="unidad_base" required>
+          <option value="">Seleccionar...</option>
+          {% for unidad in unidad_base_options %}
+          <option value="{{ unidad }}" {% if form_data.unidad_base == unidad %}selected{% endif %}>{{ unidad }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <div class="form-field">
+        <label for="costo_por_unidad_base">Costo por unidad base *</label>
+        <input type="number" id="costo_por_unidad_base" name="costo_por_unidad_base" step="0.0001" min="0.0001" value="{{ form_data.costo_por_unidad_base }}" required>
+      </div>
+    </div>
+  </section>
+
+  <section class="card productos-form-card">
+    <h2>Informacion adicional</h2>
+    <div class="form-grid">
+      <div class="form-field">
+        <label for="proveedor">Proveedor</label>
+        <input type="text" id="proveedor" name="proveedor" maxlength="120" value="{{ form_data.proveedor }}">
+      </div>
+      <div class="form-field" style="grid-column: 1 / -1;">
+        <label for="notas">Notas</label>
+        <textarea id="notas" name="notas" rows="4">{{ form_data.notas }}</textarea>
+      </div>
+    </div>
+    <div class="productos-form-actions">
+      <button type="submit" class="btn btn-primary">{% if producto %}Guardar cambios{% else %}Guardar producto{% endif %}</button>
+      <a href="{% url 'catalog:producto_list' %}" class="btn btn-outline">Cancelar</a>
+    </div>
+  </section>
+</form>
+{% include "catalog/partials/form_validation.html" %}
+{% endblock %}

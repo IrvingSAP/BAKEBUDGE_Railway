@@ -1,0 +1,31 @@
+<footer class="site-footer">
+  <div class="container-narrow">
+    <div class="footer-grid">
+      <div>
+        <a class="brand" href="{% url 'public_site:home' %}">BAKE<span>BUDGE</span></a>
+        <p style="margin-top:0.75rem; max-width:280px;">
+          Plataforma para repostería: recetas, costos, producción y analytics en un solo lugar.
+        </p>
+      </div>
+      <div>
+        <h4>Navegación</h4>
+        <ul class="footer-links">
+          <li><a href="{% url 'public_site:home' %}">Inicio</a></li>
+          <li><a href="{% url 'public_site:servicios' %}">Servicios</a></li>
+          <li><a href="{% url 'public_site:contacto' %}">Contacto</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Producto</h4>
+        <ul class="footer-links">
+          <li><a href="{% url 'public_site:servicios' %}">Recetas</a></li>
+          <li><a href="{% url 'public_site:servicios' %}">Costos</a></li>
+          <li><a href="{% url 'public_site:servicios' %}">Producción</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>© 2026 BAKEBUDGE. Todos los derechos reservados.</p>
+    </div>
+  </div>
+</footer>

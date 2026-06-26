@@ -1,0 +1,94 @@
+{% extends "app_base.html" %}
+{% load static catalog_extras %}
+
+{% block title %}Categorias - BAKEBUDGE{% endblock %}
+{% block body_page %}categorias{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'catalog/vendor/dataTables.dataTables.min.css' %}">
+<link rel="stylesheet" href="{% static 'catalog/css/categorias.css' %}">
+{% endblock %}
+
+{% block app_content %}
+<div class="page-header page-header-row">
+  <div>
+    <h1>Categorias</h1>
+    <p>Clasificacion de productos por tipo, orden y estado.</p>
+  </div>
+  <a href="{% url 'catalog:categoria_create' %}" class="btn btn-primary">+ Nueva categoria</a>
+</div>
+
+<section class="card categorias-table-card">
+  <div class="categorias-filters" role="search" aria-label="Filtrar categorias">
+    <div class="form-field">
+      <label for="filter-nombre">Nombre</label>
+      <input type="search" id="filter-nombre" placeholder="Buscar por nombre...">
+    </div>
+    <div class="form-field">
+      <label for="filter-estado">Estado</label>
+      <select id="filter-estado">
+        <option value="">Todos</option>
+        <option value="Activo">Activo</option>
+        <option value="En proceso">En proceso</option>
+        <option value="Inactivo">Inactivo</option>
+      </select>
+    </div>
+    <div class="form-field">
+      <label for="filter-predeterminada">Predeterminada</label>
+      <select id="filter-predeterminada">
+        <option value="">Todas</option>
+        <option value="Si">Si</option>
+        <option value="No">No</option>
+      </select>
+    </div>
+    <div class="categorias-filters__actions">
+      <button type="button" class="btn btn-outline" id="filter-limpiar">Limpiar filtros</button>
+    </div>
+  </div>
+
+  <div class="table-wrap">
+    <table id="tabla-categorias" class="table-bakebudge">
+      <thead>
+        <tr>
+          <th>Orden</th>
+          <th>Nombre</th>
+          <th>Codigo</th>
+          <th>Color</th>
+          <th>Predeterminada</th>
+          <th>Estado</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for categoria in categorias %}
+        <tr>
+          <td>{{ categoria.orden }}</td>
+          <td>{{ categoria.nombre }}</td>
+          <td>{{ categoria.codigo }}</td>
+          <td>
+            {% if categoria.color %}
+            <span class="categoria-color-badge" style="background-color: {{ categoria.color }};"></span>
+            {% else %}
+            <span class="categoria-color-badge categoria-color-badge--empty"></span>
+            {% endif %}
+          </td>
+          <td>{% if categoria.es_predeterminada %}Si{% else %}No{% endif %}</td>
+          <td><span class="badge {{ categoria.status|status_badge }}">{{ categoria.status|status_label }}</span></td>
+          <td class="table-actions">
+            <a href="{% url 'catalog:categoria_edit' categoria.pk %}">Editar</a> -
+            <a href="{% url 'catalog:categoria_delete' categoria.pk %}">Eliminar</a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'catalog/vendor/jquery.min.js' %}"></script>
+<script src="{% static 'catalog/vendor/dataTables.min.js' %}"></script>
+<script src="{% static 'catalog/vendor/datatables-init.js' %}"></script>
+<script src="{% static 'catalog/js/categoria_list.js' %}"></script>
+{% endblock %}

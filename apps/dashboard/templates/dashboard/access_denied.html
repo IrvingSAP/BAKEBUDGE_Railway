@@ -1,0 +1,22 @@
+{% extends "app_base.html" %}
+
+{% block title %}Acceso denegado — BAKEBUDGE{% endblock %}
+{% block body_page %}acceso-denegado{% endblock %}
+
+{% block app_content %}
+<div class="page-header">
+  <h1>Acceso no disponible</h1>
+  <p>Tu cuenta aún no puede usar el panel. Contacta a soporte o a tu administrador.</p>
+</div>
+
+<section class="card">
+  <p style="margin:0;color:var(--color-muted);">
+    Los usuarios tipo <strong>User</strong> requieren una suscripción activa.
+    Los usuarios <strong>Master</strong> deben completar la configuración de seguridad.
+  </p>
+  <p style="margin:1rem 0 0;">
+    <a href="{% url 'public_site:contacto' %}" class="btn btn-primary">Contactar soporte</a>
+    <a href="{% url 'public_site:home' %}" class="btn btn-outline" style="margin-left:0.5rem;">Volver al inicio</a>
+  </p>
+</section>
+{% endblock %}

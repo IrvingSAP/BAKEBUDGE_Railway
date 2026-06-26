@@ -1,0 +1,308 @@
+/* Módulo usuarios (Administración) — filtros y formulario */
+
+
+
+.usuarios-filters {
+
+  display: grid;
+
+  grid-template-columns: repeat(4, minmax(0, 1fr)) auto;
+
+  gap: 1rem;
+
+  align-items: end;
+
+  margin-bottom: 1.25rem;
+
+  padding-bottom: 1.25rem;
+
+  border-bottom: 1px solid var(--color-border, #eee8e3);
+
+}
+
+
+
+.usuarios-filters .form-field {
+
+  margin: 0;
+
+}
+
+
+
+.usuarios-filters label {
+
+  display: block;
+
+  font-size: 0.82rem;
+
+  font-weight: 700;
+
+  color: var(--color-muted);
+
+  margin-bottom: 0.35rem;
+
+}
+
+
+
+.usuarios-filters input,
+
+.usuarios-filters select {
+
+  width: 100%;
+
+  padding: 0.55rem 0.75rem;
+
+  border: 1px solid var(--color-border, #e8dfd8);
+
+  border-radius: var(--radius-sm, 8px);
+
+  font: inherit;
+
+  background: #fff;
+
+}
+
+
+
+.usuarios-filters__actions {
+
+  display: flex;
+
+  gap: 0.5rem;
+
+  flex-wrap: wrap;
+
+}
+
+
+
+.usuarios-table-card .dt-container {
+
+  margin-top: 0.5rem;
+
+}
+
+
+
+.usuarios-table-actions {
+
+  white-space: normal;
+
+  min-width: 11rem;
+
+  line-height: 1.65;
+
+}
+
+
+
+.usuarios-form-card h2 {
+
+  font-size: 1.05rem;
+
+  margin: 0 0 1rem;
+
+  color: var(--color-text);
+
+}
+
+
+
+.usuarios-form-card + .usuarios-form-card {
+
+  margin-top: 1.25rem;
+
+}
+
+
+
+.usuarios-form-actions {
+
+  display: flex;
+
+  flex-wrap: wrap;
+
+  gap: 0.75rem;
+
+  margin-top: 1.25rem;
+
+  padding-top: 1.25rem;
+
+  border-top: 1px solid var(--color-border, #eee8e3);
+
+}
+
+
+
+.badge-type-master {
+
+  background: #e8eef5;
+
+  color: #4a6080;
+
+  font-size: 0.75rem;
+
+}
+
+
+
+.badge-type-user {
+
+  background: #f0f4e8;
+
+  color: #5a7040;
+
+  font-size: 0.75rem;
+
+}
+
+
+
+.usuarios-readonly-flags {
+
+  display: flex;
+
+  flex-wrap: wrap;
+
+  gap: 0.5rem;
+
+  align-items: center;
+
+}
+
+
+
+.page-header-actions {
+
+  display: flex;
+
+  flex-wrap: wrap;
+
+  align-items: center;
+
+  gap: 0.65rem;
+
+}
+
+
+
+.usuarios-help-btn {
+
+  display: inline-flex;
+
+  align-items: center;
+
+  gap: 0.4rem;
+
+  padding: 0.45rem 0.75rem;
+
+  border: 1px solid var(--color-border, #e8dfd8);
+
+  border-radius: var(--radius-sm, 8px);
+
+  background: #fff;
+
+  color: var(--color-primary-dark, #b85c6a);
+
+  font-size: 0.88rem;
+
+  font-weight: 700;
+
+  text-decoration: none;
+
+  transition: background 0.15s ease, border-color 0.15s ease;
+
+}
+
+
+
+.usuarios-help-btn:hover {
+
+  background: var(--color-bg-alt, #fff5ef);
+
+  border-color: var(--color-primary, #d4849a);
+
+}
+
+
+
+.usuarios-help-intro {
+
+  margin-bottom: 1.25rem;
+
+  padding: 1rem 1.15rem;
+
+}
+
+
+
+.usuarios-help-desc {
+
+  margin: 0.5rem 0 0;
+
+  font-size: 0.88rem;
+
+  line-height: 1.55;
+
+  color: var(--color-text);
+
+}
+
+
+
+.usuarios-form--help .form-field input[readonly],
+
+.usuarios-form--help .form-field textarea[readonly] {
+
+  background: var(--color-bg-alt, #faf7f5);
+
+  cursor: default;
+
+}
+
+
+
+.usuarios-form--help .form-field select:disabled {
+
+  background: var(--color-bg-alt, #faf7f5);
+
+  opacity: 1;
+
+  cursor: default;
+
+}
+
+
+
+@media (max-width: 1100px) {
+
+  .usuarios-filters {
+
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+
+  }
+
+
+
+  .usuarios-filters__actions {
+
+    grid-column: 1 / -1;
+
+  }
+
+}
+
+
+
+@media (max-width: 600px) {
+
+  .usuarios-filters {
+
+    grid-template-columns: 1fr;
+
+  }
+
+}
+

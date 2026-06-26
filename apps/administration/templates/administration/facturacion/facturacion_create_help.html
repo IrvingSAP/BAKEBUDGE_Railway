@@ -1,0 +1,104 @@
+{% extends "app_base.html" %}
+
+{% load static %}
+
+
+
+{% block title %}Ayuda: crear período - Facturación - BAKEBUDGE{% endblock %}
+
+{% block body_page %}facturacion{% endblock %}
+
+
+
+{% block extra_css %}
+
+<link rel="stylesheet" href="{% static 'administration/css/facturacion.css' %}">
+
+{% endblock %}
+
+
+
+{% block app_content %}
+
+<div class="page-header page-header-row">
+
+  <div>
+
+    <h1>Ayuda: crear período de pago</h1>
+
+    <p>Guía de campos de <code>PaymentControl</code>. Solo consulta.</p>
+
+  </div>
+
+  <a href="{% url 'administration:facturacion_create' %}" class="btn btn-primary">← Volver al formulario</a>
+
+</div>
+
+
+
+<div class="facturacion-help-intro card">
+
+  <p>
+
+    Cada usuario <strong>User</strong> puede tener varios períodos (histórico 1:N).
+
+    Tras el alta en Usuarios, registra aquí el pago y actívalo antes del primer login.
+
+  </p>
+
+</div>
+
+
+
+<div class="facturacion-form facturacion-form--help" aria-readonly="true">
+
+  <section class="card facturacion-form-card">
+
+    <h2>Usuario y modalidad</h2>
+
+    <div class="form-grid">
+
+      <div class="form-field">
+
+        <label>Usuario (owner) *</label>
+
+        <input type="text" value="repostera.ana" readonly tabindex="-1">
+
+        <p class="facturacion-help-desc">Solo usuarios con <code>user_type = U</code>.</p>
+
+      </div>
+
+      <div class="form-field">
+        <label>Modalidad *</label>
+        <select disabled tabindex="-1"><option selected>M — Mensual</option></select>
+      </div>
+    </div>
+  </section>
+
+  <section class="card facturacion-form-card">
+    <h2>Período</h2>
+    <div class="form-grid">
+      <div class="form-field">
+        <label>Plazo de gracia (días)</label>
+        <input type="number" value="0" readonly tabindex="-1">
+        <p class="facturacion-help-desc"><code>plazoDeGracia</code> — días extra tras la fecha fin (0–30, default 0).</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="card facturacion-form-card">
+
+    <div class="facturacion-form-actions" style="border-top:none;padding-top:0;margin-top:0;">
+
+      <a href="{% url 'administration:facturacion_create' %}" class="btn btn-primary">Volver al formulario</a>
+
+      <a href="{% url 'administration:facturacion_list' %}" class="btn btn-outline">Ir al listado</a>
+
+    </div>
+
+  </section>
+
+</div>
+
+{% endblock %}
+

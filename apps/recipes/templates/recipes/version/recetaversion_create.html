@@ -1,0 +1,41 @@
+{% extends "app_base.html" %}
+{% load static %}
+
+{% block title %}Nueva versión — {{ receta.nombre }} - BAKEBUDGE{% endblock %}
+{% block body_page %}recetas{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'recipes/css/recetas.css' %}">
+<link rel="stylesheet" href="{% static 'recipes/css/recetaversion.css' %}">
+{% endblock %}
+
+{% block app_content %}
+<div class="page-header page-header-row">
+  <div>
+    <h1>Nueva versión</h1>
+    <p>Copia la formulación vigente de <strong>{{ receta.nombre }}</strong> y documenta el motivo del cambio.</p>
+  </div>
+  <div class="page-header-actions">
+    <a href="{% url 'recipes:recetaversion_create_help' receta.pk %}" class="recetas-help-btn" target="_blank" rel="noopener">
+      <img src="{% static 'catalog/images/icon-help.svg' %}" alt="" width="20" height="20">
+      <span>Ayuda</span>
+    </a>
+    <a href="{% url 'recipes:recetaversion_edit' receta.pk %}" class="btn btn-outline">Volver a formulación</a>
+  </div>
+</div>
+
+<form method="post" class="recetas-form">
+  {% csrf_token %}
+  <section class="card recetas-form-card">
+    <div class="form-field">
+      <label for="notas_cambio">Motivo del cambio <span aria-hidden="true">*</span></label>
+      <textarea id="notas_cambio" name="notas_cambio" rows="4" required>{{ notas_cambio }}</textarea>
+      <span class="form-hint">Ej. «Subió precio de mantequilla», «Menos azúcar en la receta».</span>
+    </div>
+  </section>
+  <div class="form-actions recetas-form-actions">
+    <button type="submit" class="btn btn-primary">Crear nueva versión</button>
+    <a href="{% url 'recipes:recetaversion_edit' receta.pk %}" class="btn btn-outline">Cancelar</a>
+  </div>
+</form>
+{% endblock %}

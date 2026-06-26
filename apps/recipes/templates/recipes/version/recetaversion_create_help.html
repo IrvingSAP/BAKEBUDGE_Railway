@@ -1,0 +1,20 @@
+{% extends "app_base.html" %}
+{% load static %}
+
+{% block title %}Ayuda — Nueva versión - BAKEBUDGE{% endblock %}
+{% block body_page %}recetas{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'recipes/css/recetas.css' %}">
+{% endblock %}
+
+{% block app_content %}
+<div class="page-header">
+  <h1>Ayuda: nueva versión</h1>
+  <p>{{ receta.nombre }}</p>
+</div>
+<section class="card recetas-help">
+  <p>Se copian ingredientes, indirectos y pasos de la versión vigente. La versión anterior queda en el historial.</p>
+  <p>Documenta el <strong>motivo del cambio</strong> en notas (obligatorio).</p>
+</section>
+{% endblock %}

@@ -1,0 +1,302 @@
+{% extends "app_base.html" %}
+{% load static %}
+
+{% block title %}Ayuda General — BAKEBUDGE{% endblock %}
+{% block body_page %}ayuda-general{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'ayuda/css/ayuda.css' %}">
+{% endblock %}
+
+{% block app_content %}
+<div class="page-header">
+  <h1>Ayuda General</h1>
+  <p>Guía del ciclo completo: catálogo base, recetas y producción, análisis y estadísticas, y noticias del sistema. Solo lectura — sin formularios.</p>
+</div>
+
+<section class="card ayuda-intro">
+  <h2>Panorama del ciclo</h2>
+  <p>BakeBudge organiza tu repostería en <strong>tres fases</strong>. Cada fase usa datos de la anterior. Todo lo que ves en <code>/app/</code> pertenece a <strong>tu cuenta</strong>; no se mezclan datos entre usuarios.</p>
+  <div class="ayuda-flow" role="list" aria-label="Fases del ciclo">
+    <div class="ayuda-flow__phase" role="listitem">
+      <div class="ayuda-flow__label">Fase 1</div>
+      <p class="ayuda-flow__text">Catálogo base — Perfil → Categorías → Conversiones → Costos indirectos</p>
+    </div>
+    <div class="ayuda-flow__phase" role="listitem">
+      <div class="ayuda-flow__label">Fase 2</div>
+      <p class="ayuda-flow__text">Recetas y producción — Productos → Recetas (versiones) → Órdenes de producción</p>
+    </div>
+    <div class="ayuda-flow__phase" role="listitem">
+      <div class="ayuda-flow__label">Fase 3</div>
+      <p class="ayuda-flow__text">Análisis y estadísticas — Snapshots al completar → KPIs, márgenes, rankings</p>
+    </div>
+  </div>
+  <p class="form-hint" style="margin:0;">
+    Saltar a:
+    <a href="#seccion-catalogo" data-ayuda-jump>Catálogo base</a> ·
+    <a href="#seccion-recetas" data-ayuda-jump>Recetas y producción</a> ·
+    <a href="#seccion-analisis" data-ayuda-jump>Análisis</a> ·
+    <a href="#seccion-noticias" data-ayuda-jump>Noticias</a> ·
+    <a href="{% url 'dashboard:home' %}">Dashboard</a>
+  </p>
+  <p class="form-hint" style="margin:0.75rem 0 0;">
+    Cada pantalla de alta o edición tiene su propio botón <strong>Ayuda</strong> con el detalle de campos. Esta guía explica el <strong>flujo entre módulos</strong>, no los formularios.
+  </p>
+</section>
+
+<section class="card ayuda-section" id="seccion-catalogo">
+  <div class="ayuda-section__header">
+    <h2>1. Catálogo base</h2>
+    <span class="ayuda-section__apps"><code>apps.accounts</code> · <code>apps.catalog</code></span>
+  </div>
+  <p>Información de referencia y configuración que otras partes del sistema consumen. Conviene completarla <strong>antes</strong> de cargar productos y recetas con seriedad.</p>
+
+  <div class="ayuda-steps">
+
+    <article class="ayuda-step">
+      <div class="ayuda-step__head">
+        <span class="ayuda-step__num">1.1</span>
+        <h3 class="ayuda-step__title">Perfil</h3>
+        <a href="{% url 'accounts:perfil' %}" class="btn btn-outline btn-sm">Ir a Perfil</a>
+      </div>
+      <dl class="ayuda-step__meta">
+        <div class="ayuda-step__meta-row--wide"><dt>Para qué</dt><dd>Configurar la identidad de tu negocio y los parámetros económicos globales. El nombre aparece en la app, la moneda unifica todos los montos y el <strong>margen objetivo</strong> define cuánto quieres ganar sobre el costo: el sistema lo usa para sugerir precios en recetas y para comparar tu margen real en estadísticas y dashboard.</dd></div>
+        <div><dt>Antes de</dt><dd>Nada; puede ser lo primero tras el primer acceso.</dd></div>
+        <div><dt>Después</dt><dd>Recetas, estadísticas (margen real vs objetivo), dashboard.</dd></div>
+        <div class="ayuda-step__meta-row--wide"><dt>Ejemplo</dt><dd class="ayuda-step__ejemplo">Nombre de la repostería «Dulces de Ana», moneda COP, margen objetivo <strong>40 %</strong>, unidades por defecto: peso <strong>g</strong>, volumen <strong>ml</strong>, conteo <strong>un</strong>.</dd></div>
+      </dl>
+      <p class="ayuda-step__hint"><strong>Idea clave:</strong> el margen objetivo se propaga a formulaciones y al evaluar si una producción fue rentable.</p>
+    </article>
+
+    <article class="ayuda-step">
+      <div class="ayuda-step__head">
+        <span class="ayuda-step__num">1.2</span>
+        <h3 class="ayuda-step__title">Categorías de producto</h3>
+        <a href="{% url 'catalog:categoria_list' %}" class="btn btn-outline btn-sm">Ir a Categorías</a>
+      </div>
+      <dl class="ayuda-step__meta">
+        <div class="ayuda-step__meta-row--wide"><dt>Para qué</dt><dd>Agrupar insumos por tipo para encontrarlos rápido en listados, asignar color en la interfaz y filtrar el consumo en estadísticas. Cada producto debe pertenecer a una categoría antes de usarlo en recetas.</dd></div>
+        <div><dt>Antes de</dt><dd>Perfil (recomendado).</dd></div>
+        <div><dt>Después</dt><dd>Productos — cada producto apunta a una categoría.</dd></div>
+        <div class="ayuda-step__meta-row--wide"><dt>Ejemplo</dt><dd class="ayuda-step__ejemplo">Nombre «Harinas y polvos», código «harinas», descripción «Materia seca para masas», orden <strong>10</strong>, color <strong>#E8F4EA</strong>, estado Activo.</dd></div>
+      </dl>
+      <p class="ayuda-step__hint"><strong>Idea clave:</strong> las categorías estructuran el catálogo; no calculan costos por sí solas.</p>
+    </article>
+
+    <article class="ayuda-step">
+      <div class="ayuda-step__head">
+        <span class="ayuda-step__num">1.3</span>
+        <h3 class="ayuda-step__title">Conversiones de unidad</h3>
+        <a href="{% url 'catalog:conversion_list' %}" class="btn btn-outline btn-sm">Ir a Conversiones</a>
+      </div>
+      <dl class="ayuda-step__meta">
+        <div class="ayuda-step__meta-row--wide"><dt>Para qué</dt><dd>Cuando compras o almacenas un insumo en una unidad distinta a la que usas en la receta, BakeBudge necesita el factor de conversión para calcular bien el costo del ingrediente. Se define <strong>por producto</strong>, no como regla global.</dd></div>
+        <div><dt>Antes de</dt><dd>Productos (idealmente antes de usarlos en recetas con unidades distintas).</dd></div>
+        <div><dt>Después</dt><dd>Recetas — ingredientes en unidades distintas a la base del producto.</dd></div>
+        <div class="ayuda-step__meta-row--wide"><dt>Ejemplo</dt><dd class="ayuda-step__ejemplo">Producto «Harina de trigo» — conversión de <strong>kg</strong> a <strong>g</strong>, factor <strong>1000</strong> (1 kg = 1000 g). Si en la receta usas 250 g, el costo se calcula con el precio por gramo.</dd></div>
+      </dl>
+      <p class="ayuda-step__hint"><strong>Idea clave:</strong> solo necesitas conversiones donde la unidad de compra difiere de la unidad base. Si no aplica, puedes omitir este paso.</p>
+    </article>
+
+    <article class="ayuda-step">
+      <div class="ayuda-step__head">
+        <span class="ayuda-step__num">1.4</span>
+        <h3 class="ayuda-step__title">Costos indirectos</h3>
+        <a href="{% url 'catalog:costoindirecto_list' %}" class="btn btn-outline btn-sm">Ir a Costos indirectos</a>
+      </div>
+      <dl class="ayuda-step__meta">
+        <div class="ayuda-step__meta-row--wide"><dt>Para qué</dt><dd>Capturar gastos fijos o variables que no son un producto del catálogo pero sí entran al costo de elaborar: horno, gas, tiempo de trabajo, empaque genérico, etc. Se cargan una vez y luego se asignan y escalan en cada versión de receta.</dd></div>
+        <div><dt>Antes de</dt><dd>Perfil y categorías (recomendado).</dd></div>
+        <div><dt>Después</dt><dd>Recetas — asignación de indirectos en cada versión.</dd></div>
+        <div class="ayuda-step__meta-row--wide"><dt>Ejemplo</dt><dd class="ayuda-step__ejemplo">«Mano de obra horneado» — <strong>$15 000/hora</strong>; «Gas del horno» — <strong>$3 500</strong> por lote estándar. Luego, en la formulación, asignas cuánto aplica a cada receta.</dd></div>
+      </dl>
+      <p class="ayuda-step__hint"><strong>Idea clave:</strong> se define en catálogo y luego se asocia y escala en la formulación de cada versión.</p>
+    </article>
+
+  </div>
+  <pre class="ayuda-closure" aria-hidden="true">Perfil → Categorías → [Conversiones] → Costos indirectos → (listo para Fase 2)</pre>
+</section>
+
+<section class="card ayuda-section" id="seccion-recetas">
+  <div class="ayuda-section__header">
+    <h2>2. Recetas y producción</h2>
+    <span class="ayuda-section__apps"><code>apps.catalog</code> · <code>apps.recipes</code> · <code>apps.production</code></span>
+  </div>
+  <p>Ciclo operativo: insumos con precio, formulaciones versionadas y órdenes de trabajo que registran cada elaboración.</p>
+
+  <div class="ayuda-steps">
+
+    <article class="ayuda-step">
+      <div class="ayuda-step__head">
+        <span class="ayuda-step__num">2.1</span>
+        <h3 class="ayuda-step__title">Productos (insumos)</h3>
+        <a href="{% url 'catalog:producto_list' %}" class="btn btn-outline btn-sm">Ir a Productos</a>
+      </div>
+      <dl class="ayuda-step__meta">
+        <div class="ayuda-step__meta-row--wide"><dt>Para qué</dt><dd>Registrar cada materia prima con su precio de compra actualizado y unidad base. Es la fuente del costo de ingredientes en formulaciones y del desglose por insumo en producción y estadísticas.</dd></div>
+        <div><dt>Antes de</dt><dd>Sección 1 (categorías; conversiones si aplica).</dd></div>
+        <div><dt>Después</dt><dd>Recetas — cada ingrediente apunta a un producto.</dd></div>
+        <div class="ayuda-step__meta-row--wide"><dt>Ejemplo</dt><dd class="ayuda-step__ejemplo">«Harina de trigo» — categoría Harinas y polvos, unidad base <strong>g</strong>, costo <strong>$0,012/g</strong> (equivalente a $12/kg), proveedor «Molinos del Valle», estado Activo.</dd></div>
+      </dl>
+      <p class="ayuda-step__hint"><strong>Idea clave:</strong> sin productos con costo actualizado, el costo de receta y producción será cero o desactualizado.</p>
+    </article>
+
+    <article class="ayuda-step">
+      <div class="ayuda-step__head">
+        <span class="ayuda-step__num">2.2</span>
+        <h3 class="ayuda-step__title">Recetas y versiones</h3>
+        <a href="{% url 'recipes:receta_list' %}" class="btn btn-outline btn-sm">Ir a Recetas</a>
+      </div>
+      <dl class="ayuda-step__meta">
+        <div class="ayuda-step__meta-row--wide"><dt>Para qué</dt><dd>Documentar qué elaboras o vendes: nombre de receta, versión de formulación con ingredientes y cantidades, pasos, indirectos asignados, rendimiento (porciones o unidades) y precio de venta sugerido calculado con tu margen objetivo.</dd></div>
+        <div><dt>Antes de</dt><dd>Productos, costos indirectos, perfil con margen objetivo.</dd></div>
+        <div><dt>Después</dt><dd>Producción — cada orden elige receta y versión.</dd></div>
+        <div class="ayuda-step__meta-row--wide"><dt>Ejemplo</dt><dd class="ayuda-step__ejemplo">Receta «Brownie clásico» v1 — 500 g harina, 300 g chocolate, 4 huevos; indirecto «Mano de obra horneado» 45 min; rendimiento <strong>24 porciones</strong>; precio sugerido <strong>$4 500/porción</strong>.</dd></div>
+      </dl>
+      <ol class="ayuda-sublist">
+        <li><strong>Crear receta</strong> — versión inicial v1 con rendimiento.</li>
+        <li><strong>Abrir formulación</strong> — ingredientes, indirectos y pasos; el sistema calcula costos.</li>
+        <li><strong>Revisar costos</strong> — desglose por porción y precio sugerido.</li>
+        <li><strong>Nueva versión</strong> — al cambiar formulación o precios relevantes; el historial se conserva.</li>
+      </ol>
+      <p class="ayuda-step__hint"><strong>Idea clave:</strong> la <strong>versión</strong> es el corazón del costo teórico; la cabecera de receta permanece estable.</p>
+    </article>
+
+    <article class="ayuda-step">
+      <div class="ayuda-step__head">
+        <span class="ayuda-step__num">2.3</span>
+        <h3 class="ayuda-step__title">Producción (órdenes)</h3>
+        <a href="{% url 'production:orden_list' %}" class="btn btn-outline btn-sm">Ir a Producción</a>
+      </div>
+      <dl class="ayuda-step__meta">
+        <div class="ayuda-step__meta-row--wide"><dt>Para qué</dt><dd>Registrar una elaboración concreta: qué receta y versión, cuántos lotes, fechas planificadas, avance por estados y, al completar, el precio de venta real. Es el puente entre la teoría de costos y el análisis histórico de tu negocio.</dd></div>
+        <div><dt>Antes de</dt><dd>Receta con versión vigente y costos calculados.</dd></div>
+        <div><dt>Después</dt><dd>Estadísticas — solo órdenes <strong>completadas</strong> generan snapshot.</dd></div>
+        <div class="ayuda-step__meta-row--wide"><dt>Ejemplo</dt><dd class="ayuda-step__ejemplo">Orden #12 — Brownie clásico v1, <strong>2 lotes</strong> (48 porciones), fecha planificada 15/06, estado En proceso → Completada, precio de venta <strong>$4 800/porción</strong>.</dd></div>
+      </dl>
+      <div class="ayuda-state-flow" aria-label="Flujo de estados">
+        <span class="badge badge-draft">Borrador</span> →
+        <span class="badge badge-active">En proceso</span> →
+        <span class="badge badge-active">Completada</span>
+        <span style="color:var(--color-muted);margin:0 0.25rem;">|</span>
+        <span class="badge badge-draft">Borrador</span> /
+        <span class="badge badge-active">En proceso</span> →
+        <span class="badge badge-inactive">Cancelada</span>
+      </div>
+      <table class="ayuda-state-table">
+        <tr><th>Borrador</th><td>Planificación; costo estimado puede recalcularse.</td></tr>
+        <tr><th>En proceso</th><td>Costo estimado <strong>congelado</strong>.</td></tr>
+        <tr><th>Completada</th><td>Precio de venta confirmado; se registra analytics.</td></tr>
+        <tr><th>Cancelada</th><td>No alimenta estadísticas.</td></tr>
+      </table>
+      <p class="ayuda-step__hint"><strong>Idea clave:</strong> producir cierra un ciclo con costo congelado y precio de venta para medir ganancia real. Atajo: <strong>Producir</strong> desde el listado de recetas.</p>
+    </article>
+
+  </div>
+  <pre class="ayuda-closure" aria-hidden="true">Productos → Receta + versiones → Orden completada → (habilita Fase 3)</pre>
+</section>
+
+<section class="card ayuda-section" id="seccion-analisis">
+  <div class="ayuda-section__header">
+    <h2>3. Análisis y estadísticas</h2>
+    <span class="ayuda-section__apps"><code>apps.analytics</code> · <code>apps.dashboard</code></span>
+  </div>
+  <p>Evaluación del negocio a partir de producciones <strong>ya completadas</strong>: ganancias, pérdidas, costos, rankings y tendencias.</p>
+
+  <div class="ayuda-steps">
+
+    <article class="ayuda-step">
+      <div class="ayuda-step__head">
+        <span class="ayuda-step__num">3.1</span>
+        <h3 class="ayuda-step__title">Snapshots al completar</h3>
+      </div>
+      <dl class="ayuda-step__meta">
+        <div class="ayuda-step__meta-row--wide"><dt>Para qué</dt><dd>Cada vez que completas una orden, BakeBudge guarda una «foto» fija de esa producción: costos, márgenes e insumos usados en ese momento, sin recalcular si después cambias precios en el catálogo. Así el historial refleja lo que realmente ocurrió.</dd></div>
+        <div class="ayuda-step__meta-row--wide"><dt>Ejemplo</dt><dd class="ayuda-step__ejemplo">Orden completada el 10/06 — 24 brownies, costo de producción <strong>$72 000</strong>, venta <strong>$108 000</strong>, margen real <strong>33 %</strong> (comparado con objetivo 40 % en tu perfil).</dd></div>
+      </dl>
+      <table class="ayuda-state-table">
+        <tr><th>Orden completada</th><td>Sí — snapshot automático.</td></tr>
+        <tr><th>Borrador / en proceso</th><td>No — aún no hay hecho analítico.</td></tr>
+        <tr><th>Cancelada</th><td>No — excluida del análisis v1.</td></tr>
+      </table>
+      <p class="ayuda-step__hint"><strong>Idea clave:</strong> las estadísticas leen <strong>snapshots</strong>, no recalculan en vivo desde el catálogo actual.</p>
+    </article>
+
+    <article class="ayuda-step">
+      <div class="ayuda-step__head">
+        <span class="ayuda-step__num">3.2</span>
+        <h3 class="ayuda-step__title">Pantalla Estadísticas</h3>
+        <a href="{% url 'analytics:estadisticas_home' %}" class="btn btn-outline btn-sm">Ir a Estadísticas</a>
+      </div>
+      <dl class="ayuda-step__meta">
+        <div class="ayuda-step__meta-row--wide"><dt>Para qué</dt><dd>Analizar el historial de producciones completadas: comparar ganancias, detectar qué recetas e insumos son más relevantes y ver si cumples tu margen objetivo en el periodo que elijas.</dd></div>
+        <div class="ayuda-step__meta-row--wide"><dt>Ejemplo</dt><dd class="ayuda-step__ejemplo">Filtro «Últimos 3 meses» — margen real <strong>38 %</strong>, ganancia total <strong>$1 240 000</strong>, 28 órdenes completadas; insumo más usado: Harina de trigo, <strong>12,5 kg</strong> consumidos.</dd></div>
+      </dl>
+      <ul class="ayuda-blocks-list">
+        <li><strong>KPIs del periodo</strong> Margen real vs objetivo, ganancia total, órdenes completadas y con pérdida.</li>
+        <li><strong>Recetas más producidas</strong> Frecuencia de elaboración por receta.</li>
+        <li><strong>Insumos más usados</strong> Consumo agregado en el periodo.</li>
+        <li><strong>Versiones más productivas</strong> Unidades por versión de formulación.</li>
+        <li><strong>Evolución costo / porción</strong> Tendencia mensual del costo unitario.</li>
+        <li><strong>Ratio indirectos / ingredientes</strong> Peso de indirectos en el periodo.</li>
+        <li><strong>Tabla detalle</strong> Una fila por producción completada; enlace a la orden.</li>
+      </ul>
+      <p class="form-hint" style="margin-top:0.75rem;">Filtros: periodo, receta, categoría de insumo (ranking de insumos).</p>
+    </article>
+
+    <article class="ayuda-step">
+      <div class="ayuda-step__head">
+        <span class="ayuda-step__num">3.3</span>
+        <h3 class="ayuda-step__title">Dashboard como resumen</h3>
+        <a href="{% url 'dashboard:home' %}" class="btn btn-outline btn-sm">Ir a Dashboard</a>
+      </div>
+      <dl class="ayuda-step__meta">
+        <div class="ayuda-step__meta-row--wide"><dt>Para qué</dt><dd>Punto de entrada diario con números resumidos de tu operación sin entrar a cada módulo: cuántos productos y recetas tienes, órdenes del mes, margen promedio reciente y accesos directos a lo que más usas.</dd></div>
+        <div><dt>Relación</dt><dd>El dashboard <strong>orienta</strong>; estadísticas <strong>profundiza</strong>.</dd></div>
+        <div class="ayuda-step__meta-row--wide"><dt>Ejemplo</dt><dd class="ayuda-step__ejemplo">Dashboard muestra <strong>45 productos</strong> activos, <strong>12 recetas</strong>, <strong>6 órdenes</strong> este mes, margen promedio <strong>36 %</strong>; producción reciente: Brownie (completada), Torta red velvet (en proceso).</dd></div>
+      </dl>
+      <p class="ayuda-step__hint"><strong>Idea clave:</strong> el margen promedio del dashboard usa analytics cuando ya hay órdenes completadas.</p>
+    </article>
+
+  </div>
+  <pre class="ayuda-closure" aria-hidden="true">Orden completada → Snapshot → Estadísticas + Dashboard</pre>
+</section>
+
+<section class="card ayuda-section" id="seccion-noticias">
+  <div class="ayuda-section__header">
+    <h2>4. Noticias</h2>
+    <span class="ayuda-section__apps"><code>apps.noticias</code></span>
+  </div>
+  <p>Comunicados del sistema para mantenerte al día con novedades, avisos y orientación sobre el uso de BakeBudge. Complementan esta guía con mensajes puntuales y actualizados.</p>
+
+  <div class="ayuda-steps">
+
+    <article class="ayuda-step">
+      <div class="ayuda-step__head">
+        <span class="ayuda-step__num">4.1</span>
+        <h3 class="ayuda-step__title">Feed de noticias</h3>
+        <a href="{% url 'noticias:feed' %}" class="btn btn-outline btn-sm">Ir a Noticias</a>
+      </div>
+      <dl class="ayuda-step__meta">
+        <div class="ayuda-step__meta-row--wide"><dt>Para qué</dt><dd>Consultar comunicados oficiales y mensajes personalizados sobre novedades, mantenimiento, primeros pasos o recordatorios del flujo. No sustituye esta guía, pero te orienta en el momento con avisos puntuales.</dd></div>
+        <div><dt>Antes de</dt><dd>Nada — disponible desde el primer acceso. Tras completar seguridad, tu <strong>primer ingreso</strong> puede llevarte aquí antes del dashboard.</dd></div>
+        <div><dt>Después</dt><dd>Continuar con catálogo base, recetas, producción o dashboard según lo que indiquen las noticias o tu prioridad del momento.</dd></div>
+        <div class="ayuda-step__meta-row--wide"><dt>Ejemplo</dt><dd class="ayuda-step__ejemplo">Tarjeta destacada «Bienvenida a BakeBudge» (alcance global, vigente todo el mes); tarjeta personal «Completa tu perfil y crea tu primera categoría» (solo tu cuenta).</dd></div>
+      </dl>
+      <ul class="ayuda-blocks-list">
+        <li><strong>Destacadas</strong> Aparecen primero para no perder avisos importantes.</li>
+        <li><strong>Alcance global</strong> Visibles para todos los usuarios de la plataforma.</li>
+        <li><strong>Alcance personal</strong> Mensajes dirigidos solo a tu cuenta.</li>
+        <li><strong>Vigencia</strong> Solo se muestran noticias activas dentro de su periodo de visibilidad.</li>
+      </ul>
+      <p class="ayuda-step__hint"><strong>Idea clave:</strong> las noticias <strong>informan</strong> en el momento; esta Ayuda General explica el <strong>flujo completo</strong>. Revisa el feed cuando quieras desde el menú lateral.</p>
+    </article>
+
+  </div>
+  <pre class="ayuda-closure" aria-hidden="true">Primer acceso (opcional) → Noticias → Catálogo / recetas / dashboard</pre>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'ayuda/js/ayuda.js' %}"></script>
+{% endblock %}

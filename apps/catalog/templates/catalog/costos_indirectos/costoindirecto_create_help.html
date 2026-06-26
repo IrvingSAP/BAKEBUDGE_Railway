@@ -1,0 +1,139 @@
+{% extends "app_base.html" %}
+{% load static catalog_extras %}
+
+{% block title %}Ayuda — Crear costo indirecto — BAKEBUDGE{% endblock %}
+{% block body_page %}costos-indirectos{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'catalog/css/costos-indirectos.css' %}">
+{% endblock %}
+
+{% block app_content %}
+<div class="page-header page-header-row">
+  <div>
+    <h1>Ayuda: crear costo indirecto</h1>
+    <p>Guía de los campos del formulario de alta. Solo consulta — no guarda datos.</p>
+  </div>
+  <a href="{% url 'catalog:costoindirecto_create' %}" class="btn btn-primary">← Volver al formulario</a>
+</div>
+
+<div class="costos-indirectos-help-intro card">
+  <p>
+    Un <strong>costo indirecto</strong> representa un gasto que no es un ingrediente directo
+    (gas, luz, mano de obra, empaque, flete, depreciación, etc.) y se asigna a recetas
+    según una unidad de cobro (por hora, por lote, por mes…).
+    Completa los campos marcados con <span aria-hidden="true">*</span> para registrarlo.
+  </p>
+</div>
+
+<div class="costos-indirectos-form costos-indirectos-form--help" aria-readonly="true">
+  <section class="card costos-indirectos-form-card costos-indirectos-form-card--help">
+    <h2>Identificación</h2>
+    <div class="form-grid">
+      <div class="form-field" style="grid-column: 1 / -1;">
+        <label for="help-nombre">Nombre <span aria-hidden="true">*</span></label>
+        <input type="text" id="help-nombre" value="Gas horno" readonly tabindex="-1">
+        <p class="costos-indirectos-help-desc">
+          Nombre visible en listados y selectores de formulación de recetas.
+          Debe ser único en tu catálogo (máximo 50 caracteres).
+          Ejemplos: «Gas horno», «Luz cocina», «Mano de obra horneado».
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="card costos-indirectos-form-card costos-indirectos-form-card--help">
+    <h2>Tarifa</h2>
+    <div class="form-grid">
+      <div class="form-field">
+        <label for="help-unidad">Unidad de cobro <span aria-hidden="true">*</span></label>
+        <select id="help-unidad" disabled tabindex="-1">
+          <option selected>hora — Por hora</option>
+        </select>
+        <p class="costos-indirectos-help-desc">
+          Define cómo se cobra el gasto al asignarlo en una receta.
+          Valores v1: <code>hora</code>, <code>minuto</code>, <code>lote</code>,
+          <code>porcion</code>, <code>mes</code>, <code>fijo</code>.
+          Ejemplo: gas del horno → por hora; luz → por mes; empaque → por porción.
+        </p>
+      </div>
+      <div class="form-field">
+        <label for="help-costo">Costo por unidad <span aria-hidden="true">*</span></label>
+        <input type="text" id="help-costo" value="3.50" readonly tabindex="-1">
+        <p class="costos-indirectos-help-desc">
+          Monto en la moneda de tu perfil por cada unidad de cobro.
+          Debe ser un número mayor que 0 (mínimo 0.0001).
+          En recetas: <strong>costo línea = cantidad × costo por unidad</strong>.
+        </p>
+      </div>
+      <div class="form-field" style="grid-column: 1 / -1;">
+        <label>Vista previa tarifa</label>
+        <div class="costos-indirectos-tarifa-box"><strong>$ 3.50</strong> / hora</div>
+        <p class="costos-indirectos-help-desc">
+          Se actualiza en tiempo real al escribir en el formulario real.
+          Muestra la tarifa de referencia: «$ X / {unidad}».
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="card costos-indirectos-form-card costos-indirectos-form-card--help">
+    <h2>Información adicional</h2>
+    <div class="form-grid">
+      <div class="form-field" style="grid-column: 1 / -1;">
+        <label for="help-notas">Notas</label>
+        <textarea id="help-notas" rows="3" readonly tabindex="-1">Estimado por cilindro mensual — 8 h/día de horno.</textarea>
+        <p class="costos-indirectos-help-desc">
+          Opcional. Texto libre para recordar el origen del cálculo,
+          referencia de factura o método de prorrateo.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="card costos-indirectos-form-card costos-indirectos-form-card--help">
+    <h2>Estado</h2>
+    <div class="form-grid">
+      <div class="form-field">
+        <label for="help-status">Estado</label>
+        <select id="help-status" disabled tabindex="-1">
+          <option selected>P — En proceso</option>
+        </select>
+        <p class="costos-indirectos-help-desc">
+          Por defecto queda <strong>En proceso</strong> (P) hasta que lo revises.
+          Solo los costos <strong>Activos</strong> (A) aparecen en selectores de recetas.
+          <strong>Inactivo</strong> (I) conserva el registro sin ofrecerlo en nuevas asignaciones.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="card costos-indirectos-form-card costos-indirectos-form-card--help">
+    <h2>Acciones del formulario real</h2>
+    <div class="costos-indirectos-form-actions" style="border-top:none;padding-top:0;margin-top:0;">
+      <span class="btn btn-primary btn--demo">Guardar</span>
+      <span class="btn btn-outline btn--demo">Guardar y marcar activo</span>
+      <span class="btn btn-outline btn--demo">Cancelar</span>
+    </div>
+    <ul class="costos-indirectos-help-desc" style="margin-top:1rem;padding-left:1.25rem;">
+      <li><strong>Guardar</strong> — valida nombre, unidad y costo; conserva el estado seleccionado.</li>
+      <li><strong>Guardar y marcar activo</strong> — guarda con <code>status = A</code> para uso inmediato en recetas.</li>
+      <li><strong>Cancelar</strong> — regresa al listado sin guardar cambios.</li>
+    </ul>
+  </section>
+
+  <section class="card costos-indirectos-form-card costos-indirectos-form-card--required-note">
+    <p class="form-hint" style="margin:0;">
+      Campos obligatorios al crear: nombre, unidad de cobro y costo por unidad.
+      Si falta alguno o el costo no es válido, verás un mensaje de error en pantalla.
+    </p>
+  </section>
+
+  <section class="card costos-indirectos-form-card">
+    <div class="costos-indirectos-form-actions" style="border-top:none;padding-top:0;margin-top:0;">
+      <a href="{% url 'catalog:costoindirecto_create' %}" class="btn btn-primary">Volver al formulario de alta</a>
+      <a href="{% url 'catalog:costoindirecto_list' %}" class="btn btn-outline">Ir al listado</a>
+    </div>
+  </section>
+</div>
+{% endblock %}

@@ -1,0 +1,164 @@
+{% extends "app_base.html" %}
+
+{% load static %}
+
+
+
+{% block title %}Ayuda: crear usuario - BAKEBUDGE{% endblock %}
+
+{% block body_page %}usuarios{% endblock %}
+
+
+
+{% block extra_css %}
+
+<link rel="stylesheet" href="{% static 'administration/css/usuarios.css' %}">
+
+{% endblock %}
+
+
+
+{% block app_content %}
+
+<div class="page-header page-header-row">
+
+  <div>
+
+    <h1>Ayuda: crear usuario</h1>
+
+    <p>Guía de los campos del formulario de alta. Solo consulta — no guarda datos.</p>
+
+  </div>
+
+  <a href="{% url 'administration:usuario_create' %}" class="btn btn-primary">← Volver al formulario</a>
+
+</div>
+
+
+
+<div class="usuarios-help-intro card">
+
+  <p>
+
+    Un <strong>usuario</strong> combina la cuenta Django (<code>auth.User</code>) con su perfil de negocio
+
+    (<code>UserProfile</code>). En v1 <strong>solo un Master</strong> crea cuentas desde aquí; no hay registro público.
+
+    Tras el alta, registra la suscripción en Facturación antes de entregar credenciales al cliente.
+
+  </p>
+
+</div>
+
+
+
+<div class="usuarios-form usuarios-form--help" aria-readonly="true">
+
+  <section class="card usuarios-form-card">
+
+    <h2>Cuenta Django</h2>
+
+    <div class="form-grid">
+
+      <div class="form-field">
+
+        <label for="help-username">Usuario *</label>
+
+        <input type="text" id="help-username" value="repostera.ana" readonly tabindex="-1">
+
+        <p class="usuarios-help-desc">Login único. Sin espacios. Ejemplo: <code>repostera.ana</code>.</p>
+
+      </div>
+
+      <div class="form-field">
+
+        <label for="help-email">Correo *</label>
+
+        <input type="text" id="help-email" value="ana@ejemplo.com" readonly tabindex="-1">
+
+        <p class="usuarios-help-desc">Correo único. Se usará para verificación y recuperación.</p>
+
+      </div>
+
+      <div class="form-field">
+
+        <label for="help-password">Contraseña *</label>
+
+        <input type="text" id="help-password" value="••••••••" readonly tabindex="-1">
+
+        <p class="usuarios-help-desc">Mínimo 8 caracteres. Debe coincidir con la confirmación.</p>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+
+  <section class="card usuarios-form-card">
+
+    <h2>Perfil</h2>
+
+    <div class="form-grid">
+
+      <div class="form-field">
+
+        <label for="help-user-type">Tipo *</label>
+
+        <select id="help-user-type" disabled tabindex="-1">
+
+          <option selected>U — User</option>
+
+        </select>
+
+        <p class="usuarios-help-desc">
+
+          <strong>U — User:</strong> repostero estándar; requiere suscripción vigente.<br>
+
+          <strong>M — Master:</strong> administrador; exento de pago y con acceso a Administración.
+
+        </p>
+
+      </div>
+
+      <div class="form-field">
+
+        <label for="help-moneda">Moneda *</label>
+
+        <select id="help-moneda" disabled tabindex="-1">
+
+          {% for moneda in monedas %}
+
+          <option {% if forloop.first %}selected{% endif %}>{{ moneda.codigo }}</option>
+
+          {% endfor %}
+
+        </select>
+
+        <p class="usuarios-help-desc">Moneda en la que verá costos y precios en la app.</p>
+
+      </div>
+
+    </div>
+
+  </section>
+
+
+
+  <section class="card usuarios-form-card">
+
+    <div class="usuarios-form-actions" style="border-top:none;padding-top:0;margin-top:0;">
+
+      <a href="{% url 'administration:usuario_create' %}" class="btn btn-primary">Volver al formulario de alta</a>
+
+      <a href="{% url 'administration:usuario_list' %}" class="btn btn-outline">Ir al listado</a>
+
+    </div>
+
+  </section>
+
+</div>
+
+{% endblock %}
+
