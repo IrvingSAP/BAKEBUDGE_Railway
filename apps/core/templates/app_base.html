@@ -24,7 +24,12 @@
         <button type="button" class="sidebar-toggle" data-sidebar-toggle aria-label="Abrir menú">☰</button>
         <span class="app-topbar-brand app-brand">BAKE<span>BUDGE</span></span>
         <div class="app-user">
-          <strong class="app-user-name">{{ app_profile.nombre_negocio|default:"Nombre de Negocio por Definir..." }}</strong>
+          {% with negocio=app_profile.nombre_negocio|default:"" %}
+          <strong
+            class="app-user-name{% if not negocio %} app-user-name--placeholder{% endif %}"
+            {% if negocio %}title="{{ negocio }}"{% endif %}
+          >{% if negocio %}{{ negocio }}{% else %}Nombre de Negocio por Definir...{% endif %}</strong>
+          {% endwith %}
         </div>
       </header>
 

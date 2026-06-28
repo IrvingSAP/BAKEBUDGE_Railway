@@ -11,3 +11,18 @@
   color: var(--color-muted);
   font-size: 0.92rem;
 }
+
+@media (max-width: 768px) {
+  .app-user {
+    max-width: min(100%, 200px);
+  }
+
+  .app-user-name {
+    font-size: 0.92rem;
+    padding: 0.4rem 0.75rem;
+  }
+
+  .app-user-name--placeholder {
+    font-size: 0.78rem;
+  }
+}

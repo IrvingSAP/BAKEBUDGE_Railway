@@ -259,24 +259,44 @@ img {
 
 .app-user {
   display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  text-align: right;
+  align-items: center;
+  justify-content: flex-end;
   margin-left: auto;
-}
-
-.app-user-label {
-  font-size: 0.72rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: var(--color-muted);
+  max-width: min(100%, 320px);
 }
 
 .app-user-name {
-  font-size: 0.95rem;
+  display: inline-block;
+  max-width: 100%;
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
+  font-size: 1.05rem;
   font-weight: 800;
-  color: var(--color-text);
+  letter-spacing: 0.02em;
+  line-height: 1.25;
+  color: var(--color-primary-dark);
+  background: linear-gradient(
+    135deg,
+    rgba(232, 180, 188, 0.42) 0%,
+    rgba(180, 212, 232, 0.28) 55%,
+    rgba(196, 232, 180, 0.24) 100%
+  );
+  border: 1px solid rgba(201, 111, 144, 0.28);
+  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.app-user-name--placeholder {
+  font-size: 0.86rem;
+  font-weight: 700;
+  font-style: italic;
+  letter-spacing: 0.01em;
+  color: var(--color-muted);
+  background: var(--color-bg);
+  border: 1px dashed var(--color-border);
+  box-shadow: none;
 }
 
 .sidebar-toggle {
