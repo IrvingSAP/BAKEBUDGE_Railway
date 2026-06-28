@@ -21,8 +21,7 @@
            placeholder="tu_usuario" maxlength="150" required>
 
     <label for="password">Contraseña</label>
-    <input type="password" id="password" name="password" autocomplete="current-password"
-           placeholder="••••••••" required>
+    {% include "partials/password_field.html" with field_id="password" field_name="password" autocomplete="current-password" placeholder="••••••••" required=True %}
 
     <div class="acceso-actions">
       <button type="submit" class="btn btn-primary btn-block">Ingresar</button>

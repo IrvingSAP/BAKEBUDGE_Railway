@@ -13,7 +13,7 @@ class AppIdleTimeoutMiddleware:
 
     def __call__(self, request):
         if self._should_enforce(request):
-            if session_idle.is_idle_expired(request):
+            if session_idle.is_idle_enforcement_required(request):
                 return self._idle_logout_response(request)
             session_idle.set_last_activity(request)
         return self.get_response(request)

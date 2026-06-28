@@ -47,3 +47,19 @@ def is_idle_expired(request) -> bool:
     if last is None:
         return False
     return timezone.now() - last > app_idle_timeout()
+
+
+def should_relogin_at_login_gate(request) -> bool:
+    """True si /ingresar/ no debe saltar el formulario (sesión vieja o inactiva)."""
+    last = get_last_activity(request)
+    if last is None:
+        return True
+    return timezone.now() - last > app_idle_timeout()
+
+
+def is_idle_enforcement_required(request) -> bool:
+    """True si /app/ debe cerrar sesión (sin marca o inactividad > timeout)."""
+    last = get_last_activity(request)
+    if last is None:
+        return True
+    return timezone.now() - last > app_idle_timeout()

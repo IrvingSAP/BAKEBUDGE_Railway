@@ -100,14 +100,16 @@ Tras el login completo, la sesión permanece activa mientras el usuario navega e
 
 | Aspecto | Regla |
 |---------|--------|
-| Ámbito | Solo rutas bajo `/app/` (dashboard, catálogo, recetas, producción, estadísticas, ayuda, perfil, noticias en app, etc.) |
+| Ámbito | Rutas bajo `/app/` (dashboard, catálogo, recetas, producción, estadísticas, ayuda, perfil, noticias en app, etc.) |
 | Timeout | `APP_IDLE_TIMEOUT_SECONDS = 2400` (40 min) en `config/settings/base.py` |
-| Actividad | Cualquier petición autenticada a `/app/` actualiza la marca de última actividad en sesión |
+| Actividad | Cualquier petición autenticada a `/app/` actualiza la marca `app_last_activity_at` en sesión |
+| Marca inicial | Se guarda al completar login (TOTP OK) en `_finalize_access` |
 | Efecto | `logout()` + redirect a login; el usuario debe volver a ingresar (contraseña + TOTP) |
-| Fuera de `/app/` | Zona pública y wizard de seguridad (`/ingresar/`, `/seguridad/`) no aplican este timeout |
-| Implementación | `apps.security.middleware.AppIdleTimeoutMiddleware` · `apps/security/services/session_idle.py` |
+| **`/ingresar/`** | Si la cookie de sesión sigue viva pero la marca falta o superó 40 min, **no** se salta el formulario: se cierra sesión y se muestra login |
+| Fuera de `/app/` | Zona pública no actualiza la marca; el wizard de seguridad parcial no aplica este timeout |
+| Implementación | `AppIdleTimeoutMiddleware` · `session_idle.py` · comprobación en `login_view` |
 
-**Nota:** apagar el equipo sin «Cerrar sesión» no equivale a logout; este control cubre el caso al volver a usar `/app/` tras el periodo de inactividad.
+**Nota:** apagar el equipo sin «Cerrar sesión» no equivale a logout. Al pulsar **Entrar** en la landing con sesión expirada por inactividad, el sistema pide usuario y contraseña de nuevo.
 
 ---
 

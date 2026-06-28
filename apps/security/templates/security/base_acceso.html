@@ -7,6 +7,7 @@
   <title>{% block title %}Acceso — BAKEBUDGE{% endblock %}</title>
   <link rel="stylesheet" href="{% static 'security/css/acceso.css' %}">
   <link rel="stylesheet" href="{% static 'css/bakebudge-modal.css' %}">
+  <link rel="stylesheet" href="{% static 'css/password-field.css' %}">
   {% block extra_css %}{% endblock %}
 </head>
 <body class="acceso-page" data-page="{% block body_page %}acceso{% endblock %}">
@@ -22,6 +23,7 @@
   {% include "public_site/partials/modal_global.html" %}
 
   <script src="{% static 'js/bakebudge-modal.js' %}"></script>
+  <script src="{% static 'js/password-toggle.js' %}"></script>
   {% if messages %}
   <script>
     document.addEventListener("DOMContentLoaded", function () {

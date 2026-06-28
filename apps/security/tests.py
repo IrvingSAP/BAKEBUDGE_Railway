@@ -197,17 +197,45 @@ class AppIdleTimeoutTests(TestCase):
         )
         self.client.force_login(self.user)
 
-    def test_app_request_refreshes_activity(self):
-        response = self.client.get("/app/")
-        self.assertEqual(response.status_code, 200)
-        self.assertIn(session_idle.SESSION_LAST_ACTIVITY_KEY, self.client.session)
-
-    def test_idle_session_logs_out_and_redirects(self):
+    def _seed_session_activity(self, minutes_ago=0):
         session = self.client.session
         session[session_idle.SESSION_LAST_ACTIVITY_KEY] = (
-            timezone.now() - timedelta(minutes=41)
+            timezone.now() - timedelta(minutes=minutes_ago)
         ).isoformat()
         session.save()
+
+    def test_app_request_refreshes_activity(self):
+        self._seed_session_activity(minutes_ago=5)
+        before = session_idle.get_last_activity(self.client.session)
+        response = self.client.get("/app/")
+        self.assertEqual(response.status_code, 200)
+        after = session_idle.parse_last_activity(
+            self.client.session.get(session_idle.SESSION_LAST_ACTIVITY_KEY)
+        )
+        self.assertIsNotNone(after)
+        self.assertGreaterEqual(after, before)
+
+    def test_app_without_activity_timestamp_logs_out(self):
+        response = self.client.get("/app/perfil/")
+        self.assertEqual(response.status_code, 302)
+        self.assertIn("/ingresar/", response.url)
+        self.assertIn("idle=1", response.url)
+
+    def test_login_gate_requires_relogin_when_idle(self):
+        self._seed_session_activity(minutes_ago=41)
+        response = self.client.get(reverse("security:login"))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Ingresar")
+        self.assertFalse(response.wsgi_request.user.is_authenticated)
+
+    def test_login_gate_auto_redirect_when_recent_activity(self):
+        self._seed_session_activity(minutes_ago=10)
+        response = self.client.get(reverse("security:login"))
+        self.assertEqual(response.status_code, 302)
+        self.assertTrue(response.url.startswith("/app/"))
+
+    def test_idle_session_logs_out_and_redirects(self):
+        self._seed_session_activity(minutes_ago=41)
 
         response = self.client.get("/app/perfil/")
         self.assertEqual(response.status_code, 302)
@@ -218,11 +246,7 @@ class AppIdleTimeoutTests(TestCase):
         self.assertContains(follow, "Sesión cerrada por inactividad.")
 
     def test_recent_activity_keeps_session(self):
-        session = self.client.session
-        session[session_idle.SESSION_LAST_ACTIVITY_KEY] = (
-            timezone.now() - timedelta(minutes=20)
-        ).isoformat()
-        session.save()
+        self._seed_session_activity(minutes_ago=20)
 
         response = self.client.get("/app/ayuda/")
         self.assertEqual(response.status_code, 200)

@@ -2,8 +2,8 @@
 
 > **Plataforma:** [Railway](https://docs.railway.com/) — Plan **Basic**  
 > **Correo producción:** [Resend](https://resend.com/docs/dashboard/emails/introduction)  
-> **Última actualización:** 2026-06-16  
-> **Estado:** **Pendiente de ejecución** (código aún sin artefactos de deploy)
+> **Última actualización:** 2026-06-26  
+> **Estado:** **En producción** — fase de **prueba de envíos de correo** (Bloque C); deploy y Postgres OK
 
 Documento maestro de tareas para llevar BAKEBUDGE de entorno local a producción. Cada bloque tiene checklist verificable; no marcar **Hecho** hasta probar en Railway.
 
@@ -59,21 +59,100 @@ flowchart LR
 
 
 
+## Variables Railway — producción actual
+
+**Referencia operativa** (servicio Web, 2026-06-26). Valores reales solo en Railway → **Variables** (no commitear secretos).
+
+
+| Variable                 | Rol                                                                      |
+| ------------------------ | ------------------------------------------------------------------------ |
+| `DATABASE_URL`           | Conexión PostgreSQL — `${{Postgres.DATABASE_URL}}`                       |
+| `DJANGO_SETTINGS_MODULE` | `config.settings.production`                                             |
+| `SECRET_KEY`             | Clave Django (sesiones, CSRF, firmas) — secret Railway                   |
+| `EMAIL_DELIVERY`         | `resend` — activa Anymail + Resend en `production.py`                    |
+| `RESEND_API_KEY`         | API key Resend — secret Railway                                          |
+| `DEFAULT_FROM_EMAIL`     | Remitente verificado en Resend (ej. `BAKEBUDGE <noreply@tudominio.com>`) |
+
+
+**Plantilla Raw Editor** (sustituir placeholders; pegar en Railway → servicio Web → Variables):
+
+```env
+DATABASE_URL=${{Postgres.DATABASE_URL}}
+DJANGO_SETTINGS_MODULE=config.settings.production
+SECRET_KEY=generar-clave-larga-unica
+EMAIL_DELIVERY=resend
+RESEND_API_KEY=re_xxxxxxxx
+DEFAULT_FROM_EMAIL=BAKEBUDGE <noreply@tudominio.com>
+```
+
+Generar `SECRET_KEY` en local:
+
+```powershell
+python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"
+```
+
+
+
+### Diferencia con otros proyectos (ej. CODAS)
+
+BakeBudge usa **nombres estándar de** `django-environ` en `config/settings/base.py`. **No** copiar variables de CODAS:
+
+
+| Variable CODAS              | ¿BakeBudge?                                    |
+| --------------------------- | ---------------------------------------------- |
+| `DJANGO_SECRET_KEY`         | Usar `**SECRET_KEY**`                          |
+| `DJANGO_ALLOWED_HOSTS`      | Usar `**ALLOWED_HOSTS**` (opcional; ver abajo) |
+| `LICENSE_SECRET_KEY`        | **No aplica** — módulo licencias solo CODAS    |
+| `codas.settings.production` | `**config.settings.production**`               |
+
+
+
+
+### Opcionales recomendadas (no en el listado mínimo actual)
+
+El deploy puede funcionar sin ellas gracias a `RAILWAY_PUBLIC_DOMAIN` en `production.py` (Railway la inyecta). Añadir antes de **dominio custom** o si aparecen errores 400 / CSRF:
+
+
+| Variable               | Valor ejemplo                   |
+| ---------------------- | ------------------------------- |
+| `DEBUG`                | `False`                         |
+| `ALLOWED_HOSTS`        | `tu-app.up.railway.app`         |
+| `CSRF_TRUSTED_ORIGINS` | `https://tu-app.up.railway.app` |
+| `SECURE_SSL_REDIRECT`  | `True` (default en código)      |
+
+
+
+
+### Fase actual: prueba de correo (Bloque C)
+
+- [ ] Dominio del remitente (`DEFAULT_FROM_EMAIL`) **Verified** en Resend Dashboard
+- [ ] Login `/ingresar/` → usuario con email real → código 6 dígitos en bandeja (no en logs)
+- [ ] Resend Dashboard → **Emails** muestra envío exitoso
+- [ ] Logs Railway sin error Anymail/Resend al enviar
+- [ ] Reenvío de código y reset 2FA (si aplica)
+
+Con `EMAIL_DELIVERY=console` (local o fallback), los códigos van a **logs/consola**, no al buzón.
+
+---
+
+
+
 ## Estado actual del repo (gap analysis)
 
 
-| Ítem                                   | Local                      | Producción                           | Acción                           |
-| -------------------------------------- | -------------------------- | ------------------------------------ | -------------------------------- |
-| `gunicorn`                             | ✓ `requirements.txt`       | Requerido                            | **Hecho** (Bloque B)             |
-| `whitenoise`                           | ✓                          | Requerido (estáticos)                | **Hecho** (Bloque B)             |
-| `django-anymail[resend]`               | ✓                          | Requerido                            | **Hecho** (B + C código)         |
-| `config/settings/production.py`        | ✓ completo                 | WhiteNoise, CSRF, Anymail            | **Hecho** (Bloque B)             |
-| `config/wsgi.py`                       | ✓ `production` por defecto | Railway                              | **Hecho** (Bloque B)             |
-| `apps/core/services/email_delivery.py` | `console` + `send_mail`    | Anymail vía `EMAIL_DELIVERY=resend`  | **Hecho** (sin cambio código)    |
-| `Procfile` / `railway.toml`            | ✓                          | Release migrate + collectstatic      | **Hecho** (Bloque B)             |
-| `collectstatic` + migrate en deploy    | Manual local               | `preDeployCommand` en `railway.toml` | **Hecho** (Bloque B)             |
-| `CSRF_TRUSTED_ORIGINS`                 | Opcional local             | Dominio Railway + custom             | **Hecho** (Bloque B)             |
-| `ALLOWED_HOSTS`                        | localhost                  | Dominio producción                   | Configurar en Railway (Bloque D) |
+| Ítem                                   | Local                      | Producción                           | Acción                              |
+| -------------------------------------- | -------------------------- | ------------------------------------ | ----------------------------------- |
+| `gunicorn`                             | ✓ `requirements.txt`       | Requerido                            | **Hecho** (Bloque B)                |
+| `whitenoise`                           | ✓                          | Requerido (estáticos)                | **Hecho** (Bloque B)                |
+| `django-anymail[resend]`               | ✓                          | Requerido                            | **Hecho** (B + C código)            |
+| `config/settings/production.py`        | ✓ completo                 | WhiteNoise, CSRF, Anymail            | **Hecho** (Bloque B)                |
+| `config/wsgi.py`                       | ✓ `production` por defecto | Railway                              | **Hecho** (Bloque B)                |
+| `apps/core/services/email_delivery.py` | `console` + `send_mail`    | Anymail vía `EMAIL_DELIVERY=resend`  | **Hecho** (sin cambio código)       |
+| `Procfile` / `railway.toml`            | ✓                          | Release migrate + collectstatic      | **Hecho** (Bloque B)                |
+| `collectstatic` + migrate en deploy    | Manual local               | `preDeployCommand` en `railway.toml` | **Hecho** (Bloque B)                |
+| `CSRF_TRUSTED_ORIGINS`                 | Opcional local             | Dominio Railway + custom             | **Hecho** (Bloque B)                |
+| `ALLOWED_HOSTS`                        | localhost                  | Opcional — `RAILWAY_PUBLIC_DOMAIN`   | Añadir si dominio custom (Bloque F) |
+| Variables Railway producción           | `.env.example`             | 6 vars documentadas (§ arriba)       | **En uso** (2026-06-26)             |
 
 
 ---
@@ -173,10 +252,10 @@ git push -u origin main
 - [x] En GitHub **no** aparecen `.env`, `.venv/`, `clves.txt`
 - [x] Rama por defecto = `main`
 
-- [ ] **A3** Conectar Railway ↔ repositorio (Deploy from GitHub repo) — [guía](https://docs.railway.com/guides/django#deploy-from-a-github-repo).
+- [x] **A3** Conectar Railway ↔ repositorio (Deploy from GitHub repo) — [guía](https://docs.railway.com/guides/django#deploy-from-a-github-repo).
 - [ ] **A4** Cuenta [Resend](https://resend.com/) creada; API key generada en Dashboard → API Keys.
 - [ ] **A5** Dominio de envío decidido (ej. `tudominio.com` → remitente `noreply@tudominio.com`).
-- [ ] **A6** (Opcional v1) Dominio público de la app (subdominio `app.tudominio.com` o dominio Railway `*.up.railway.app`).
+- [x] **A6** (Opcional v1) Dominio público de la app (subdominio `app.tudominio.com` o dominio Railway `*.up.railway.app`).
 
 **Criterio de cierre A:** proyecto Railway vacío creado + repo conectado + API key Resend en mano (no commitear la key).
 
@@ -192,11 +271,11 @@ git push -u origin main
 
 ### B.1 Dependencias
 
-- [ ] **B1** Añadir a `requirements.txt`:
+- [x] **B1** Añadir a `requirements.txt`:
   - `gunicorn` — servidor WSGI producción
   - `whitenoise` — estáticos (`apps/*/static/`, DataTables, CSS modal)
   - `django-anymail[resend]` **o** `resend` (ver Bloque C; Anymail integra con `send_mail` existente)
-- [ ] **B2** Verificar que `psycopg2-binary` y `django-environ` siguen pinneados.
+- [x] **B2** Verificar que `psycopg2-binary` y `django-environ` siguen pinneados.
 
 
 
@@ -208,11 +287,11 @@ git push -u origin main
   - `SECURE_*` ya presentes — mantener
   - `CSRF_TRUSTED_ORIGINS` = lista con URL HTTPS del servicio (dominio Railway + custom)
   - `SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")` (Railway termina TLS)
-- [ ] **B4** `config/wsgi.py`: usar `config.settings.production` vía variable de entorno (no hardcodear `local`):
+- [x] **B4** `config/wsgi.py`: usar `config.settings.production` vía variable de entorno (no hardcodear `local`):
   ```python
   os.environ.setdefault("DJANGO_SETTINGS_MODULE", "config.settings.production")
   ```
-- [ ] **B5** WhiteNoise en `base.py` o `production.py`:
+- [x] **B5** WhiteNoise en `base.py` o `production.py`:
   - Middleware tras `SecurityMiddleware`: `whitenoise.middleware.WhiteNoiseMiddleware`
   - Tras deploy: `python manage.py collectstatic --noinput`
 
@@ -220,34 +299,23 @@ git push -u origin main
 
 ### B.3 Comandos de arranque (Railway)
 
-- [ ] **B6** Crear `Procfile` o configurar en Railway → Settings → Deploy:
+- [x] **B6** Crear `Procfile` o configurar en Railway → Settings → Deploy:
   ```text
   web: gunicorn config.wsgi:application --bind 0.0.0.0:$PORT
   ```
 
-- [ ] **B7** **Release command** (Railway → Deploy → Release / Pre-deploy):
+- [x] **B7** **Release command** (Railway → Deploy → Release / Pre-deploy):
   ```bash
   python manage.py migrate --noinput && python manage.py collectstatic --noinput
   ```
 
-- [ ] **B8** (Opcional) `railway.toml` con `buildCommand` / `startCommand` si se prefiere config en repo.
+- [x] **B8** (Opcional) `railway.toml` con `buildCommand` / `startCommand` si se prefiere config en repo.
 
 
 
 ### B.4 Variables documentadas
 
-- [ ] **B9** Actualizar `.env.example` con bloque **producción Railway** (valores de ejemplo, sin secretos):
-  ```env
-  DJANGO_SETTINGS_MODULE=config.settings.production
-  DEBUG=False
-  SECRET_KEY=generar-clave-larga-unica
-  DATABASE_URL=${{Postgres.DATABASE_URL}}
-  ALLOWED_HOSTS=tu-app.up.railway.app,tudominio.com
-  CSRF_TRUSTED_ORIGINS=https://tu-app.up.railway.app,https://tudominio.com
-  EMAIL_DELIVERY=resend
-  RESEND_API_KEY=re_xxxxxxxx
-  DEFAULT_FROM_EMAIL=BAKEBUDGE <noreply@tudominio.com>
-  ```
+- [x] **B9** `.env.example` con bloque **producción Railway** — alineado a variables en uso (6 vars mínimas + opcionales)
 
 **Criterio de cierre B:** `manage.py check --settings=config.settings.production` OK en local con `.env` de prueba; `collectstatic` genera `staticfiles/` sin error.
 
@@ -291,10 +359,11 @@ Estrategia recomendada (alineada con Resend + código actual):
 
 ### C.3 Railway — variables Resend
 
-- [ ] **C7** En servicio Web → Variables:
+- [x] **C7** Variables de correo configuradas en producción (ver § **Variables Railway — producción actual**):
   - `EMAIL_DELIVERY` = `resend`
-  - `RESEND_API_KEY` = `re_...` (secret)
-  - `DEFAULT_FROM_EMAIL` = `BAKEBUDGE <noreply@tudominio.com>` (dominio verificado)
+  - `RESEND_API_KEY` = secret Resend
+  - `DEFAULT_FROM_EMAIL` = remitente con dominio verificado en Resend
+- [ ] **C8** **Prueba en curso:** flujo `/ingresar/` → código en bandeja real; ver checklist en § Variables Railway
 
 **Criterio de cierre C:** login de prueba recibe código 2FA en bandeja real (no consola); logs Railway sin error de Anymail/Resend.
 
@@ -320,20 +389,18 @@ Estrategia recomendada (alineada con Resend + código actual):
 ### D.2 Servicio Web
 
 - [ ] **D3** Root directory del repo: carpeta `BAKEBUDGE/` si el monorepo incluye nivel superior; si el repo es solo Django, raíz con `manage.py`.
-- [ ] **D4** Variables obligatorias (Raw Editor):
+- [x] **D4** Variables en producción (Raw Editor) — **6 en uso** (2026-06-26):
 
-  | Variable                 | Valor / origen                                                                                                         |
-  | ------------------------ | ---------------------------------------------------------------------------------------------------------------------- |
-  | `DJANGO_SETTINGS_MODULE` | `config.settings.production`                                                                                           |
-  | `SECRET_KEY`             | Generar (`python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"`) |
-  | `DEBUG`                  | `False`                                                                                                                |
-  | `DATABASE_URL`           | `${{Postgres.DATABASE_URL}}`                                                                                           |
-  | `ALLOWED_HOSTS`          | dominio Railway + custom (comma-separated)                                                                             |
-  | `CSRF_TRUSTED_ORIGINS`   | `https://...` (mismos hosts con esquema)                                                                               |
-  | `EMAIL_DELIVERY`         | `resend`                                                                                                               |
-  | `RESEND_API_KEY`         | secret Resend                                                                                                          |
-  | `DEFAULT_FROM_EMAIL`     | remitente verificado                                                                                                   |
+  | Variable                 | Valor / origen                                                                                                         | En Railway |
+  | ------------------------ | ---------------------------------------------------------------------------------------------------------------------- | ---------- |
+  | `DATABASE_URL`           | `${{Postgres.DATABASE_URL}}`                                                                                           | ✓          |
+  | `DJANGO_SETTINGS_MODULE` | `config.settings.production`                                                                                           | ✓          |
+  | `SECRET_KEY`             | Generar (`python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"`) | ✓          |
+  | `EMAIL_DELIVERY`         | `resend`                                                                                                               | ✓          |
+  | `RESEND_API_KEY`         | secret Resend                                                                                                          | ✓          |
+  | `DEFAULT_FROM_EMAIL`     | remitente verificado en Resend                                                                                         | ✓          |
 
+  **Opcionales** (recomendadas antes de dominio custom): `DEBUG=False`, `ALLOWED_HOSTS`, `CSRF_TRUSTED_ORIGINS` — ver § Variables Railway.
 
 - [ ] **D5** **Networking** → Generate Domain (URL `*.up.railway.app`) — [public networking](https://docs.railway.com/guides/public-networking).
 - [ ] **D6** (Opcional) Custom domain + CNAME hacia Railway.
@@ -356,11 +423,89 @@ Estrategia recomendada (alineada con Resend + código actual):
 
 **Depende de:** D
 
-- [ ] **E1** Crear superusuario / Master de prueba:
-  ```bash
-  railway run python manage.py createsuperuser
-  ```
-  (o Railway shell / one-off command)
+### Comandos `manage.py` en Railway (Shell)
+
+Nixpacks instala dependencias en `**/opt/venv**`. El `python` del sistema (`/usr/bin/python`) **no** incluye Django.
+
+Si en el Shell aparece `ModuleNotFoundError: No module named 'django'`, activar el entorno virtual **antes** de cualquier comando:
+
+```bash
+cd /app
+source /opt/venv/bin/activate
+python manage.py <comando>
+```
+
+Alternativa equivalente (sin `activate`):
+
+```bash
+/opt/venv/bin/python manage.py <comando>
+```
+
+Comandos habituales en el Shell del servicio **Web** (no Postgres):
+
+
+| Comando                              | Uso                                                           |
+| ------------------------------------ | ------------------------------------------------------------- |
+| `python manage.py migrate --noinput` | Migración manual (normalmente ya corre en `preDeployCommand`) |
+| `python manage.py createsuperuser`   | Primer usuario admin                                          |
+| `python manage.py showmigrations`    | Ver migraciones aplicadas                                     |
+| `python manage.py shell`             | Consola Django interactiva                                    |
+
+
+> Las migraciones se aplican solas en cada deploy vía `preDeployCommand` en `railway.toml`. Si en Postgres ya ves `django_migrations` y las tablas de apps, no hace falta migrar de nuevo salvo tras nuevas migraciones en código.
+
+
+
+### E1 — Crear superusuario / Master inicial
+
+`createsuperuser` crea acceso a `**/admin/**`. Para la app (`/ingresar/`) hace falta además marcar el perfil como **Master** y completar el flujo correo + 2FA (ver pasos post-alta).
+
+#### Opción A — Railway CLI (desde PC)
+
+```powershell
+cd C:\IACursor\BakeBudge\BAKEBUDGE
+railway login
+railway link
+railway run python manage.py createsuperuser
+```
+
+`railway run` usa el mismo entorno que el servicio (venv, `DATABASE_URL`, variables).
+
+#### Opción B — Panel Railway → Shell (verificado en producción)
+
+1. Railway → servicio **Web** (Django) → **Shell**
+2. Ejecutar en orden:
+
+```bash
+cd /app
+source /opt/venv/bin/activate
+python manage.py createsuperuser
+```
+
+1. Completar prompts:
+  - **Username** — login en `/ingresar/` (ej. `admin`)
+  - **Email address** — obligatorio para el flujo de seguridad de la app
+  - **Password** — dos veces
+
+**Verificación rápida en Shell:**
+
+```bash
+source /opt/venv/bin/activate
+python -c "import django; print(django.get_version())"
+python manage.py shell -c "from django.contrib.auth import get_user_model; print(list(get_user_model().objects.filter(is_superuser=True).values_list('username', 'email')))"
+```
+
+
+
+#### Post-alta del superusuario
+
+1. `**/admin/**` — entrar con username + password recién creados.
+2. **User profiles** → editar el perfil del usuario → **User type** = **Master** (`M`). Por defecto queda `User` (`U`).
+3. `**/ingresar/**` — login con username + password → código por correo → configurar TOTP.
+  - Con `EMAIL_DELIVERY=console`, el código de 6 dígitos aparece en los **logs** del servicio Web.
+  - Con `EMAIL_DELIVERY=resend`, el código llega al email configurado.
+
+- [ ] **E1** Crear superusuario (Opción A o B) y marcar perfil **Master** en admin
 - [ ] **E2** Verificar seeds existentes (`Moneda`, etc.) — migraciones `0002_seed_monedas` u otras.
 - [ ] **E3** **Smoke test funcional** (checklist mínimo):
 
@@ -455,8 +600,9 @@ A (cuentas)
 | 2026-06-16 | A2     | Repo GitHub + procedimiento push documentado (`.gitignore`, identidad Git, `main`) |
 | 2026-06-16 | B      | Código: gunicorn, whitenoise, anymail, `production.py`, Procfile, `railway.toml`   |
 |            | C      |                                                                                    |
-|            | D      |                                                                                    |
-|            | E      |                                                                                    |
+| 2026-06-26 | D      | Deploy producción OK; Postgres con tablas Django; 6 variables Railway documentadas |
+| 2026-06-26 | E      | Documentado Shell Railway: `source /opt/venv/bin/activate` antes de `manage.py`    |
+| 2026-06-26 | C      | Resend configurado en Railway; **fase prueba envío correo** en curso               |
 |            | F      |                                                                                    |
 |            | G      |                                                                                    |
 
@@ -467,7 +613,8 @@ A (cuentas)
 
 ## Próximo paso inmediato
 
-1. ~~Ejecutar **Bloque B** en el repo~~ **Hecho** (2026-06-16).
-2. **Bloque C** — dominio Resend verificado + variables `EMAIL_DELIVERY=resend` en Railway.
-3. **Bloque D** — PostgreSQL Railway + variables + primer deploy staging (`*.up.railway.app`).
+1. ~~**Bloque B**~~ **Hecho** (2026-06-16).
+2. ~~**Bloque D**~~ **Hecho** — deploy + Postgres + variables base (2026-06-26).
+3. **Bloque C (en curso)** — validar envío real: `/ingresar/` → código 2FA en bandeja; Resend Dashboard sin rebotes.
+4. **Bloque E** — smoke test completo tras correo OK (login → TOTP → `/app/`).
 

@@ -8,6 +8,7 @@ MONEDAS = [
     {"codigo": "ARS", "nombre": "Peso argentino", "simbolo": "$", "decimales": 2, "activa": True, "orden": 5},
     {"codigo": "CLP", "nombre": "Peso chileno", "simbolo": "$", "decimales": 0, "activa": True, "orden": 6},
     {"codigo": "PEN", "nombre": "Sol peruano", "simbolo": "S/", "decimales": 2, "activa": True, "orden": 7},
+    {"codigo": "VEN", "nombre": "Bolivar Venezolano", "simbolo": "Bs.S/", "decimales": 2, "activa": True, "orden": 8},
 ]
 
 

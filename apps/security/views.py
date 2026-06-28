@@ -37,6 +37,7 @@ def _finalize_access(request, user):
 
     security_session.clear_security_session(request)
     login(request, user)
+    session_idle.set_last_activity(request)
     profile.refresh_from_db()
 
     destination = post_login_routing.resolve_post_security_redirect(profile)
@@ -60,10 +61,20 @@ def _finalize_access(request, user):
 
 @require_http_methods(["GET", "POST"])
 def login_view(request):
+    show_provisioned = request.GET.get("provisioned") == "1"
+
     if request.method == "GET" and request.GET.get(session_idle.IDLE_LOGOUT_QUERY_PARAM) == "1":
         messages.warning(request, "Sesión cerrada por inactividad.")
 
     if request.user.is_authenticated and request.user.profile.is_security_complete:
+        if session_idle.should_relogin_at_login_gate(request):
+            logout(request)
+            messages.warning(request, "Sesión cerrada por inactividad.")
+            return render(
+                request,
+                "security/login.html",
+                {"show_provisioned": show_provisioned},
+            )
         if request.user.profile.can_access_app:
             return redirect(
                 post_login_routing.resolve_post_security_redirect(
@@ -71,8 +82,6 @@ def login_view(request):
                 )
             )
         return redirect("dashboard:access_denied")
-
-    show_provisioned = request.GET.get("provisioned") == "1"
 
     if request.method == "POST":
         username = request.POST.get("username", "").strip()

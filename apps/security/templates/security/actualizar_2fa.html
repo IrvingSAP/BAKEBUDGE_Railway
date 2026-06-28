@@ -18,8 +18,7 @@
   <form class="acceso-form" method="post" novalidate>
     {% csrf_token %}
     <label for="password">Contraseña actual</label>
-    <input type="password" id="password" name="password" autocomplete="current-password"
-           placeholder="••••••••" required>
+    {% include "partials/password_field.html" with field_id="password" field_name="password" autocomplete="current-password" placeholder="••••••••" required=True %}
 
     <div class="acceso-actions">
       <button type="submit" class="btn btn-primary btn-block">Confirmar actualización</button>

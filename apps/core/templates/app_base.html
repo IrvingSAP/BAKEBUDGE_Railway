@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="{% static 'dashboard/css/bakebudge-app-extra.css' %}">
   <link rel="stylesheet" href="{% static 'css/bakebudge-modal.css' %}">
   <link rel="stylesheet" href="{% static 'css/bakebudge-form-errors.css' %}">
+  <link rel="stylesheet" href="{% static 'css/password-field.css' %}">
   {% block extra_css %}{% endblock %}
 </head>
 <body data-page="{% block body_page %}dashboard{% endblock %}">
@@ -36,6 +37,7 @@
 
   <script src="{% static 'js/bakebudge-modal.js' %}"></script>
   <script src="{% static 'js/bakebudge-form-errors.js' %}"></script>
+  <script src="{% static 'js/password-toggle.js' %}"></script>
   <script src="{% static 'dashboard/js/main.js' %}"></script>
   {% if message_modal %}
   <script>
