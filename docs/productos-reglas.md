@@ -1,6 +1,6 @@
 # Reglas del módulo Productos — `apps.catalog`
 
-**Estado:** **Conforme** — reglas y diseño prototipo aprobados (2026-06-16).
+**Estado:** **Conforme v1** — Django implementado (2026-06-16). Checklist de cierre: [`catalog-checklist-conforme.md`](catalog-checklist-conforme.md).
 
 Convenciones de UI, listado y CRUD para el catálogo de **insumos** (`Producto`).
 
@@ -191,13 +191,13 @@ Si no hay conversiones: deshabilitar guardado y avisar al usuario.
 
 ### Checklist `producto_create.html`
 
-- [ ] Cuatro campos obligatorios marcados con `*` y `required`
-- [ ] `costo_por_unidad_base`: `min="0.0001"`, sin default `0`
-- [ ] Botón **Ayuda** con icono → `producto_create_help.html` (nueva pestaña)
-- [ ] Validación JS + validación servidor (Django)
-- [ ] Errores vía modal global, no `alert()`
-- [ ] `unidad_base` poblado desde ConversionUnidad del owner
-- [ ] Layout `/app/` + responsivo
+- [x] Cuatro campos obligatorios marcados con `*` y `required`
+- [x] `costo_por_unidad_base`: `min="0.0001"`, sin default `0`
+- [x] Botón **Ayuda** con icono → `producto_create_help.html` (nueva pestaña)
+- [x] Validación JS + validación servidor (Django)
+- [x] Errores vía modal global, no `alert()`
+- [x] `unidad_base` poblado desde ConversionUnidad del owner
+- [x] Layout `/app/` + responsivo
 
 ---
 
@@ -217,11 +217,11 @@ Mismas reglas de **campos obligatorios** y validación que en alta (`producto_cr
 
 ### Checklist `producto_edit.html`
 
-- [ ] Cuatro campos obligatorios con `*` y `required`
-- [ ] `costo_por_unidad_base`: `min="0.0001"`, validación JS + servidor
-- [ ] Botón **Ayuda** con icono → `producto_edit_help.html` (nueva pestaña)
-- [ ] `unidad_base` poblado desde ConversionUnidad; valor actual preseleccionado
-- [ ] Errores vía modal global
+- [x] Cuatro campos obligatorios con `*` y `required`
+- [x] `costo_por_unidad_base`: `min="0.0001"`, validación JS + servidor
+- [x] Botón **Ayuda** con icono → `producto_edit_help.html` (nueva pestaña)
+- [x] `unidad_base` poblado desde ConversionUnidad; valor actual preseleccionado
+- [x] Errores vía modal global
 
 ---
 
@@ -264,13 +264,13 @@ Ver [`ui-ux.md#diseño-responsivo-obligatorio`](ui-ux.md#diseño-responsivo-obli
 
 ## Checklist pantalla listado
 
-- [ ] Layout `/app/` completo (sidebar, Usuario, logout, modal)
-- [ ] DataTable: default **10**, opciones **10 / 20 / 50**
-- [ ] Filtros: nombre, categoría, estado + limpiar
-- [ ] Datos scoped a `request.user` (prototipo: demo del usuario demo)
-- [ ] Badges P / A / I
-- [ ] Responsivo 375 / 768 / 1140 px
-- [ ] Enlace «Nuevo producto» y «Editar»
+- [x] Layout `/app/` completo (sidebar, topbar `nombre_negocio`, logout, modal)
+- [x] DataTable: default **10**, opciones **10 / 20 / 50**
+- [x] Filtros: nombre, categoría, estado + limpiar
+- [x] Datos scoped a `request.user`
+- [x] Badges P / A / I
+- [x] Responsivo 375 / 768 / 1140 px
+- [x] Enlace «Nuevo producto» y «Editar»
 
 ---
 
@@ -286,5 +286,5 @@ Ver [`ui-ux.md#diseño-responsivo-obligatorio`](ui-ux.md#diseño-responsivo-obli
 | `apps/catalog/templates/catalog/productos/ o apps/catalog/static/catalog/js/producto_edit.js` | Validación edición |
 | `apps/catalog/templates/catalog/productos/ o apps/catalog/static/catalog/js/producto_list.js` | Init DataTables + filtros |
 | `apps/catalog/templates/catalog/productos/ o apps/catalog/static/catalog/css/productos.css` | Toolbar filtros |
-| `apps/catalog/views.py` | Vistas Django (futuro) |
-| `apps/catalog/templates/catalog/producto_list.html` | Template Django (futuro) |
+| `apps/catalog/views.py` | Vistas Django CRUD |
+| `apps/catalog/templates/catalog/producto_list.html` | Listado Django |

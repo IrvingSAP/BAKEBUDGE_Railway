@@ -173,7 +173,7 @@ pip install "pyotp>=2.9,<3" "qrcode>=7.4,<9"
 |------|--------|--------|
 | `requirements.txt` en raíz | Tras scaffold (Fase 4) | **Pendiente** |
 | `pip freeze > requirements.txt` | Tras fijar versiones | **Pendiente** |
-| `resend` (correo producción) | Solo deploy; local usa consola | **Pendiente** (no bloqueante) |
+| `resend` (correo producción) | Railway + `EMAIL_DELIVERY=resend` | **Completado** (local sigue consola) |
 
 **Contenido previsto de `requirements.txt`:**
 
@@ -184,7 +184,7 @@ django-environ
 Pillow
 pyotp>=2.9,<3
 qrcode>=7.4,<9
-# resend>=2.0,<3   # producción — más adelante
+# resend>=2.0,<3   # producción Railway — ver deploy-railway-plan.md
 ```
 
 ---

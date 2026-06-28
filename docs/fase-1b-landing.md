@@ -46,7 +46,7 @@ Fase 1b migró la UI de **zona pública** y **zona privada `/app/`** a Django, a
 | checklist-conforme | Marcar Conforme README landing | **Hecho** | |
 | modal-global | Modal global de mensajes (ER/OK/AV/IN) | **Hecho** | [`ui-ux.md#modal-global-de-mensajes`](ui-ux.md#modal-global-de-mensajes) |
 | dashboard-prototype | Layout `/app/` (dashboard + módulos) | **Conforme** | [`dashboard-checklist-conforme.md`](dashboard-checklist-conforme.md) |
-| dashboard-reglas | Documentar layout, Usuario, Perfil, logout, datos por usuario | **Hecho** | [`dashboard-reglas.md`](dashboard-reglas.md) |
+| dashboard-reglas | Documentar layout, nombre_negocio topbar, Perfil, logout, datos por usuario | **Hecho** | [`dashboard-reglas.md`](dashboard-reglas.md) |
 | public-site-django | Migrar landing + contacto POST + gestión Master | **Hecho** | [`public-site-checklist-conforme.md`](public-site-checklist-conforme.md) |
 | security-django | Login, correo, TOTP, primer acceso → Noticias | **Hecho** | [`acceso-checklist-conforme.md`](acceso-checklist-conforme.md) v1.2 |
 | noticias-design | Diseño app Noticias + pantalla demo | **Hecho** (HTML) | [`noticias-checklist-conforme.md`](noticias-checklist-conforme.md) |
@@ -70,7 +70,7 @@ Aplican a **todas** las pantallas de esta fase (pública y privada):
 | Diseño responsivo obligatorio (375 / 768 / 1140 px) | [`ui-ux.md`](ui-ux.md) | Activa |
 | Formularios solo HTML (sin `django.forms`) | [`ui-ux.md`](ui-ux.md), [`arquitectura.md`](arquitectura.md) | Activa |
 | **Modal global** para errores, éxito, avisos e info | [`ui-ux.md#modal-global-de-mensajes`](ui-ux.md#modal-global-de-mensajes) | Implementada (Django) |
-| Layout dashboard: sidebar, Usuario, UserProfile, logout | [`dashboard-reglas.md`](dashboard-reglas.md) | Documentada + Django |
+| Layout dashboard: sidebar, topbar `nombre_negocio`, UserProfile, logout | [`dashboard-reglas.md`](dashboard-reglas.md) | Documentada + Django |
 | **Datos por usuario conectado** en toda `/app/` | [`dashboard-reglas.md`](dashboard-reglas.md#regla-fundamental-datos-del-usuario-conectado) | Documentada + activa en apps migradas |
 | Tokens pastel + Nunito | [`ui-ux.md`](ui-ux.md) | Activa |
 | DataTables en listados `/app/` (v2 + jQuery) | [`ui-ux.md`](ui-ux.md) | Activa en listados migrados |
@@ -163,7 +163,7 @@ python manage.py runserver
 
 Ver [`dashboard-checklist-conforme.md`](dashboard-checklist-conforme.md).
 
-- [x] Layout sidebar + topbar Usuario según [`dashboard-reglas.md`](dashboard-reglas.md)
+- [x] Layout sidebar + topbar `nombre_negocio` según [`dashboard-reglas.md`](dashboard-reglas.md) (**Conforme v1.1** — chip pastel, 2026-06-26)
 - [x] Datos de pantalla scoped a `request.user`
 - [x] Pie sidebar: `nombre_negocio` + email + Cerrar sesión
 - [x] Responsivo 375 / 768 / 1140 px
@@ -216,7 +216,7 @@ flowchart LR
 
 | Pantalla | Destino Django | Estado |
 |-----------|----------------|--------|
-| Layout sidebar + topbar | `apps/core/templates/app_base.html` | **Hecho** |
+| Layout sidebar + topbar `nombre_negocio` | `apps/core/templates/app_base.html` | **Hecho** |
 | Dashboard home | `apps/dashboard/templates/dashboard/home.html` | **Hecho** |
 | Catálogo | `apps/catalog/templates/catalog/…` | **Hecho** v1 |
 | Administración usuarios | `apps/administration/templates/administration/usuarios/…` | **Hecho** v1 |
@@ -265,8 +265,8 @@ flowchart LR
 
 ## Fuera de alcance inmediato
 
-- App `billing` / gate `can_access_app` avanzado — Fase 1c (facturación Master ya en Django).
-- Email producción / Resend SMTP — v2 acceso.
+- ~~App `billing` / gate `can_access_app`~~ — **Conforme v1** (Fase 1c).
+- ~~Email producción Resend~~ — **Completado** en Railway ([`deploy-railway-plan.md`](deploy-railway-plan.md)).
 - DataTables en landing pública.
 - Bootstrap, `django.forms` en UI.
 - Blog/recetas públicas SEO — Fase 5.
@@ -283,7 +283,7 @@ flowchart LR
 | 2026-06-16 | `recetas.jpg`, `acceso-seguro.jpg`. Galería local. CSS responsive (480/768/900/1024px). |
 | 2026-06-16 | **Zona pública conforme:** `index.html`, `servicios.html`, `contacto.html` aprobados. |
 | 2026-06-16 | Creada carpeta `prototype_app/` con dashboard + listados demo. |
-| 2026-06-16 | Topbar **Usuario**; **Modal global** en pantallas. [`dashboard-reglas.md`](dashboard-reglas.md). |
+| 2026-06-16 | Topbar **nombre_negocio** (evolución desde username); **Modal global** en pantallas. [`dashboard-reglas.md`](dashboard-reglas.md). |
 | 2026-06-16 | Bloques Recetas, Producción, Estadísticas, Perfil, Usuarios, Facturación — **Conforme** (prototipo). |
 | 2026-06-19 | Gestión Master MensajeContacto — prototipo + reglas **Conforme**. |
 | 2026-06-20 | **Zona pública Django** (`apps.public_site`) — **Conforme v1** aprobado por usuario. |
@@ -292,6 +292,7 @@ flowchart LR
 | 2026-06-20 | **Catálogo base** Django — **Conforme v1**. |
 | 2026-06-20 | **Perfil** + **Seguridad de la cuenta** — **Conforme v1** (validación manual OK). |
 | 2026-06-20 | **Zona pública Django** (`apps.public_site`) — cierre Conforme v1 |
+| 2026-06-26 | Topbar chip pastel `nombre_negocio` + placeholder — **Conforme v1.1** (aprobación usuario). |
 | 2026-06-16 | **Recetas Django** (`apps.recipes`) — CRUD, formulación, versionado, costos — **Conforme v1**. |
 | 2026-06-16 | **Producción Django** (`apps.production`) — órdenes, estados, detalle escalado — **Conforme v1**. |
 | 2026-06-16 | **Estadísticas Django** (`apps.analytics`) — snapshot + pantalla `/app/estadisticas/` — **Conforme v1**. |
@@ -309,7 +310,7 @@ flowchart LR
 | [`fase-1b-checklist-conforme.md`](fase-1b-checklist-conforme.md) | **Cierre formal Fase 1b** (checklist único) |
 | [`public-site-checklist-conforme.md`](public-site-checklist-conforme.md) | Cierre zona pública Django v1 |
 | [`ui-ux.md`](ui-ux.md) | Tokens, responsivo, modal global, DataTables |
-| [`dashboard-reglas.md`](dashboard-reglas.md) | Layout `/app/`, Usuario, UserProfile, logout |
+| [`dashboard-reglas.md`](dashboard-reglas.md) | Layout `/app/`, topbar negocio, UserProfile, logout |
 | [`BAKEBUDGE_NOTICIAS.md`](BAKEBUDGE_NOTICIAS.md) | App Noticias |
 | [`ayuda-reglas.md`](ayuda-reglas.md) | Ayuda General — **Conforme v1** |
 | [`arquitectura.md`](arquitectura.md) | Stack, static files, estructura apps |

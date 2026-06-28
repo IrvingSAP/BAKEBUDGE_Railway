@@ -1,6 +1,6 @@
 # Reglas del dashboard — zona `/app/`
 
-**Estado:** **Conforme** — diseño aprobado; **Django v1 implementado** (2026-06-16).
+**Estado:** **Conforme v1.1** — diseño aprobado; **Django v1 implementado** (2026-06-16); **topbar `nombre_negocio`** (chip pastel, 2026-06-26).
 
 Convenciones de layout, usuario, **aislamiento de datos** y cierre de sesión para la **zona privada** (dashboard y módulos autenticados).
 
@@ -42,7 +42,7 @@ En el prototipo los números son ficticios. En Django cada bloque se calcula sol
 
 | Bloque en pantalla | Origen (Django) | Filtro |
 |--------------------|-----------------|--------|
-| **Usuario** (topbar) | `User.username` | `request.user` |
+| **Nombre del negocio** (topbar) | `UserProfile.nombre_negocio` | `app_profile` (context processor) |
 | **Pie sidebar** (`nombre_negocio`, email) | `UserProfile`, `User.email` | `request.user` / `request.user.profile` |
 | **Productos activos** | `Producto` | `owner=request.user`, `activo=True` |
 | **Recetas** | `Receta` | `owner=request.user`; hint: versiones vigentes del mismo owner |
@@ -115,7 +115,7 @@ Toda pantalla bajo `/app/` comparte:
 | Zona | Elemento | Descripción |
 |------|----------|-------------|
 | Izquierda | **Sidebar** | Navegación principal + pie con perfil + cerrar sesión |
-| Superior derecha | **Usuario** | Identificador del usuario autenticado |
+| Superior derecha | **Nombre del negocio** | `UserProfile.nombre_negocio` en chip (topbar) |
 | Centro | **Contenido** | Título de página, cards, tablas |
 
 Sidebar (orden fijo):
@@ -157,31 +157,35 @@ El submenú **Catálogo base** usa `<button>` + lista anidada (`.app-nav-group` 
 
 ---
 
-## Usuario (esquina superior derecha)
+## Nombre del negocio (topbar, esquina superior derecha)
 
 | Regla | Detalle |
 |-------|---------|
-| Etiqueta | Texto fijo **«Usuario»** (`.app-user-label`) |
-| Valor mostrado | **`User.username`** de Django (`django.contrib.auth.models.User`) |
-| Fuente en código | `request.user.username` |
-| App | Cuenta en `auth.User`; perfil extendido en `apps.accounts.UserProfile` |
-| Prototipo | `[data-user-username]` — demo en `js/main.js` |
+| Valor mostrado | **`UserProfile.nombre_negocio`** vía `app_profile` (context processor `app_layout`) |
+| Placeholder | Si está vacío: *«Nombre de Negocio por Definir...»* (estilo `.app-user-name--placeholder`) |
+| Estilo | Chip/píldora pastel (`.app-user-name`); color `--color-primary-dark`; truncado con `title` si es largo |
+| Fuente en código | `apps/core/templates/app_base.html` |
+| **No** mostrar | `User.username` en topbar (el login sigue usando username) |
 
 **No confundir:**
 
-- **Usuario (topbar)** → login `User.username`  
-- **Pie del sidebar** → datos de negocio del `UserProfile` (ver abajo)
+- **Topbar** → marca del negocio (`nombre_negocio`)  
+- **Pie del sidebar** → mismo campo + email + cerrar sesión (ver abajo)
 
-### Markup (prototipo / template)
+### Markup (Django)
 
 ```html
 <div class="app-user">
-  <span class="app-user-label">Usuario</span>
-  <strong class="app-user-name" data-user-username>{{ user.username }}</strong>
+  {% with negocio=app_profile.nombre_negocio|default:"" %}
+  <strong
+    class="app-user-name{% if not negocio %} app-user-name--placeholder{% endif %}"
+    {% if negocio %}title="{{ negocio }}"{% endif %}
+  >{% if negocio %}{{ negocio }}{% else %}Nombre de Negocio por Definir...{% endif %}</strong>
+  {% endwith %}
 </div>
 ```
 
-En Django: `user` del context processor de auth o `request.user` en la vista.
+Edición del valor: **Perfil** (`/app/perfil/`) → campo `nombre_negocio`.
 
 ---
 
@@ -236,8 +240,8 @@ Redirección post-logout: landing pública (`public_site:home` / `/`).
 
 | Viewport | Comportamiento |
 |----------|----------------|
-| Desktop | Sidebar fija; **Usuario** visible arriba a la derecha del contenido |
-| Móvil (&lt; 768px) | Sidebar oculta (hamburguesa); topbar con marca + **Usuario**; cerrar sesión dentro del drawer lateral |
+| Desktop | Sidebar fija; **nombre del negocio** visible arriba a la derecha del contenido |
+| Móvil (&lt; 768px) | Sidebar oculta (hamburguesa); topbar con marca BAKEBUDGE + chip **nombre_negocio**; cerrar sesión dentro del drawer lateral |
 
 Ver [`ui-ux.md#diseño-responsivo-obligatorio`](ui-ux.md#diseño-responsivo-obligatorio).
 
@@ -247,7 +251,8 @@ Ver [`ui-ux.md#diseño-responsivo-obligatorio`](ui-ux.md#diseño-responsivo-obli
 
 | Archivo | Rol |
 |---------|-----|
-| `apps/dashboard/static/dashboard/css/bakebudge-app.css` | Estilos `.app-user`, `.btn-logout`, `.app-sidebar-footer` |
+| `apps/dashboard/static/dashboard/css/bakebudge-app.css` | Estilos `.app-user-name`, `.btn-logout`, `.app-sidebar-footer` |
+| `apps/dashboard/static/dashboard/css/bakebudge-app-extra.css` | Responsive topbar (chip nombre negocio) |
 | `apps/dashboard/static/dashboard/js/main.js` | Nav activa; DataTables marcadas |
 | `docs/dashboard-reglas.md` | Este documento |
 | `docs/dashboard-checklist-conforme.md` | Checklist Conforme (cerrado 2026-06-16) |
@@ -259,7 +264,7 @@ Ver [`ui-ux.md#diseño-responsivo-obligatorio`](ui-ux.md#diseño-responsivo-obli
 ## Checklist al añadir pantalla `/app/`
 
 - [ ] Extiende layout con sidebar completo (ítems operativos + Catálogo base + Noticias + Ayuda General + footer)
-- [ ] Incluye topbar con **Usuario** (`user.username`)
+- [ ] Incluye topbar con **`nombre_negocio`** (chip `.app-user-name`; placeholder si vacío)
 - [ ] Pie sidebar: `nombre_negocio` + email + **Cerrar sesión**
 - [ ] **Datos de la pantalla filtrados por `request.user`** (owner o perfil del usuario conectado)
 - [ ] POST de creación/edición asigna o valida owner antes de persistir

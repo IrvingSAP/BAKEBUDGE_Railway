@@ -9,9 +9,12 @@
 {% endblock %}
 
 {% block app_content %}
-<div class="page-header">
-  <h1>Ayuda: crear receta</h1>
-  <p>Alta de cabecera <code>Receta</code> con versión inicial <strong>v1</strong>.</p>
+<div class="page-header page-header-row">
+  <div>
+    <h1>Ayuda: crear receta</h1>
+    <p>Alta de cabecera <code>Receta</code> con versión inicial <strong>v1</strong>. Solo consulta — no guarda datos.</p>
+  </div>
+  <a href="{% url 'recipes:receta_create' %}" class="btn btn-primary">← Volver al formulario</a>
 </div>
 <section class="card recetas-help">
   <h2>Campos obligatorios</h2>

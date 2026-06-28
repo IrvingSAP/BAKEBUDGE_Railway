@@ -44,7 +44,7 @@ cd BAKEBUDGE
 ## Criterios globales (layout `/app/`)
 
 - [x] Sidebar orden fijo + Catálogo base + Noticias + Administración Master
-- [x] Topbar **Usuario** (`User.username`) + pie `UserProfile` + **Cerrar sesión**
+- [x] Topbar **`nombre_negocio`** (chip pastel) + pie `UserProfile` + **Cerrar sesión** — **Conforme v1.1** (2026-06-26)
 - [x] Regla **datos por `request.user`** documentada
 - [x] Responsivo 375 / 768 / 1140 px
 - [x] Modal global en pantalla
@@ -76,3 +76,4 @@ cd BAKEBUDGE
 |-------|--------|-------|
 | 2026-06-16 | Dashboard home + layout `/app/` | Validación OK — Conforme |
 | 2026-06-16 | Django v1 KPIs reales + enlaces cruzados | `get_dashboard_summary` — Conforme |
+| 2026-06-26 | Topbar `nombre_negocio` chip pastel — Conforme v1.1 |

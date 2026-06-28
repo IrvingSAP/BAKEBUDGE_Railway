@@ -158,7 +158,7 @@ Cada app usa `AppConfig` con `name = "apps.<app>"` (p. ej. `apps/catalog/apps.py
 | `apps.analytics` | Snapshots al completar órdenes; `/app/estadisticas/`; `record_production`, `summary` |
 | `apps.ayuda` | Ayuda General: guía paso a paso del ciclo en `/app/ayuda/` (**Conforme v1**) |
 | `apps.noticias` | Noticias globales — feed `/app/noticias/` + CRUD Master |
-| `apps.billing` | `PaymentControl` y suscripciones (modelo ✓; gate en evolución) |
+| `apps.billing` | `PaymentControl`, suscripciones y gate `can_access_app` (Conforme v1) |
 | `apps.administration` | Master: usuarios, facturación, monedas, noticias, mensajes contacto |
 | `apps.public_site` | Landing y contenido de marca |
 

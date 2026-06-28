@@ -1,6 +1,6 @@
 # Reglas del módulo Acceso — `apps.security`
 
-**Estado:** **Conforme v1.3** — reglas y diseño prototipo aprobados (2026-06-16); implementación Django incl. **primer acceso → Noticias** confirmada (2026-06-20); **idle timeout 40 min en `/app/`** (2026-06-16).
+**Estado:** **Conforme v1.4** — reglas y diseño prototipo aprobados (2026-06-16); implementación Django incl. **primer acceso → Noticias** (2026-06-20); **idle timeout 40 min** con validación en `/ingresar/` (2026-06-26); **toggle visibilidad contraseña** (2026-06-26).
 
 Convenciones de UI y flujos para **login, verificación de correo y 2FA (TOTP)**. Zona pública previa a `/app/`.
 
@@ -24,6 +24,7 @@ Convenciones de UI y flujos para **login, verificación de correo y 2FA (TOTP)**
 | Alta y validación TOTP (QR + código) | Pasarela de pago |
 | Reset / actualización 2FA (usuario activo, wizard login) | Autogestión de facturación por User |
 | Cambio contraseña + reset 2FA desde `/app/` (Perfil) | Hash del código de correo (fase posterior) |
+| **Toggle visibilidad contraseña** (ojo mostrar/ocultar) | — |
 | **Primer acceso → Noticias** (`post_login_routing`) | — |
 | Onboarding post-alta Master | Pantalla «Esperando confirmación de pago» (v1 no aplica) |
 
@@ -94,7 +95,7 @@ Ver también: [`BAKEBUDGE_NOTICIAS.md`](BAKEBUDGE_NOTICIAS.md) · [`noticias-reg
 
 Sesión parcial entre pasos del wizard: clave **`security_pending_user_id`** — sin `login()` completo hasta TOTP correcto.
 
-### Cierre por inactividad en `/app/` — **Conforme v1.3**
+### Cierre por inactividad en `/app/` — **Conforme v1.4** (2026-06-26)
 
 Tras el login completo, la sesión permanece activa mientras el usuario navega en **`/app/`**. Si no hay actividad durante **40 minutos**, el sistema cierra la sesión y redirige a **`/ingresar/?idle=1`** con el mensaje *«Sesión cerrada por inactividad.»*
 
@@ -108,6 +109,8 @@ Tras el login completo, la sesión permanece activa mientras el usuario navega e
 | **`/ingresar/`** | Si la cookie de sesión sigue viva pero la marca falta o superó 40 min, **no** se salta el formulario: se cierra sesión y se muestra login |
 | Fuera de `/app/` | Zona pública no actualiza la marca; el wizard de seguridad parcial no aplica este timeout |
 | Implementación | `AppIdleTimeoutMiddleware` · `session_idle.py` · comprobación en `login_view` |
+
+**Corrección v1.4:** antes, `/ingresar/` redirigía al panel si la cookie Django seguía viva aunque hubiera pasado el timeout. Ahora `login_view` llama a `should_relogin_at_login_gate()` y `_finalize_access` guarda la marca inicial de actividad.
 
 **Nota:** apagar el equipo sin «Cerrar sesión» no equivale a logout. Al pulsar **Entrar** en la landing con sesión expirada por inactividad, el sistema pide usuario y contraseña de nuevo.
 
@@ -140,7 +143,17 @@ Layout: **sin sidebar** de app; shell centrado con marca BAKEBUDGE, card de form
 | Campo | Tipo | Validación |
 |-------|------|------------|
 | Usuario | `text` | `required`, maxlength 150 |
-| Contraseña | `password` | `required` |
+| Contraseña | `password` | `required`; partial `partials/password_field.html` con toggle mostrar/ocultar |
+
+### Toggle visibilidad contraseña — **Conforme v1.4**
+
+| Aspecto | Detalle |
+|---------|---------|
+| Componente | `apps/core/templates/partials/password_field.html` |
+| Estilos / JS | `apps/core/static/css/password-field.css` · `password-toggle.js` |
+| Accesibilidad | Botón con `aria-label` *Mostrar contraseña* / *Ocultar contraseña*; `aria-pressed` |
+| Pantallas | `/ingresar/`, actualizar 2FA, seguridad de cuenta (`/app/`), alta/cambio contraseña Master |
+| Carga | `base_acceso.html` y `app_base.html` incluyen CSS + JS del componente |
 
 ### Acciones
 

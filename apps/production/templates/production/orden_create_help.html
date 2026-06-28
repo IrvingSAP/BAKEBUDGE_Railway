@@ -9,9 +9,12 @@
 {% endblock %}
 
 {% block app_content %}
-<div class="page-header">
-  <h1>Ayuda: nueva orden de producción</h1>
-  <p>Planificación en estado <strong>borrador</strong> antes de iniciar la elaboración.</p>
+<div class="page-header page-header-row">
+  <div>
+    <h1>Ayuda: nueva orden de producción</h1>
+    <p>Planificación en estado <strong>borrador</strong> antes de iniciar la elaboración. Solo consulta — no guarda datos.</p>
+  </div>
+  <a href="{% url 'production:orden_create' %}" class="btn btn-primary">← Volver al formulario</a>
 </div>
 <section class="card produccion-form-card">
   <h2>Campos</h2>

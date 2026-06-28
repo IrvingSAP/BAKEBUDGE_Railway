@@ -9,9 +9,12 @@
 {% endblock %}
 
 {% block app_content %}
-<div class="page-header">
-  <h1>Ayuda: editar receta</h1>
-  <p>Cabecera de <strong>{{ receta.nombre }}</strong>.</p>
+<div class="page-header page-header-row">
+  <div>
+    <h1>Ayuda: editar receta</h1>
+    <p>Cabecera de <strong>{{ receta.nombre }}</strong>. Solo consulta — no guarda datos.</p>
+  </div>
+  <a href="{% url 'recipes:receta_edit' receta.pk %}" class="btn btn-primary">← Volver al formulario</a>
 </div>
 <section class="card recetas-help">
   <p>Edición de nombre, descripción, notas, imagen y estado. El rendimiento y la formulación se editan en <strong>Formulación</strong>.</p>

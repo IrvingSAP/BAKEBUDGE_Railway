@@ -94,7 +94,7 @@ Ver [`cuenta-seguridad-checklist-conforme.md`](cuenta-seguridad-checklist-confor
 4. ✅ Implementación Django `apps.security` + primer acceso Noticias → **Conforme v1.1**
 5. ✅ Seguridad de la cuenta (`apps.accounts`) → **Conforme v1** — [`cuenta-seguridad-checklist-conforme.md`](cuenta-seguridad-checklist-conforme.md)
 
-**Pendiente v2:** Resend/SMTP producción, hash de código correo.
+**Pendiente v2:** hash de código correo. Resend producción ✓ — [`deploy-railway-plan.md`](deploy-railway-plan.md).
 
 ---
 

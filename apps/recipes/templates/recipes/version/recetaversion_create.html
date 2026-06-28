@@ -16,7 +16,7 @@
     <p>Copia la formulación vigente de <strong>{{ receta.nombre }}</strong> y documenta el motivo del cambio.</p>
   </div>
   <div class="page-header-actions">
-    <a href="{% url 'recipes:recetaversion_create_help' receta.pk %}" class="recetas-help-btn" target="_blank" rel="noopener">
+    <a href="{% url 'recipes:recetaversion_create_help' receta.pk %}" class="recetas-help-btn">
       <img src="{% static 'catalog/images/icon-help.svg' %}" alt="" width="20" height="20">
       <span>Ayuda</span>
     </a>

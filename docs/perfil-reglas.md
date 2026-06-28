@@ -70,7 +70,7 @@ Acceso menú: **Perfil** → `/app/perfil/`.
 
 - Solo el perfil de `request.user` (`UserProfile.user`).
 
-- Sidebar: `app_profile.nombre_negocio`, `user.email`, `user.username`.
+- Sidebar y topbar: `app_profile.nombre_negocio` (topbar en chip; pie sidebar con email y username de referencia).
 
 
 

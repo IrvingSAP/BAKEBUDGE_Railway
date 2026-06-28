@@ -16,13 +16,13 @@
   </div>
   <div class="page-header-actions">
     {% if receta %}
-    <a href="{% url 'recipes:receta_edit_help' receta.pk %}" class="recetas-help-btn" target="_blank" rel="noopener"
+    <a href="{% url 'recipes:receta_edit_help' receta.pk %}" class="recetas-help-btn"
        title="Ayuda para editar receta">
       <img src="{% static 'catalog/images/icon-help.svg' %}" alt="" width="20" height="20">
       <span>Ayuda</span>
     </a>
     {% else %}
-    <a href="{% url 'recipes:receta_create_help' %}" class="recetas-help-btn" target="_blank" rel="noopener"
+    <a href="{% url 'recipes:receta_create_help' %}" class="recetas-help-btn"
        title="Ayuda para crear receta">
       <img src="{% static 'catalog/images/icon-help.svg' %}" alt="" width="20" height="20">
       <span>Ayuda</span>
