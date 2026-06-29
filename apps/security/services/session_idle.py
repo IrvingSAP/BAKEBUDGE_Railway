@@ -10,7 +10,7 @@ IDLE_LOGOUT_QUERY_PARAM = "idle"
 
 
 def app_idle_timeout() -> timedelta:
-    seconds = getattr(settings, "APP_IDLE_TIMEOUT_SECONDS", 40 * 60)
+    seconds = getattr(settings, "APP_IDLE_TIMEOUT_SECONDS", 8 * 60 * 60)
     return timedelta(seconds=seconds)
 
 

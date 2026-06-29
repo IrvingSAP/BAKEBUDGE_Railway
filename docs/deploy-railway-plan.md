@@ -512,7 +512,7 @@ python manage.py shell -c "from django.contrib.auth import get_user_model; print
   | 3   | `/ingresar/` → flujo correo → TOTP (Resend real)                                   | ☑   |
   | 4   | `/app/` dashboard con sesión                                                       | ☑   |
   | 5   | CRUD producto + receta (happy path)                                                | ☑   |
-  | 6   | Idle timeout 40 min (`/ingresar/` + `/app/`)                                       | ☑   |
+  | 6   | Idle timeout 8 h (`/ingresar/` + `/app/`)                                          | ☑   |
   | 7   | Admin Django `/admin/` — acceso operativo Master (restringir en hardening futuro)  | ☑   |
 
 

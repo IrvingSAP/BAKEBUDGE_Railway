@@ -29,7 +29,7 @@ LOGIN_REDIRECT_URL = "/app/"
 LOGOUT_REDIRECT_URL = "/"
 
 # Inactividad en /app/ — cierre de sesión (apps.security.middleware)
-APP_IDLE_TIMEOUT_SECONDS = 40 * 60
+APP_IDLE_TIMEOUT_SECONDS = 8 * 60 * 60
 
 # Correo (apps.core.services.email_delivery en Fase 1a)
 EMAIL_DELIVERY = env("EMAIL_DELIVERY")

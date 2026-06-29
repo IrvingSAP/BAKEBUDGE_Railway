@@ -222,7 +222,7 @@ class AppIdleTimeoutTests(TestCase):
         self.assertIn("idle=1", response.url)
 
     def test_login_gate_requires_relogin_when_idle(self):
-        self._seed_session_activity(minutes_ago=41)
+        self._seed_session_activity(minutes_ago=8 * 60 + 1)
         response = self.client.get(reverse("security:login"))
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "Ingresar")
@@ -235,7 +235,7 @@ class AppIdleTimeoutTests(TestCase):
         self.assertTrue(response.url.startswith("/app/"))
 
     def test_idle_session_logs_out_and_redirects(self):
-        self._seed_session_activity(minutes_ago=41)
+        self._seed_session_activity(minutes_ago=8 * 60 + 1)
 
         response = self.client.get("/app/perfil/")
         self.assertEqual(response.status_code, 302)

@@ -1,6 +1,6 @@
 # Reglas del módulo Acceso — `apps.security`
 
-**Estado:** **Conforme v1.4** — reglas y diseño prototipo aprobados (2026-06-16); implementación Django incl. **primer acceso → Noticias** (2026-06-20); **idle timeout 40 min** con validación en `/ingresar/` (2026-06-26); **toggle visibilidad contraseña** (2026-06-26).
+**Estado:** **Conforme v1.5** — reglas y diseño prototipo aprobados (2026-06-16); implementación Django incl. **primer acceso → Noticias** (2026-06-20); **idle timeout 8 h** con validación en `/ingresar/` (2026-06-26, ampliado desde 40 min); **toggle visibilidad contraseña** (2026-06-26).
 
 Convenciones de UI y flujos para **login, verificación de correo y 2FA (TOTP)**. Zona pública previa a `/app/`.
 
@@ -95,18 +95,18 @@ Ver también: [`BAKEBUDGE_NOTICIAS.md`](BAKEBUDGE_NOTICIAS.md) · [`noticias-reg
 
 Sesión parcial entre pasos del wizard: clave **`security_pending_user_id`** — sin `login()` completo hasta TOTP correcto.
 
-### Cierre por inactividad en `/app/` — **Conforme v1.4** (2026-06-26)
+### Cierre por inactividad en `/app/` — **Conforme v1.5** (2026-06-26)
 
-Tras el login completo, la sesión permanece activa mientras el usuario navega en **`/app/`**. Si no hay actividad durante **40 minutos**, el sistema cierra la sesión y redirige a **`/ingresar/?idle=1`** con el mensaje *«Sesión cerrada por inactividad.»*
+Tras el login completo, la sesión permanece activa mientras el usuario navega en **`/app/`**. Si no hay actividad durante **8 horas**, el sistema cierra la sesión y redirige a **`/ingresar/?idle=1`** con el mensaje *«Sesión cerrada por inactividad.»*
 
 | Aspecto | Regla |
 |---------|--------|
 | Ámbito | Rutas bajo `/app/` (dashboard, catálogo, recetas, producción, estadísticas, ayuda, perfil, noticias en app, etc.) |
-| Timeout | `APP_IDLE_TIMEOUT_SECONDS = 2400` (40 min) en `config/settings/base.py` |
+| Timeout | `APP_IDLE_TIMEOUT_SECONDS = 28800` (8 h) en `config/settings/base.py` |
 | Actividad | Cualquier petición autenticada a `/app/` actualiza la marca `app_last_activity_at` en sesión |
 | Marca inicial | Se guarda al completar login (TOTP OK) en `_finalize_access` |
 | Efecto | `logout()` + redirect a login; el usuario debe volver a ingresar (contraseña + TOTP) |
-| **`/ingresar/`** | Si la cookie de sesión sigue viva pero la marca falta o superó 40 min, **no** se salta el formulario: se cierra sesión y se muestra login |
+| **`/ingresar/`** | Si la cookie de sesión sigue viva pero la marca falta o superó 8 h, **no** se salta el formulario: se cierra sesión y se muestra login |
 | Fuera de `/app/` | Zona pública no actualiza la marca; el wizard de seguridad parcial no aplica este timeout |
 | Implementación | `AppIdleTimeoutMiddleware` · `session_idle.py` · comprobación en `login_view` |
 
@@ -167,7 +167,7 @@ Layout: **sin sidebar** de app; shell centrado con marca BAKEBUDGE, card de form
 
 Banner opcional si `?provisioned=1` (demo): *«Tu cuenta fue creada por un administrador. Ingresa para completar la configuración de seguridad.»*
 
-Modal de aviso si `?idle=1`: *«Sesión cerrada por inactividad.»* (tras timeout de 40 min sin uso en `/app/`).
+Modal de aviso si `?idle=1`: *«Sesión cerrada por inactividad.»* (tras timeout de 8 h sin uso en `/app/`).
 
 ### Validaciones demo (JS)
 
