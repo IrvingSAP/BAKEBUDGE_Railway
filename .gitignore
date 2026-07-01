@@ -37,3 +37,11 @@ local_settings.py
 *.swp
 .DS_Store
 Thumbs.db
+
+# Playwright E2E (e2e/)
+e2e/node_modules/
+e2e/.env.local
+e2e/test-results/
+e2e/playwright-report/
+e2e/blob-report/
+e2e/.cache/

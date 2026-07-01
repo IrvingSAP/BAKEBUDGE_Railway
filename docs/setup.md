@@ -97,6 +97,18 @@ python manage.py migrate
 python manage.py runserver
 ```
 
+## Pruebas E2E (Playwright)
+
+Suite en `e2e/` — no forma parte del runtime Django. Cobertura y trazabilidad por app: [`e2e/COBERTURA-E2E.md`](../e2e/COBERTURA-E2E.md).
+
+```powershell
+cd e2e
+npm install
+npm test
+```
+
+Variables: ver `e2e/.env.example`. Índice documentación: [`docs/README.md`](README.md).
+
 > Con PostgreSQL nativo **no** se usa `docker compose up -d`.
 
 ## Settings

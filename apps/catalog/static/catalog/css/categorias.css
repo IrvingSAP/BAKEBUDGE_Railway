@@ -93,14 +93,18 @@
   flex-wrap: wrap;
 }
 
-.categorias-color-input-row input[type="color"] {
-  width: 2.75rem;
-  height: 2.75rem;
-  padding: 0.15rem;
+.categorias-color-input-row select {
+  flex: 1;
+  min-width: 12rem;
+  padding: 0.55rem 0.75rem;
   border: 1px solid var(--color-border, #e8dfd8);
   border-radius: var(--radius-sm, 8px);
-  cursor: pointer;
+  font: inherit;
   background: #fff;
+}
+
+.categoria-color-preview {
+  flex-shrink: 0;
 }
 
 .page-header-actions {

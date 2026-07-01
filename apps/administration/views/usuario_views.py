@@ -246,10 +246,14 @@ def usuario_create(request):
             profile.status = form_data["status"]
             profile.save()
 
+        if profile.is_user:
+            messages.success(
+                request,
+                f"Usuario «{user.username}» creado correctamente. Registra el período de pago.",
+            )
+            return redirect(f"{reverse('administration:facturacion_create')}?owner={user.pk}")
+
         messages.success(request, f"Usuario «{user.username}» creado correctamente.")
-        if profile.user_type == UserProfile.UserType.USER:
-            url = f"{reverse('administration:facturacion_create')}?owner={user.pk}"
-            return redirect(url)
         return redirect("administration:usuario_list")
 
     return _render_form(request, form_data)

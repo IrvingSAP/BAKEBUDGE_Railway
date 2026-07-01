@@ -23,6 +23,14 @@
 
   overlay?.addEventListener("click", closeSidebar);
 
+  document.querySelectorAll(".app-nav a, .app-nav-sub a").forEach((link) => {
+    link.addEventListener("click", () => {
+      if (window.matchMedia("(max-width: 768px)").matches) {
+        closeSidebar();
+      }
+    });
+  });
+
   const current = document.body.dataset.page;
   document.querySelectorAll("[data-nav]").forEach((link) => {
     if (link.dataset.nav === current) {

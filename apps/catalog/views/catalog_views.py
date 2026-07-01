@@ -4,7 +4,12 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.utils.safestring import mark_safe
 
-from apps.catalog.constants import Status, UnidadCobro
+from apps.catalog.constants import (
+    CATEGORIA_COLOR_CHOICES,
+    CATEGORIA_COLOR_VALUES,
+    Status,
+    UnidadCobro,
+)
 from apps.catalog.decorators import catalog_access
 from apps.catalog.models import CostoIndirecto, ConversionUnidad, ProductCategory, Producto
 from apps.core.form_validation import form_error_context, parse_decimal as _parse_decimal
@@ -24,6 +29,37 @@ def _status_choices():
 
 def _unidad_cobro_choices():
     return UnidadCobro.choices
+
+
+def _color_choices(*, extra_color=None):
+    choices = list(CATEGORIA_COLOR_CHOICES)
+    if extra_color and extra_color not in CATEGORIA_COLOR_VALUES:
+        choices.insert(0, (extra_color, f"Personalizado ({extra_color})"))
+    return choices
+
+
+def _validate_categoria_color(color, errors, *, legacy_color=None):
+    if not color:
+        return
+    if color in CATEGORIA_COLOR_VALUES:
+        return
+    if legacy_color and color == legacy_color:
+        return
+    errors["color"] = "Selecciona un color de la lista."
+
+
+def _categoria_form_context(form_data, *, categoria=None, errors=None):
+    extra_color = form_data.get("color") or (categoria.color if categoria else "")
+    context = {
+        "form_data": form_data,
+        "status_choices": _status_choices(),
+        "color_choices": _color_choices(extra_color=extra_color),
+    }
+    if categoria is not None:
+        context["categoria"] = categoria
+    if errors:
+        context.update(form_error_context(errors))
+    return context
 
 
 def _producto_form_context(request, form_data, producto=None):
@@ -262,6 +298,7 @@ def categoria_create(request):
             errors["nombre"] = "El nombre es obligatorio."
         if form_data["status"] not in STATUS_VALUES:
             errors["status"] = "Selecciona un estado válido."
+        _validate_categoria_color(form_data["color"], errors)
         try:
             orden = int(form_data["orden"] or "0")
             if orden < 0:
@@ -274,11 +311,7 @@ def categoria_create(request):
             return render(
                 request,
                 "catalog/categorias/categoria_form.html",
-                {
-                    "form_data": form_data,
-                    "status_choices": _status_choices(),
-                    **form_error_context(errors),
-                },
+                _categoria_form_context(form_data, errors=errors),
             )
 
         ProductCategory.objects.create(
@@ -297,7 +330,7 @@ def categoria_create(request):
     return render(
         request,
         "catalog/categorias/categoria_form.html",
-        {"form_data": form_data, "status_choices": _status_choices()},
+        _categoria_form_context(form_data),
     )
 
 
@@ -328,6 +361,7 @@ def categoria_edit(request, pk):
             errors["nombre"] = "El nombre es obligatorio."
         if form_data["status"] not in STATUS_VALUES:
             errors["status"] = "Selecciona un estado válido."
+        _validate_categoria_color(form_data["color"], errors, legacy_color=categoria.color)
         try:
             orden = int(form_data["orden"] or "0")
             if orden < 0:
@@ -340,12 +374,7 @@ def categoria_edit(request, pk):
             return render(
                 request,
                 "catalog/categorias/categoria_form.html",
-                {
-                    "form_data": form_data,
-                    "status_choices": _status_choices(),
-                    "categoria": categoria,
-                    **form_error_context(errors),
-                },
+                _categoria_form_context(form_data, categoria=categoria, errors=errors),
             )
 
         categoria.nombre = form_data["nombre"]
@@ -363,7 +392,7 @@ def categoria_edit(request, pk):
     return render(
         request,
         "catalog/categorias/categoria_form.html",
-        {"form_data": form_data, "status_choices": _status_choices(), "categoria": categoria},
+        _categoria_form_context(form_data, categoria=categoria),
     )
 
 

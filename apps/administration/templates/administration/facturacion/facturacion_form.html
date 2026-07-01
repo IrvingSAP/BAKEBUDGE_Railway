@@ -28,7 +28,9 @@
 
 {% if provision_user and not payment %}
 <div class="facturacion-provision-banner">
-  Usuario <strong>{{ provision_user.username }}</strong> recién creado — completa el período y actívalo antes de entregar credenciales.
+  Usuario <strong>{{ provision_user.username }}</strong>{% if provision_user.profile.nombre_negocio %} ({{ provision_user.profile.nombre_negocio }}){% endif %}
+  recién creado — el catálogo base (categorías y conversiones) ya está listo.
+  Completa el período de pago y actívalo antes de entregar credenciales.
 </div>
 {% endif %}
 
@@ -75,6 +77,12 @@
       {% if not payment %}
       <div class="form-field">
         <label for="owner">Usuario (owner) *</label>
+        {% if provision_user %}
+        <input type="hidden" name="owner" id="owner" value="{{ provision_user.pk }}">
+        <input type="text" id="owner_display" readonly
+               value="{{ provision_user.username }}{% if provision_user.profile.nombre_negocio %} — {{ provision_user.profile.nombre_negocio }}{% endif %}">
+        <span class="form-hint">Usuario recién creado — no editable en este flujo.</span>
+        {% else %}
         <select id="owner" name="owner" required>
           <option value="">— Seleccionar —</option>
           {% for user in standard_users %}
@@ -83,6 +91,7 @@
           </option>
           {% endfor %}
         </select>
+        {% endif %}
       </div>
       {% endif %}
       <div class="form-field">

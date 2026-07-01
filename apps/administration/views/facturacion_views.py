@@ -2,6 +2,7 @@ from django.contrib import messages
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404, redirect, render
 
+from apps.accounts.models import UserProfile
 from apps.administration.decorators import master_access
 from apps.administration.services.facturacion_helpers import (
     apply_guardar_activar,
@@ -47,7 +48,11 @@ def _owner_preselect(request):
         owner_id = int(owner_param)
     except (TypeError, ValueError):
         return None
-    return User.objects.filter(pk=owner_id).select_related("profile").first()
+    return (
+        User.objects.filter(pk=owner_id, profile__user_type=UserProfile.UserType.USER)
+        .select_related("profile")
+        .first()
+    )
 
 
 def _apply_form_to_payment(payment, form_data, acting_user):
@@ -74,7 +79,7 @@ def _render_form(request, form_data, *, payment=None, provision_user=None, **ext
         {
             "form_data": serialize_form_data(form_data),
             "payment": payment,
-            "standard_users": get_standard_users(),
+            "standard_users": get_standard_users(include_user=provision_user),
             "monedas": _active_monedas(),
             "provision_user": provision_user,
             **extra,

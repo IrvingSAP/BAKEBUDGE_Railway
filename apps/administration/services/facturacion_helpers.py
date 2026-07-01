@@ -39,12 +39,16 @@ def parse_date(value):
         return None
 
 
-def get_standard_users():
-    return (
+def get_standard_users(*, include_user=None):
+    qs = (
         User.objects.filter(profile__user_type=UserProfile.UserType.USER)
         .select_related("profile")
         .order_by("username")
     )
+    if include_user and getattr(include_user.profile, "is_user", False):
+        if not qs.filter(pk=include_user.pk).exists():
+            qs = qs | User.objects.filter(pk=include_user.pk).select_related("profile")
+    return qs
 
 
 def validate_owner(owner_id, errors):
@@ -227,6 +231,12 @@ def form_defaults(payment=None, *, owner_preselect=None):
         }
 
     default_moneda = Moneda.objects.filter(activa=True).order_by("orden", "codigo").first()
+    moneda_codigo = default_moneda.codigo if default_moneda else "COP"
+    if owner_preselect is not None:
+        profile = getattr(owner_preselect, "profile", None)
+        if profile and profile.moneda_id:
+            moneda_codigo = profile.moneda_id
+
     return {
         "owner": str(owner_preselect.pk) if owner_preselect else "",
         "modalidad": PaymentControl.Modalidad.MENSUAL,
@@ -237,7 +247,7 @@ def form_defaults(payment=None, *, owner_preselect=None):
         "payment_date": "",
         "payment_method": "",
         "monto": "",
-        "moneda": default_moneda.codigo if default_moneda else "COP",
+        "moneda": moneda_codigo,
         "payment_voucher": "",
         "other_data": "",
     }

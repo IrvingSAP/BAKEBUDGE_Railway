@@ -45,7 +45,17 @@
       </div>
       <div class="form-field">
         <label for="color">Color</label>
-        <input type="text" id="color" name="color" maxlength="7" value="{{ form_data.color }}" placeholder="#FFFFFF">
+        <div class="categorias-color-input-row">
+          <select id="color" name="color">
+            <option value="">— Sin color —</option>
+            {% for hex, label in color_choices %}
+            <option value="{{ hex }}" {% if form_data.color == hex %}selected{% endif %}>{{ label }} ({{ hex }})</option>
+            {% endfor %}
+          </select>
+          <span class="categoria-color-badge categoria-color-preview{% if not form_data.color %} categoria-color-badge--empty{% endif %}"
+                id="colorPreview" aria-hidden="true"
+                {% if form_data.color %}style="background-color: {{ form_data.color }};"{% endif %}></span>
+        </div>
       </div>
       <div class="form-field">
         <label for="status">Estado *</label>
@@ -74,4 +84,8 @@
   </section>
 </form>
 {% include "catalog/partials/form_validation.html" %}
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'catalog/js/categoria_form.js' %}"></script>
 {% endblock %}

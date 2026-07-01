@@ -5,7 +5,7 @@
 
 Seguimiento paso a paso para pasar de **diseño/prototipo** a **proyecto Django ejecutable**.
 
-**Referencia técnica:** [`setup.md`](setup.md) · [`arquitectura.md`](arquitectura.md) · [`roadmap.md`](roadmap.md)
+**Referencia técnica:** [`setup.md`](setup.md) · [`arquitectura.md`](arquitectura.md) · [`roadmap.md`](roadmap.md) · [`../e2e/COBERTURA-E2E.md`](../e2e/COBERTURA-E2E.md)
 
 ---
 
@@ -23,6 +23,7 @@ Seguimiento paso a paso para pasar de **diseño/prototipo** a **proyecto Django 
 | **7** | Crear apps bajo `apps/` | **Completado** |
 | **8** | Migraciones y servidor de desarrollo | **Completado** |
 | **9** | Prototipos HTML (opcional, paralelo) | Disponible cuando se necesite |
+| **10** | Pruebas E2E Playwright (`e2e/`) | **Completado** — ver [`COBERTURA-E2E.md`](../e2e/COBERTURA-E2E.md) |
 
 ---
 
@@ -440,13 +441,37 @@ La UI vive en templates Django (`apps/*/templates/`). Ver [`fase-1b-landing.md`]
 
 ---
 
+## Fase 10 — Pruebas E2E (Playwright)
+
+**Estado: Completado** (jun 2026 — suite OK)
+
+Documento maestro de trazabilidad: [`e2e/COBERTURA-E2E.md`](../e2e/COBERTURA-E2E.md) (~166 casos, 14 specs, cobertura por app Django).
+
+```powershell
+cd C:\IACursor\BakeBudge\BAKEBUDGE\e2e
+npm install
+# Copiar variables desde e2e/.env.example (usuario Master + 2FA)
+npm test
+npm run report
+```
+
+| Requisito | Detalle |
+|-----------|---------|
+| Node.js | Solo carpeta `e2e/` (no es bundler del frontend Django) |
+| Credenciales | `PLAYWRIGHT_E2E_USER`, `PLAYWRIGHT_E2E_PASSWORD`, `PLAYWRIGHT_E2E_TOTP_SECRET` |
+| Django | Playwright levanta `runserver` local salvo `PLAYWRIGHT_SKIP_WEBSERVER=1` |
+
+Tests unitarios Django (por app): `python manage.py test apps.<app>.tests`.
+
+---
+
 ## Lo que NO necesitas (stack v1)
 
 | No instalar | Motivo |
 |-------------|--------|
 | Docker (Postgres) | BD nativa ya configurada |
 | SQLite como BD principal | Prohibido en v1 — solo PostgreSQL |
-| Node.js / npm | Sin bundler en v1 |
+| Node.js / npm | Sin bundler en v1; **solo** dev E2E en `e2e/` ([`COBERTURA-E2E.md`](../e2e/COBERTURA-E2E.md)) |
 | React / Vue / Bootstrap | Server-rendered HTML + CSS propio |
 | `django.forms` en UI | Formularios HTML puro ([`ui-ux.md`](ui-ux.md)) |
 
@@ -461,6 +486,7 @@ La UI vive en templates Django (`apps/*/templates/`). Ver [`fase-1b-landing.md`]
 | 2026-06-16 | 4 | Scaffold Django (`manage.py`, `config/`, `requirements.txt`) — **completado** |
 | 2026-06-16 | 7 | Esqueleto `apps/*` (8 apps), `LOCAL_APPS`, sin vistas/modelos — **completado** |
 | 2026-06-19 | 8 | `migrate` + `runserver` contra PostgreSQL — **completado** |
+| 2026-06-16 | 10 | Suite E2E Playwright — **completado** ([`COBERTURA-E2E.md`](../e2e/COBERTURA-E2E.md)) |
 
 ---
 

@@ -41,6 +41,7 @@ Repositorio central de documentación del proyecto **BAKEBUDGE**: web para gesti
 | [acceso-checklist-conforme.md](acceso-checklist-conforme.md) | **Checklist cerrado** — Acceso / seguridad (`apps.security` + cuenta desde Perfil) v1.2 |
 | [setup.md](setup.md) | Entorno local, PostgreSQL y variables de entorno |
 | [setup-desarrollo-checklist.md](setup-desarrollo-checklist.md) | **Checklist inicio desarrollo** — fases 0–8, completado vs pendiente |
+| [../e2e/COBERTURA-E2E.md](../e2e/COBERTURA-E2E.md) | **Pruebas E2E (Playwright)** — cobertura por app Django, ~166 casos (**OK** jun 2026) |
 | [../prototype/README.md](../prototype/README.md) | Nota histórica: prototipos HTML archivados fuera del repo |
 
 **Referencia externa (origen del patrón):** [`CODAS_SECURITY.md`](CODAS_SECURITY.md), [`CODAS_SECURITY_PORTABLE_GUIDE.md`](CODAS_SECURITY_PORTABLE_GUIDE.md).
@@ -62,5 +63,6 @@ Por el momento **todo el desarrollo** de BAKEBUDGE utiliza exclusivamente este s
 | Base de datos | **PostgreSQL** 16 (motor único en v1; no SQLite/MySQL) |
 | Frontend | **HTML**, **CSS**, **JavaScript** en templates cuando se requiera |
 | Tablas en UI | [**DataTables**](https://datatables.net/manual/) |
+| Pruebas E2E (dev) | [**Playwright**](https://playwright.dev/) en `e2e/` — ver [`../e2e/COBERTURA-E2E.md`](../e2e/COBERTURA-E2E.md) |
 
 Sin SPA ni framework JavaScript pesado (no React/Vue). Detalle: [`arquitectura.md`](arquitectura.md), [`ui-ux.md`](ui-ux.md), [`setup.md`](setup.md).

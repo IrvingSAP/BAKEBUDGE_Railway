@@ -37,7 +37,7 @@ body {
   color: var(--color-text);
   background: var(--color-bg);
   line-height: 1.5;
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 a {
@@ -54,6 +54,7 @@ img {
 .app-layout {
   display: flex;
   min-height: 100vh;
+  max-width: 100%;
 }
 
 .app-sidebar {
@@ -67,10 +68,13 @@ img {
   position: sticky;
   top: 0;
   height: 100vh;
+  max-height: 100vh;
   z-index: 50;
+  overflow: hidden;
 }
 
 .app-brand {
+  flex-shrink: 0;
   font-weight: 800;
   letter-spacing: 0.06em;
   font-size: 1.15rem;
@@ -85,7 +89,27 @@ img {
   list-style: none;
   margin: 1.5rem 0 0;
   padding: 0;
-  flex: 1;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-gutter: stable;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border) transparent;
+}
+
+.app-nav::-webkit-scrollbar {
+  width: 6px;
+}
+
+.app-nav::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: 999px;
+}
+
+.app-nav::-webkit-scrollbar-thumb:hover {
+  background: var(--color-muted);
 }
 
 .app-nav a {
@@ -212,6 +236,7 @@ img {
 }
 
 .app-sidebar-footer {
+  flex-shrink: 0;
   border-top: 1px solid var(--color-border);
   padding-top: 1rem;
   margin-top: auto;
@@ -236,15 +261,19 @@ img {
 }
 
 .app-main {
-  flex: 1;
+  flex: 1 1 0;
   min-width: 0;
+  max-width: 100%;
   padding: var(--space-section);
   display: flex;
   flex-direction: column;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .app-topbar {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: flex-end;
   gap: 1rem;
@@ -364,7 +393,7 @@ img {
 
 .stats-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 180px), 1fr));
   gap: 1rem;
   margin-bottom: 1.5rem;
 }
@@ -416,7 +445,7 @@ a.stat-card-link:focus-visible {
 
 .content-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 300px), 1fr));
   gap: 1.25rem;
 }
 
@@ -707,7 +736,13 @@ a.stat-card-link:focus-visible {
   border-top: 1px solid var(--color-border);
 }
 
-/* â€”â€” Responsive â€”â€” */
+/* —— Responsive —— */
+@media (min-width: 769px) and (max-width: 1280px) {
+  .stats-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
 @media (max-width: 900px) {
   .content-grid {
     grid-template-columns: 1fr;
@@ -723,6 +758,7 @@ a.stat-card-link:focus-visible {
     position: fixed;
     left: 0;
     top: 0;
+    width: min(var(--sidebar-width), 88vw);
     transform: translateX(-100%);
     transition: transform 0.25s ease;
     box-shadow: var(--shadow-sm);
@@ -747,6 +783,7 @@ a.stat-card-link:focus-visible {
 
   .app-main {
     padding: 1rem;
+    overflow-x: auto;
   }
 
   .page-header-row {
@@ -759,7 +796,7 @@ a.stat-card-link:focus-visible {
   }
 
   .stats-grid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 160px), 1fr));
   }
 }
 
