@@ -50,3 +50,10 @@ else:
     ANYMAIL = {
         "RESEND_API_KEY": RESEND_API_KEY,
     }
+
+# Reutilizar conexiones PostgreSQL entre requests (menos latencia en Railway)
+DATABASES["default"]["CONN_MAX_AGE"] = env.int("DB_CONN_MAX_AGE", default=600)
+DATABASES["default"]["CONN_HEALTH_CHECKS"] = True
+if "OPTIONS" not in DATABASES["default"]:
+    DATABASES["default"]["OPTIONS"] = {}
+DATABASES["default"]["OPTIONS"].setdefault("connect_timeout", 10)
